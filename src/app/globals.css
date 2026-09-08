@@ -23,6 +23,11 @@
   --color-marigold: #ff872a;
   --color-graphite: #414141;
   --color-onyx: #181818;
+  /* The mark's red, used for the one selected state on the page. */
+  --color-vermilion: #ea1d24;
+  /* Backstop behind the shelf plate while it loads, sampled from its darkest
+     corner so the swap isn't visible. */
+  --color-char: #0e0a06;
 
   --text-display: clamp(2.75rem, 7vw, 6.5rem);
   --text-headline: clamp(2rem, 4.5vw, 3.75rem);
