@@ -17,6 +17,13 @@
   --color-ink: #2a211a;
   --color-ink-soft: #443830;
 
+  /* Sampled from the comps rather than the footage. The sections below the
+     pinned scene are set on paper, not on film, so they carry their own
+     accent and greys instead of borrowing the frame-sequence palette. */
+  --color-marigold: #ff872a;
+  --color-graphite: #414141;
+  --color-onyx: #181818;
+
   --text-display: clamp(2.75rem, 7vw, 6.5rem);
   --text-headline: clamp(2rem, 4.5vw, 3.75rem);
   --text-lede: clamp(1.0625rem, 1.5vw, 1.375rem);
@@ -28,6 +35,11 @@
   --font-display: var(--font-spotify);
   --font-sans: var(--font-spotify);
   --font-mono: var(--font-geist-mono);
+
+  /* The below-the-fold voice. `editorial` carries the weight range Black
+     hasn't got; `script` is the one handwritten caption. */
+  --font-editorial: var(--font-archivo);
+  --font-script: var(--font-corinthia);
 }
 
 @layer base {

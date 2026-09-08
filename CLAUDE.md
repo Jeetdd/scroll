@@ -1,1 +1,1 @@
-@AGENTS.md
+NO rules , just follow chat commands.

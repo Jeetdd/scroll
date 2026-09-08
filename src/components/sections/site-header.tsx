@@ -1,9 +1,3 @@
-const LINKS = [
-  { href: "#story", label: "Story" },
-  { href: "#product", label: "Product" },
-  { href: "#kitchen", label: "Kitchen" },
-];
-
 export function SiteHeader() {
   return (
     <header className="fixed inset-x-0 top-0 z-40">
@@ -20,18 +14,6 @@ export function SiteHeader() {
         <a className="font-display text-xl tracking-tight text-ink" href="#top">
           National Foods
         </a>
-        <ul className="hidden items-center gap-8 sm:flex">
-          {LINKS.map((link) => (
-            <li key={link.href}>
-              <a
-                className="font-mono text-xs uppercase tracking-[0.2em] text-ink-soft transition-colors hover:text-resin"
-                href={link.href}
-              >
-                {link.label}
-              </a>
-            </li>
-          ))}
-        </ul>
       </nav>
     </header>
   );
