@@ -3,7 +3,7 @@ import { About } from "@/components/sections/about";
 import { Contact } from "@/components/sections/contact";
 import { Horizon } from "@/components/sections/horizon";
 import { Intro } from "@/components/sections/intro";
-import { Process } from "@/components/sections/process";
+// import { Process } from "@/components/sections/process";
 import { Research } from "@/components/sections/research";
 import { SiteFooter } from "@/components/sections/site-footer";
 import { SiteHeader } from "@/components/sections/site-header";
@@ -19,7 +19,7 @@ export default function Home() {
         <About />
         <Research />
         <Horizon />
-        <Process />
+        {/* <Process /> */}
         <Trusted />
         <Contact />
       </main>

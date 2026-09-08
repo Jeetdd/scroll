@@ -18,14 +18,14 @@ export function SiteHeader() {
             invisible against the cream the nav sits on — so the neutrals are
             recoloured to ink and the brand red is left alone. Keep the
             original for anything on `bg-ink`, like the footer. */}
-        <a className="block" href="#top">
+        <a className="block" href="https://nationalfoods.com/">
           <Image
             alt="National Foods — the hing specialist"
-            className="h-12 w-auto"
-            height={260}
+            className="h-16 sm:h-24 w-auto"
+            height={460}
             priority
             src="/nf-logo-ink.png"
-            width={324}
+            width={424}
           />
         </a>
       </nav>
