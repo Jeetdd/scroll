@@ -20,13 +20,13 @@ export function BeatCopy({ beat }: { beat: Beat }) {
             copy instead of permanently dulling the film behind it. */}
         <div
           aria-hidden
-          className="-inset-x-[18vw] -inset-y-24 -z-10 absolute bg-[radial-gradient(closest-side,rgba(239,234,225,0.94),rgba(239,234,225,0))]"
+          className="-inset-x-[18vw] -inset-y-24 -z-10 absolute ]"
         />
-        <p className="flex items-center gap-3 font-mono text-xs uppercase tracking-[0.25em] text-resin">
+        {/* <p className="flex items-center gap-3 font-mono text-xs uppercase tracking-[0.25em] text-resin">
           <span>{beat.ordinal}</span>
           <span className="h-px w-8 bg-resin/40" />
           <span>{beat.label}</span>
-        </p>
+        </p> */}
         <h2 className="mt-5 text-balance font-display text-headline leading-[1.05] text-ink">
           {beat.title}
         </h2>
