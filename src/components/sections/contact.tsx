@@ -90,7 +90,7 @@ export function Contact() {
 
   return (
     <section
-      className="bg-cream px-6 py-16 sm:px-8 lg:pt-[80px] lg:pb-[120px]"
+      className="bg-white px-6 py-16 sm:px-8 lg:pt-[80px] lg:pb-[120px]"
       id="contact"
     >
       {/* 662 / 43 / 675 — the card is pinned to the right of the container and
