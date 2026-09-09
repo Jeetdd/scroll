@@ -12,18 +12,6 @@ const STATS = [
   { label: "Years. One ingredient.", value: "55+" },
 ];
 
-/**
- * The two labels are separate layers in the comp, not part of the plate — the
- * photograph underneath has blank glass. Positions are the comp's, expressed
- * against the 675x396 crop so they ride the image at any width. The second one
- * sits on an empty jar and is lightened rather than laid on top, which is what
- * makes it read as an etch in the glass instead of a sticker.
- */
-const MARKS = [
-  { blend: false, left: "32.15%", top: "48.23%" },
-  { blend: true, left: "58.67%", top: "40.66%" },
-];
-
 export function About() {
   return (
     <section className="bg-cream px-6 py-20 sm:px-8 lg:py-[120px]" id="about">
@@ -50,11 +38,11 @@ export function About() {
             <Reveal delay={0.12}>
               <div className="relative mt-[46px] aspect-[652/634] overflow-hidden">
                 <Image
-                  alt="Cured asafoetida granules on a stoneware plate beside a brass mortar and a bottle of hing oil"
-                  className="object-cover object-[center_58%]"
+                  alt="Golden asafoetida granules spilling from a wooden scoop onto a wood surface"
+                  className="object-cover"
                   fill
                   sizes="(min-width: 1024px) 47vw, 100vw"
-                  src="/about/about-hing.png"
+                  src="/about/about-hing-masked.png"
                 />
               </div>
             </Reveal>
@@ -99,38 +87,21 @@ export function About() {
             <Reveal delay={0.2}>
               <div className="relative mt-[56px] aspect-[675/396] overflow-hidden">
                 <Image
-                  alt="Hira Hing granules in a labelled pharmaceutical vial beside a jar of capsules"
-                  className="object-cover"
+                  alt="Line workers in hairnets and gloves processing hing granules in National Foods' pharma-grade facility"
+                  className="object-cover rounded-b-lg"
                   fill
                   sizes="(min-width: 1024px) 49vw, 100vw"
-                  src="/about/about-pharma.png"
+                  src="/about/about-pharma-new.png"
                 />
-                {MARKS.map((mark) => (
-                  <div
-                    aria-hidden
-                    className={`absolute h-[12.37%] w-[9.19%] ${
-                      mark.blend ? "mix-blend-plus-lighter" : ""
-                    }`}
-                    key={mark.left}
-                    style={{ left: mark.left, top: mark.top }}
-                  >
-                    <Image
-                      alt=""
-                      className="object-contain"
-                      fill
-                      sizes="62px"
-                      src="/about/nf-mark.png"
-                    />
-                  </div>
-                ))}
               </div>
             </Reveal>
           </div>
         </div>
 
         <Reveal delay={0.28}>
-          <p className="mt-6 text-center font-script font-bold text-[clamp(1.75rem,2.08vw,2.5rem)] capitalize leading-[1.25] text-onyx">
-            Tomorrow · Pharmacy — concept visualisation, research in progress
+          <p className="mt-8 text-center font-quote font-bold text-[25px] capitalize leading-[50px] text-onyx lg:mx-auto lg:max-w-4xl">
+            The future is not a distant destination. It is a sequence of
+            choices, made decade by decade.
           </p>
         </Reveal>
       </div>

@@ -59,6 +59,7 @@
      hasn't got; `script` is the one handwritten caption. */
   --font-editorial: var(--font-archivo);
   --font-script: var(--font-corinthia);
+  --font-quote: var(--font-edu-qld-beginner);
 }
 
 @layer base {

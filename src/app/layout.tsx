@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Archivo, Corinthia, Geist_Mono } from "next/font/google";
+import { Archivo, Corinthia, Geist_Mono, Edu_QLD_Beginner } from "next/font/google";
 import localFont from "next/font/local";
 import { SmoothScroll } from "@/components/providers/smooth-scroll";
 import "./globals.css";
@@ -43,6 +43,13 @@ const corinthia = Corinthia({
   weight: ["400", "700"],
 });
 
+// The updated font for the quote in the About section.
+const eduQldBeginner = Edu_QLD_Beginner({
+  variable: "--font-edu-qld-beginner",
+  subsets: ["latin"],
+  weight: ["400", "500", "600", "700"],
+});
+
 export const metadata: Metadata = {
   title: "Natinal foods",
   description:
@@ -53,7 +60,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html
       lang="en"
-      className={`${spotifyMix.variable} ${geistMono.variable} ${archivo.variable} ${corinthia.variable} h-full antialiased`}
+      className={`${spotifyMix.variable} ${geistMono.variable} ${archivo.variable} ${corinthia.variable} ${eduQldBeginner.variable} h-full antialiased`}
     >
       <body className="flex min-h-full flex-col">
         <SmoothScroll>{children}</SmoothScroll>
