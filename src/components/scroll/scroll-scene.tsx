@@ -159,7 +159,7 @@ export function ScrollScene() {
       {!ready && <Preloader progress={progress} />}
       <section
         ref={rootRef}
-        aria-label="How Hira Hing is made"
+        aria-label="How National foods Hing is made"
         className="relative"
         style={{ height: SCENE_HEIGHT, marginTop: SCENE_LIFT }}
       >
