@@ -11,7 +11,7 @@ const { width, height } = FRAME_TIERS.desktop;
 export function StaticScene() {
   return (
     <section
-      aria-label="How Hira Hing is made"
+      aria-label="How National foods hing is made"
       className="mx-auto max-w-5xl space-y-24 px-6 py-24"
     >
       {BEATS.map((beat) => (

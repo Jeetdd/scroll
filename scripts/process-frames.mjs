@@ -59,7 +59,7 @@ function frameFileName(index) {
 
 async function main() {
   const sources = (await readdir(SRC_DIR))
-    .filter((name) => /\.(jpe?g|png)$/i.test(name))
+    .filter((name) => /\.(jpe?g|png|webp)$/i.test(name))
     .sort();
 
   if (sources.length === 0) {

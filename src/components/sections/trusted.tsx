@@ -105,16 +105,7 @@ export function Trusted() {
       </div>
 
       {/* The plate background with masked gradient/blobs out of Figma */}
-      <div className="-z-20 absolute inset-0 hidden lg:block opacity-0 lg:opacity-100">
-        <Image
-          alt=""
-          className="object-cover object-top"
-          fill
-          sizes="100vw"
-          src="/trusted/hero-resin-new.png"
-          priority
-        />
-      </div>
+      <div className="-z-20 absolute inset-0 hidden lg:block opacity-0 lg:opacity-100 bg-[url('/trusted/hero-resin-new.png')] bg-fixed bg-cover bg-top" />
 
       {/* Mobile background block */}
       <div className="-z-20 relative mt-12 aspect-[16/10] lg:hidden">
