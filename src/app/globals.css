@@ -6,7 +6,7 @@
 /* Palette sampled directly from the frame sequence, so the page and the
    footage share one set of colours rather than approximating each other. */
 @theme {
-  --color-cream: #efeae1;
+  --color-cream: #f7f3ee;
   --color-canvas: #dfd8ce;
   --color-sand: #cec6b3;
   --color-clay: #b5afa5;

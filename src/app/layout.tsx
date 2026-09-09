@@ -1,5 +1,10 @@
 import type { Metadata } from "next";
-import { Archivo, Corinthia, Geist_Mono, Edu_QLD_Beginner } from "next/font/google";
+import {
+  Archivo,
+  Corinthia,
+  Geist_Mono,
+  Edu_QLD_Beginner,
+} from "next/font/google";
 import localFont from "next/font/local";
 import { SmoothScroll } from "@/components/providers/smooth-scroll";
 import "./globals.css";

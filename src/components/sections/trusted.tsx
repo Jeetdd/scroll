@@ -2,47 +2,34 @@ import Image from "next/image";
 import { Reveal } from "@/components/ui/reveal";
 
 const BRANDS = [
+  // Top Row (5)
   {
     alt: "MTR Foods",
     box: "h-[43.9%] w-[55.96%]",
     src: "/trusted/brand-mtr.png",
     x: "8.58%",
-    y: "63.96%",
+    y: "24.53%",
   },
   {
     alt: "Priya Foods",
     box: "h-[35.01%] w-[68.98%]",
     src: "/trusted/brand-priya.png",
-    x: "29.29%",
-    y: "22.66%",
-  },
-  {
-    alt: "ITC",
-    box: "h-[43.94%] w-[38.74%]",
-    src: "/trusted/brand-itc.png",
-    x: "29.29%",
-    y: "77.34%",
+    x: "29.31%",
+    y: "24.53%",
   },
   {
     alt: "Eastern Condiments",
     box: "h-[43.87%] w-[50.51%]",
     src: "/trusted/brand-eastern.png",
     x: "50%",
-    y: "63.96%",
+    y: "24.53%",
   },
   {
     alt: "VKL Spices",
     box: "h-[23.77%] w-[69.16%]",
     src: "/trusted/brand-vkl.png",
-    x: "70.71%",
-    y: "22.66%",
-  },
-  {
-    alt: "Hamdard",
-    box: "h-[43.87%] w-[59.66%]",
-    src: "/trusted/brand-hamdard.jpg",
-    x: "70.71%",
-    y: "77.34%",
+    x: "70.69%",
+    y: "24.53%",
   },
   {
     alt: "Badshah Masala",
@@ -50,7 +37,36 @@ const BRANDS = [
     plate: "h-[26.72%] w-[68.28%]",
     src: "/trusted/brand-badshah.png",
     x: "91.42%",
-    y: "63.96%",
+    y: "24.53%",
+  },
+  // Bottom Row (4)
+  {
+    alt: "ITC",
+    box: "h-[43.94%] w-[38.74%]",
+    src: "/trusted/brand-itc.png",
+    x: "18.95%",
+    y: "75.47%",
+  },
+  {
+    alt: "Hamdard",
+    box: "h-[43.87%] w-[59.66%]",
+    src: "/trusted/brand-hamdard.jpg",
+    x: "39.67%",
+    y: "75.47%",
+  },
+  {
+    alt: "Wonder Masala",
+    box: "h-[34.6%] w-[75.5%]",
+    src: "/trusted/brand-wonder-masala.png",
+    x: "60.39%",
+    y: "75.47%",
+  },
+  {
+    alt: "Swastiks",
+    box: "h-[25.7%] w-[77.2%]",
+    src: "/trusted/brand-swastiks.svg",
+    x: "81.12%",
+    y: "75.47%",
   },
 ];
 
@@ -88,42 +104,32 @@ export function Trusted() {
         </div>
       </div>
 
-      {/* The resin plate. Updated layout has hero-resin-new.jpg over the whole backdrop. */}
-      <div className="-z-20 absolute inset-0 hidden lg:block mix-blend-multiply opacity-0 lg:opacity-100">
+      {/* The plate background with masked gradient/blobs out of Figma */}
+      <div className="-z-20 absolute inset-0 hidden lg:block opacity-0 lg:opacity-100">
         <Image
           alt=""
           className="object-cover object-top"
           fill
           sizes="100vw"
-          src="/trusted/hero-resin-new.jpg"
+          src="/trusted/hero-resin-new.png"
           priority
         />
       </div>
 
       {/* Mobile background block */}
-      <div className="-z-20 relative mt-12 aspect-[16/10] mix-blend-multiply lg:hidden">
+      <div className="-z-20 relative mt-12 aspect-[16/10] lg:hidden">
         <Image
           alt=""
           className="object-cover object-top"
           fill
           sizes="100vw"
-          src="/trusted/hero-resin-new.jpg"
+          src="/trusted/hero-resin-new.png"
         />
       </div>
 
       <div className="relative z-10 w-full overflow-hidden">
         <div className="overflow-x-auto snap-x hide-scrollbar">
-          <div className="relative mx-auto mt-16 mb-24 aspect-[1381/523] min-w-[900px] w-full max-w-[1381px] px-8 sm:min-w-[1000px] lg:mt-24 lg:mb-32 lg:min-w-0 lg:px-0">
-            {/* Soft glowing blobs backdrop across the circles */}
-            <div className="-z-10 absolute inset-[-15%] pointer-events-none mix-blend-screen opacity-90 hidden lg:block">
-              <Image
-                src="/trusted/blobs.svg"
-                alt=""
-                fill
-                className="object-cover"
-              />
-            </div>
-
+          <div className="relative mx-auto mt-16 mb-24 aspect-[1381/483] min-w-[900px] w-full max-w-[1381px] px-8 sm:min-w-[1000px] lg:mt-24 lg:mb-32 lg:min-w-0 lg:px-0">
             {BRANDS.map((brand) => (
               <div
                 key={brand.alt}
