@@ -11,7 +11,7 @@ export function SiteHeader() {
       />
       <nav
         aria-label="Primary"
-        className="relative mx-auto flex max-w-7xl items-center justify-between px-[6vw] py-6 sm:px-8"
+        className="relative mx-auto flex max-w-[85vw] items-center justify-between px-[1vw] py-3 sm:px-3"
       >
         {/* The light-background cut. `nf-logo.png` is the dark-background
             variant — its wordmark and tagline are near-white, which is
@@ -22,10 +22,10 @@ export function SiteHeader() {
           <Image
             alt="National Foods — the hing specialist"
             className="h-16 sm:h-24 w-auto"
-            height={460}
+            height={360}
             priority
             src="/nf-logo-ink.png"
-            width={424}
+            width={324}
           />
         </a>
       </nav>
