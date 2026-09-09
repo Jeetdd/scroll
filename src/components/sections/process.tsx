@@ -61,7 +61,7 @@ export function Process() {
                   and the row loses its baseline. It's held on one line instead
                   and allowed to run a few px into the page gutter, which is
                   32px wider than the worst overhang. */}
-              <p className="mt-[9px] font-editorial font-medium text-[16px] capitalize leading-[1.16] text-graphite xl:whitespace-nowrap">
+              <p className="mt-[9px] font-editorial font-medium text-[18px] capitalize leading-[1.16] text-graphite xl:whitespace-nowrap">
                 {entry.caption}
               </p>
             </Reveal>

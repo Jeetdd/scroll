@@ -99,7 +99,7 @@ export function Research() {
           </Reveal>
 
           <Reveal delay={0.08}>
-            <p className="font-editorial text-[15px] capitalize leading-[30px] text-graphite">
+            <p className="font-editorial text-[17px] capitalize leading-[30px] text-graphite">
               Established in 2016, National Science is the world&rsquo;s first
               dedicated asafoetida research facility, isolating compounds,
               filing patents, running studies across microbiology, extraction
@@ -179,7 +179,7 @@ export function Research() {
               ))}
             </h3>
 
-            <p className="mt-[20px] font-editorial text-[15px] capitalize leading-[30px] text-graphite">
+            <p className="mt-[20px] font-editorial text-[17px] capitalize leading-[30px] text-graphite">
               {tab.body}
             </p>
 
@@ -196,7 +196,7 @@ export function Research() {
                     aria-hidden
                     className="mt-[9px] size-[9px] shrink-0 rounded-full bg-marigold"
                   />
-                  <span className="font-editorial font-semibold text-[16px] uppercase tracking-[0.1em] text-black">
+                  <span className="font-editorial font-semibold text-[18px] uppercase tracking-[0.1em] text-black">
                     {point}
                   </span>
                 </li>

@@ -6,7 +6,7 @@ const EYEBROW =
 const HEADING =
   "mt-1 font-editorial font-extrabold text-[clamp(2rem,2.08vw,2.5rem)] uppercase leading-[1.325] text-white";
 const BODY =
-  "mt-6 font-editorial text-[15px] capitalize leading-[30px] text-white";
+  "mt-6 font-editorial text-[17px] capitalize leading-[30px] text-white";
 const CAPTION = `${EYEBROW} mt-4 text-center`;
 
 export function Horizon() {

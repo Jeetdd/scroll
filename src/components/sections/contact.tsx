@@ -105,7 +105,7 @@ export function Contact() {
             <span className="lg:block">Wish Existed.</span>
           </h2>
 
-          <p className="mt-4 font-editorial text-[15px] capitalize leading-[30px] text-graphite">
+          <p className="mt-4 font-editorial text-[17px] capitalize leading-[30px] text-graphite">
             Whether you need the world&rsquo;s finest raw hing at scale, a
             white-label partner who thinks like an owner, or a research
             collaborator on the future of this ingredient, this is where it
@@ -115,7 +115,7 @@ export function Contact() {
           {/* The comp title-cases this block along with the rest of the page.
               Left alone that turns the address into Info@Nationalfoods.Co.In,
               so `capitalize` is the one thing not carried over here. */}
-          <address className="mt-[60px] font-editorial font-semibold text-[16px] not-italic leading-[30px] text-black">
+          <address className="mt-[60px] font-editorial font-semibold text-[18px] not-italic leading-[30px] text-black">
             <span className="block">
               <Detail href={`mailto:${INBOX}`}>{INBOX}</Detail>
               <span className="ml-3">

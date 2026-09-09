@@ -94,7 +94,7 @@ export function Trusted() {
           </Reveal>
 
           <Reveal className="lg:mt-[48px]" delay={0.08}>
-            <p className="font-editorial text-[15px] capitalize leading-[30px] text-graphite">
+            <p className="font-editorial text-[17px] capitalize leading-[30px] text-graphite">
               When India&rsquo;s most respected food companies need hing, for
               their signature blends, their ready-to-eat lines, their most
               protected recipes, they come to Waghodia. Some relationships span

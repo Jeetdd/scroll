@@ -50,7 +50,7 @@ export function About() {
 
           <div>
             <Reveal delay={0.08}>
-              <p className="font-editorial text-[15px] capitalize leading-[30px] text-graphite">
+              <p className="font-editorial text-[17px] capitalize leading-[30px] text-graphite">
                 Raw asafoetida resin travels from the Ferula fields of
                 Afghanistan and Iran to our processing complex in Baroda,
                 Gujarat, India. Within this single, unbroken supply chain, we
@@ -60,7 +60,7 @@ export function About() {
                 intervention.
               </p>
 
-              <p className="mt-[40px] font-editorial font-semibold text-[16px] capitalize leading-[30px] text-black">
+              <p className="mt-[40px] font-editorial font-semibold text-[18px] capitalize leading-[30px] text-black">
                 What leaves our facility is pure hing engineered to strict
                 pharmaceutical standards.
               </p>
@@ -76,7 +76,7 @@ export function About() {
                     <dt className="font-editorial font-bold text-[30px] leading-[1.16] text-black">
                       {stat.value}
                     </dt>
-                    <dd className="mt-[9px] font-editorial font-medium text-[16px] capitalize leading-[1.16] text-graphite">
+                    <dd className="mt-[9px] font-editorial font-medium text-[18px] capitalize leading-[1.16] text-graphite">
                       {stat.label}
                     </dd>
                   </div>
