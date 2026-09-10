@@ -156,10 +156,16 @@ export function Intro() {
         >
           {/* 0.25em, the same as the beat labels inside the scene. At 0.4em a
               five-letter word stops reading as a word and starts reading as
-              five letters, which is the opposite of a legible affordance. */}
+              five letters, which is the opposite of a legible affordance.
+
+              The drift lives on this span rather than the wrapper GSAP owns —
+              the timeline writes `autoAlpha` on the parent, so the two never
+              touch the same property. `motion-safe` is the reduced-motion gate;
+              it also covers the frame before the hook below has resolved,
+              where the cue is briefly rendered either way. */}
           <span
             aria-hidden
-            className="font-mono text-[0.625rem] uppercase tracking-[0.25em] text-ink-soft/60"
+            className="font-mono text-[0.625rem] uppercase tracking-[0.25em] text-ink-soft/60 motion-safe:animate-scroll-hint"
           >
             Scroll
           </span>

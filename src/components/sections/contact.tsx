@@ -16,8 +16,19 @@ const PHONE = "1800 120 1588";
 // default that some engines resolve to 0ms — the border snapped from grey to
 // white with nothing in between. `ease-out` because the response is being
 // watched for at the moment of focus, so the move belongs at the front.
+//
+// The property list is named rather than left to `transition-colors`, for two
+// reasons: `transition-colors` doesn't carry `box-shadow`, so the focus ring
+// would snap in while the border faded; and border-color is the only colour on
+// this field that ever changes, so the other seven properties in that group
+// are dead weight.
+//
+// The ring is saffron at 15% — enough to find the live field in a dark card at
+// a glance, not enough to compete with the white border doing the actual work.
+// It rides on `ring`, so it inherits the field's own radius on both the pill
+// input and the 20px textarea.
 const FIELD =
-  "w-full border border-[#5d5d5d] bg-transparent px-[22.6px] font-editorial text-[14px] text-white transition-colors duration-200 ease-out placeholder:text-[#a9a9a9] focus:border-white focus:outline-none";
+  "w-full border border-[#5d5d5d] bg-transparent px-[22.6px] font-editorial text-[14px] text-white transition-[border-color,box-shadow] duration-200 ease-out placeholder:text-[#a9a9a9] focus:border-white focus:outline-none focus:ring-[3px] focus:ring-saffron/15";
 const LABEL =
   "mb-[9px] block font-editorial font-medium text-[14px] capitalize text-white";
 
@@ -138,9 +149,18 @@ export function Contact() {
 
         <Reveal delay={0.08}>
           {/* The white rule is invisible against the comp's white page and
-              deliberate against ours — it reads as a mount around the card. */}
+              deliberate against ours — it reads as a mount around the card.
+
+              No `backdrop-blur` here any more. `bg-obsidian` is opaque, so the
+              filter had nothing to show through it; and the section behind the
+              card is flat `bg-white` with no image or texture, so even at full
+              transparency there would be nothing to blur. Committing to it
+              would only wash the card out and put a real backdrop-filter on a
+              large element for no visible return, so this is the other half of
+              the choice: drop it. If the card ever moves onto artwork, the blur
+              comes back with the opacity to earn it. */}
           <form
-            className="rounded-[20px] border-2 border-white bg-obsidian p-6 shadow-[0_15px_80px_rgba(0,0,0,0.05)] backdrop-blur-[5px] sm:px-[27px] sm:pt-[33px] sm:pb-[36px]"
+            className="rounded-[20px] border-2 border-white bg-obsidian p-6 shadow-[0_15px_80px_rgba(0,0,0,0.05)] sm:px-[27px] sm:pt-[33px] sm:pb-[36px]"
             onSubmit={onSubmit}
           >
             <div className="grid gap-x-[18px] gap-y-[27px] sm:grid-cols-2">

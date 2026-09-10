@@ -55,6 +55,23 @@
       transform: translate3d(-50%, 0, 0);
     }
   }
+
+  /* The intro's scroll cue. 4px over a 2.5s period — a drift the eye reads as
+     the page breathing rather than a label blinking at it. `ease-in-out`, so
+     the two ends of the travel are symmetric; `ease-in` would make it fall and
+     snap back. Seen once and dismissed by the first scroll, which is why it is
+     allowed to run continuously at all. */
+  --animate-scroll-hint: scroll-hint 2.5s ease-in-out infinite;
+
+  @keyframes scroll-hint {
+    0%,
+    100% {
+      transform: translateY(0);
+    }
+    50% {
+      transform: translateY(4px);
+    }
+  }
 }
 
 @theme inline {
