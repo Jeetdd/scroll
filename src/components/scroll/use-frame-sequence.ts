@@ -30,9 +30,14 @@ export function useFrameSequence(): FrameSequence {
   const [progress, setProgress] = useState(0);
 
   useEffect(() => {
-    const tier: FrameTier = window.matchMedia("(max-width: 768px)").matches
-      ? "mobile"
-      : "desktop";
+    // Phones get a tier cropped to their own orientation — the sequence is
+    // drawn full-bleed, so a landscape frame on an upright phone would be
+    // mostly cropped away. A small screen held sideways still wants the
+    // landscape crop, and anything larger has the pixels for the desktop tier.
+    const small = window.matchMedia("(max-width: 768px)").matches;
+    const upright = window.matchMedia("(orientation: portrait)").matches;
+    let tier: FrameTier = "desktop";
+    if (small) tier = upright ? "portrait" : "mobile";
 
     const frames = framesRef.current;
     let cancelled = false;

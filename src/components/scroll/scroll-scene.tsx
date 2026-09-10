@@ -34,7 +34,6 @@ export function ScrollScene() {
       const canvas = canvasRef.current;
       if (!root || !canvas || !ready) return;
 
-      // Transparent so the container's cream shows through the letterbox bars.
       const ctx = canvas.getContext("2d");
       if (!ctx) return;
 
@@ -63,23 +62,19 @@ export function ScrollScene() {
         painted = image;
 
         const { width, height } = canvas;
-        const fitX = width / image.naturalWidth;
-        const fitY = height / image.naturalHeight;
 
-        // drawImage has no object-fit, so both modes are done by hand. Cover
-        // on landscape; on a portrait phone it would upscale a 16:9 frame
-        // roughly threefold and crop away most of the composition, so those
-        // get a letterboxed band instead.
-        const portrait = width < height;
-        const scale = portrait ? Math.min(fitX, fitY) : Math.max(fitX, fitY);
+        // drawImage has no object-fit, so cover is done by hand: scale to the
+        // larger fit and centre the overflow. The loader hands us a frame
+        // already cropped to the viewport's orientation, so what spills past
+        // the edges here is margin, not composition.
+        const scale = Math.max(
+          width / image.naturalWidth,
+          height / image.naturalHeight,
+        );
         const w = image.naturalWidth * scale;
         const h = image.naturalHeight * scale;
 
-        if (portrait) ctx.clearRect(0, 0, width, height);
-        // The band sits above centre on portrait to leave the lower third
-        // clear for the beat copy.
-        const top = portrait ? height * 0.38 - h / 2 : (height - h) / 2;
-        ctx.drawImage(image, (width - w) / 2, top, w, h);
+        ctx.drawImage(image, (width - w) / 2, (height - h) / 2, w, h);
       };
 
       const resize = () => {
@@ -163,8 +158,8 @@ export function ScrollScene() {
         className="relative"
         style={{ height: SCENE_HEIGHT, marginTop: SCENE_LIFT }}
       >
-        {/* Cream, not canvas: on portrait the letterbox bars should read as the
-            page continuing rather than as a mismatched bar. */}
+        {/* Cream underneath: the canvas covers it once a frame lands, so this
+            only shows in the gap before the first paint. */}
         <div className="sticky top-0 h-svh w-full overflow-hidden bg-cream">
           <canvas ref={canvasRef} className="absolute inset-0 size-full" />
           {BEATS.map((beat) => (

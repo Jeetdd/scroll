@@ -120,10 +120,10 @@ export function Intro() {
       ref={rootRef}
       style={{ height: `${INTRO_VH}vh` }}
     >
-      {/* The bottom padding on portrait lifts the type to 38% of the viewport,
-          which is where the canvas centres its letterboxed band — so the
-          headline is already sitting on the film when the veil goes. */}
-      <div className="sticky top-0 flex h-svh items-center justify-center overflow-hidden portrait:pb-[24svh]">
+      {/* Centred at every size: the canvas behind the veil now fills the
+          viewport on portrait too, so there is no band to line the type up
+          with. */}
+      <div className="sticky top-0 flex h-svh items-center justify-center overflow-hidden">
         <div className="absolute inset-0 bg-cream" ref={veilRef} />
 
         {/* Deliberately no `will-change: transform` here. The heading is an

@@ -19,10 +19,18 @@ const SRC_DIR = path.join(ROOT, "assets/frames-src");
 const OUT_DIR = path.join(ROOT, "public/frames");
 const MANIFEST = path.join(ROOT, "src/lib/frames.generated.ts");
 
-/** Widths are 16:9 exact against the 3840x2160 source. */
+/**
+ * The landscape tiers are 16:9 exact against the 3840x2160 source. `portrait`
+ * is a 9:16 centre crop of the same source rather than a downscale: a phone
+ * draws the sequence full-bleed, so a 16:9 frame would be blown up ~3x and
+ * three quarters of its width thrown away. Cropping at generation time spends
+ * the same pixel budget — and so roughly the same bytes — on the part of the
+ * composition a phone can actually see.
+ */
 const TIERS = [
   { name: "desktop", width: 1600, height: 900 },
   { name: "mobile", width: 960, height: 540 },
+  { name: "portrait", width: 540, height: 960 },
 ];
 const QUALITY = 78;
 const CONCURRENCY = 8;

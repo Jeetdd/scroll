@@ -6,6 +6,7 @@ export const FRAME_COUNT = 241;
 export const FRAME_TIERS = {
   desktop: { width: 1600, height: 900 },
   mobile: { width: 960, height: 540 },
+  portrait: { width: 540, height: 960 },
 } as const;
 
 export type FrameTier = keyof typeof FRAME_TIERS;
