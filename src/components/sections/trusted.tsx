@@ -3,6 +3,7 @@
 import { motion, type Variants } from "motion/react";
 import Image from "next/image";
 import { Reveal } from "@/components/ui/reveal";
+import { EASE_OUT } from "@/lib/ease";
 
 const BRANDS = [
   // Top Row (5)
@@ -94,7 +95,7 @@ const PLATE: Variants = {
   shown: {
     opacity: 1,
     scale: 1,
-    transition: { duration: 0.65, ease: [0.16, 1, 0.3, 1] },
+    transition: { duration: 0.65, ease: EASE_OUT },
   },
 };
 
@@ -179,7 +180,7 @@ export function Trusted() {
               >
                 {/* The hover lives one level in, on an element Motion doesn't
                     own, so the two transforms compose instead of racing. */}
-                <div className="relative size-full rounded-full bg-white shadow-[0_15px_100px_rgba(0,0,0,0.08)] transition-transform duration-[250ms] ease-[cubic-bezier(0.23,1,0.32,1)] pointer-fine:hover:scale-105">
+                <div className="relative size-full rounded-full bg-white shadow-[0_15px_100px_rgba(0,0,0,0.08)] transition-transform duration-[250ms] ease-out pointer-fine:hover:scale-105">
                   {brand.plate ? (
                     <span
                       className={`${CENTRED} bg-[#ba341b] ${brand.plate}`}

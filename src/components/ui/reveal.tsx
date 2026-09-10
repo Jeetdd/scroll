@@ -2,6 +2,7 @@
 
 import { motion } from "motion/react";
 import type { ReactNode } from "react";
+import { EASE_OUT } from "@/lib/ease";
 
 /**
  * Entrance animation for the unpinned sections. GSAP owns the pinned scene's
@@ -34,7 +35,7 @@ export function Reveal({
     <motion.div
       className={className}
       initial={{ opacity: 0, y: 28 }}
-      transition={{ duration: 0.85, delay, ease: [0.16, 1, 0.3, 1] }}
+      transition={{ duration: 0.85, delay, ease: EASE_OUT }}
       viewport={{ once: true, margin }}
       whileInView={{ opacity: 1, y: 0 }}
     >

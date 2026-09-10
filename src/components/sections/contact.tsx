@@ -68,7 +68,7 @@ function Field({
 function Detail({ children, href }: { children: ReactNode; href: string }) {
   return (
     <a
-      className="underline decoration-black/25 underline-offset-4 transition-colors hover:decoration-black"
+      className="underline decoration-black/25 underline-offset-4 transition-colors duration-200 ease-out hover:decoration-black"
       href={href}
     >
       {children}
@@ -223,7 +223,7 @@ export function Contact() {
                 two properties in order — the colour has 160ms to settle, the
                 press answers in 100ms. */}
             <button
-              className="mx-auto mt-5 block h-[42.6px] w-full rounded-full bg-vermilion font-editorial font-extrabold text-[14px] capitalize text-white transition-[background-color,scale] duration-[160ms,100ms] ease-[cubic-bezier(0.23,1,0.32,1)] hover:bg-[#c8151b] focus-visible:outline-2 focus-visible:outline-white focus-visible:outline-offset-2 active:scale-[0.97] sm:w-[248px]"
+              className="mx-auto mt-5 block h-[42.6px] w-full rounded-full bg-vermilion font-editorial font-extrabold text-[14px] capitalize text-white transition-[background-color,scale] duration-[160ms,100ms] ease-out hover:bg-[#c8151b] focus-visible:outline-2 focus-visible:outline-white focus-visible:outline-offset-2 active:scale-[0.97] sm:w-[248px]"
               type="submit"
             >
               Begin the Partnership

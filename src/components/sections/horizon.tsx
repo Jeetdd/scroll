@@ -1,5 +1,9 @@
+"use client";
+
+import { motion } from "motion/react";
 import Image from "next/image";
 import { Reveal } from "@/components/ui/reveal";
+import { EASE_OUT } from "@/lib/ease";
 
 const EYEBROW =
   "font-editorial font-semibold text-[14px] uppercase leading-[28px] tracking-[0.2em] text-marigold";
@@ -22,7 +26,7 @@ const CAPTION = `${EYEBROW} mt-4 text-center`;
  * isn't, so reduced motion keeps the response without the movement.
  */
 const LIFT =
-  "transition-[scale,box-shadow] duration-[400ms] ease-[cubic-bezier(0.23,1,0.32,1)] pointer-fine:hover:shadow-[0_20px_60px_rgba(247,243,238,0.1)] motion-safe:pointer-fine:hover:scale-[1.02]";
+  "transition-[scale,box-shadow] duration-[400ms] ease-out pointer-fine:hover:shadow-[0_20px_60px_rgba(247,243,238,0.1)] motion-safe:pointer-fine:hover:scale-[1.02]";
 const FRAME = `relative aspect-[632/587] overflow-hidden rounded-[10px] ${LIFT}`;
 
 export function Horizon() {
@@ -89,7 +93,21 @@ export function Horizon() {
           aria-hidden
           className="pointer-events-none relative mx-auto hidden max-w-[1380px] lg:block"
         >
-          <div className="absolute top-[calc(41%-360px)] left-[37%] h-[760px] w-[17%] opacity-70">
+          {/* Drawn in rather than simply present. It is the one mark on the
+              page that carries an argument — Today on one side of it, Tomorrow
+              on the other — so it earns the 1.2s it takes to arrive, and the
+              -20% margin holds it back until the reader is between the two
+              panels it connects rather than approaching the first.
+
+              To 0.7, not to 1: that was the resting opacity before, and it is
+              a flourish behind the copy, not a third column of content. */}
+          <motion.div
+            className="absolute top-[calc(41%-360px)] left-[37%] h-[760px] w-[17%]"
+            initial={{ opacity: 0 }}
+            transition={{ duration: 1.2, ease: EASE_OUT }}
+            viewport={{ once: true, margin: "-20%" }}
+            whileInView={{ opacity: 0.7 }}
+          >
             <Image
               alt=""
               className="object-contain"
@@ -97,7 +115,7 @@ export function Horizon() {
               sizes="240px"
               src="/horizon/arrow.svg"
             />
-          </div>
+          </motion.div>
         </div>
 
         {/* Tomorrow */}

@@ -3,6 +3,7 @@
 import { motion, type Variants } from "motion/react";
 import Image from "next/image";
 import { Reveal } from "@/components/ui/reveal";
+import { EASE_OUT } from "@/lib/ease";
 
 /**
  * Row-major, so the pairing reads across rather than down: scale beside
@@ -42,14 +43,14 @@ const GRID: Variants = {
  * frame still answers — it just deepens instead of moving.
  */
 const LIFT =
-  "transition-[scale,box-shadow] duration-[400ms] ease-[cubic-bezier(0.23,1,0.32,1)] pointer-fine:hover:shadow-[0_20px_60px_rgba(0,0,0,0.12)] motion-safe:pointer-fine:hover:scale-[1.02]";
+  "transition-[scale,box-shadow] duration-[400ms] ease-out pointer-fine:hover:shadow-[0_20px_60px_rgba(0,0,0,0.12)] motion-safe:pointer-fine:hover:scale-[1.02]";
 
 const STAT: Variants = {
   hidden: { opacity: 0, y: 20 },
   shown: {
     opacity: 1,
     y: 0,
-    transition: { duration: 0.7, ease: [0.16, 1, 0.3, 1] },
+    transition: { duration: 0.7, ease: EASE_OUT },
   },
 };
 

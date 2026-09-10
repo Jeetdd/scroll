@@ -86,7 +86,7 @@ export function SiteFooter() {
             href="https://dreamsdesign.in"
             target="_blank"
             rel="noopener noreferrer"
-            className="flex items-center gap-3 transition-opacity hover:opacity-80 group"
+            className="flex items-center gap-3 transition-opacity duration-200 ease-out hover:opacity-80 group"
           >
             <span className="mt-[2px]">
               Creativity Meets Excellence by{" "}

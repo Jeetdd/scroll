@@ -45,6 +45,25 @@
   --text-headline: clamp(2rem, 4.5vw, 3.75rem);
   --text-lede: clamp(1.0625rem, 1.5vw, 1.375rem);
 
+  /**
+   * One curve vocabulary for the page.
+   *
+   * These deliberately overwrite Tailwind's own `--ease-out` and
+   * `--ease-in-out` rather than sitting beside them under new names. That is
+   * the whole point: `ease-out` should mean this site's curve everywhere it is
+   * written, instead of the framework's weak default in one file and a
+   * hand-typed `ease-[cubic-bezier(...)]` in the next.
+   *
+   * `src/lib/ease.ts` mirrors the same control points for Motion, which takes
+   * them as an array and cannot read a CSS variable. That file is the reason
+   * these numbers are written twice and the only other place they appear.
+   */
+  --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
+  --ease-in-out: cubic-bezier(0.77, 0, 0.175, 1);
+  /* For surfaces that slide rather than fade — slower off the mark than
+     `--ease-out` and flat at the end, so a panel lands instead of gliding. */
+  --ease-drawer: cubic-bezier(0.32, 0.72, 0, 1);
+
   /* The trusted-by row. Its track holds the brand set four times, so shifting
      it half its own width lands exactly on a matching logo and the loop is
      invisible. Duration is tuned to the 1920 comp — about one logo every 3s. */
@@ -61,6 +80,12 @@
      the two ends of the travel are symmetric; `ease-in` would make it fall and
      snap back. Seen once and dismissed by the first scroll, which is why it is
      allowed to run continuously at all. */
+  /* The one place that deliberately does NOT take a token. `--ease-in-out` is
+     `cubic-bezier(0.77, 0, 0.175, 1)`, a decisive curve for a surface changing
+     state; sampled on this drift it parks the cue at one end or the other for
+     9 frames out of 14 and snaps through the middle, which reads as a blink.
+     The plain keyword spends its time in the travel, which is what makes a
+     4px oscillation read as breathing. Different job, different curve. */
   --animate-scroll-hint: scroll-hint 2.5s ease-in-out infinite;
 
   @keyframes scroll-hint {

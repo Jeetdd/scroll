@@ -157,7 +157,7 @@ function SpecJar({
     <div className="mx-auto w-[124px] shrink-0 sm:mx-0">
       <div className="mx-auto h-[15px] w-[56%] rounded-t-[5px] bg-ink" />
       <div
-        className={`relative h-[168px] overflow-hidden rounded-[12px] transition-colors duration-500 ${fill.body}`}
+        className={`relative h-[168px] overflow-hidden rounded-[12px] transition-colors duration-500 ease-out ${fill.body}`}
       >
         <div
           aria-hidden
@@ -165,7 +165,7 @@ function SpecJar({
         >
           {GRAIN_KEYS.slice(0, grain.count).map((key) => (
             <span
-              className={`rounded-full transition-colors duration-500 ${grain.dot} ${fill.grain}`}
+              className={`rounded-full transition-colors duration-500 ease-out ${grain.dot} ${fill.grain}`}
               key={key}
             />
           ))}
@@ -248,7 +248,7 @@ export function CustomizationPanel() {
                   return (
                     <button
                       aria-pressed={selected}
-                      className={`rounded-full px-4 py-2 font-editorial font-semibold text-[11px] uppercase tracking-[0.14em] transition-colors sm:text-xs ${
+                      className={`rounded-full px-4 py-2 font-editorial font-semibold text-[11px] uppercase tracking-[0.14em] transition-colors duration-200 ease-out sm:text-xs ${
                         selected
                           ? "bg-saffron text-char"
                           : "border border-cream/25 text-cream/70 hover:border-cream/50 hover:text-cream"

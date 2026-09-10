@@ -4,6 +4,7 @@ import { useLenis } from "lenis/react";
 import { AnimatePresence, motion } from "motion/react";
 import Image from "next/image";
 import { type MouseEvent, useEffect, useState } from "react";
+import { EASE_DRAWER } from "@/lib/ease";
 
 /** In page order, so the nav reads as a map of the scroll rather than a menu. */
 const LINKS = [
@@ -21,19 +22,14 @@ const LINKS = [
  */
 const HEADER_OFFSET = 88;
 
-/**
- * One curve for everything in here. Strong ease-out: the bar should arrive and
- * settle, not coast.
- */
-const EASE = "ease-[cubic-bezier(0.23,1,0.32,1)]";
-
 const LINK =
-  "font-editorial font-semibold text-[13px] uppercase leading-none tracking-[0.18em] text-ink transition-colors duration-200 hover:text-vermilion focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-vermilion";
+  "font-editorial font-semibold text-[13px] uppercase leading-none tracking-[0.18em] text-ink transition-colors duration-200 ease-out hover:text-vermilion focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-vermilion";
 
 const CTA =
-  "inline-flex h-[38px] items-center justify-center rounded-full bg-vermilion px-5 font-editorial font-extrabold text-[12px] uppercase leading-none tracking-[0.1em] text-white transition-colors duration-200 hover:bg-[#c8151b] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-vermilion";
+  "inline-flex h-[38px] items-center justify-center rounded-full bg-vermilion px-5 font-editorial font-extrabold text-[12px] uppercase leading-none tracking-[0.1em] text-white transition-colors duration-200 ease-out hover:bg-[#c8151b] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-vermilion";
 
-const BAR = "block h-[2px] w-6 rounded-full bg-ink transition duration-300";
+const BAR =
+  "block h-[2px] w-6 rounded-full bg-ink transition duration-300 ease-out";
 
 export function SiteHeader() {
   const [scrolled, setScrolled] = useState(false);
@@ -124,13 +120,13 @@ export function SiteHeader() {
           pop the blur in at full strength while the tint was still fading. */}
       <div
         aria-hidden
-        className={`pointer-events-none absolute inset-0 bg-gradient-to-b from-cream/85 via-cream/40 to-transparent transition-opacity duration-500 ${EASE} ${
+        className={`pointer-events-none absolute inset-0 bg-gradient-to-b from-cream/85 via-cream/40 to-transparent transition-opacity duration-500 ease-out ${
           scrolled ? "opacity-0" : "opacity-100"
         }`}
       />
       <div
         aria-hidden
-        className={`pointer-events-none absolute inset-0 border-ink/8 border-b bg-cream/72 backdrop-blur-[20px] backdrop-saturate-[180%] transition-opacity duration-500 ${EASE} ${
+        className={`pointer-events-none absolute inset-0 border-ink/8 border-b bg-cream/72 backdrop-blur-[20px] backdrop-saturate-[180%] transition-opacity duration-500 ease-out ${
           scrolled || open ? "opacity-100" : "opacity-0"
         }`}
       />
@@ -150,7 +146,7 @@ export function SiteHeader() {
             // Height, not a transform: this fires once per visit, and shrinking
             // the mark is meant to take the bar down with it. A scale would
             // leave the same 96px of chrome with a smaller logo floating in it.
-            className={`w-auto transition-[height] duration-[350ms] ${EASE} ${
+            className={`w-auto transition-[height] duration-[350ms] ease-out ${
               scrolled ? "h-12 sm:h-16" : "h-16 sm:h-24"
             }`}
             height={360}
@@ -217,7 +213,7 @@ export function SiteHeader() {
             exit={{ opacity: 0, y: -12 }}
             id="primary-menu"
             initial={{ opacity: 0, y: -12 }}
-            transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
+            transition={{ duration: 0.3, ease: EASE_DRAWER }}
           >
             <ul className="flex flex-col gap-1 px-[6vw] py-5 sm:px-8">
               {LINKS.map((link) => (

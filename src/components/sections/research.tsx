@@ -3,11 +3,9 @@
 import { motion } from "motion/react";
 import Image from "next/image";
 import { type KeyboardEvent, useRef, useState } from "react";
-import {
-  CapacityPanel,
-  CustomizationPanel,
-} from "@/components/sections/research-panels";
+import { CapacityPanel, CustomizationPanel } from "@/components/sections/research-panels";
 import { Reveal } from "@/components/ui/reveal";
+import { EASE_OUT } from "@/lib/ease";
 
 /**
  * `heading` is an array because each tab's line breaks are set, not wrapped —
@@ -17,7 +15,7 @@ import { Reveal } from "@/components/ui/reveal";
 const TABS = [
   {
     body: "Laboratory-backed quality control is not a final checkpoint, it is embedded in the line. Humidity, drying temperature, mixing time and machine operations are continuously monitored under AGMARK-approved laboratory protocols. AI-driven process control flags deviation before it becomes variation. The result: hing so consistent that a pinch in Mumbai and a pinch in Munich behave identically.",
-    heading: ["Every batch. Every", "parameter. Every time."],
+    heading: ["Every batch", "Every parameter", "Every time."],
     id: "quality",
     label: "01 / Quality",
     points: [
@@ -55,10 +53,7 @@ const TAB_WIDTHS = [205, 201, 215];
 const BAR_WIDTH = TAB_WIDTHS.reduce((total, width) => total + width, 0);
 
 function pointerLeft(index: number) {
-  const before = TAB_WIDTHS.slice(0, index).reduce(
-    (total, width) => total + width,
-    0,
-  );
+  const before = TAB_WIDTHS.slice(0, index).reduce((total, width) => total + width, 0);
   return `${((before + TAB_WIDTHS[index] / 2) / BAR_WIDTH) * 100}%`;
 }
 
@@ -68,8 +63,7 @@ export function Research() {
   const tab = TABS[active];
 
   const onKeyDown = (event: KeyboardEvent<HTMLDivElement>) => {
-    const delta =
-      event.key === "ArrowRight" ? 1 : event.key === "ArrowLeft" ? -1 : 0;
+    const delta = event.key === "ArrowRight" ? 1 : event.key === "ArrowLeft" ? -1 : 0;
     if (delta === 0) return;
 
     event.preventDefault();
@@ -79,10 +73,7 @@ export function Research() {
   };
 
   return (
-    <section
-      className="relative isolate bg-cream px-6 py-20 sm:px-8 lg:py-[120px]"
-      id="research"
-    >
+    <section className="relative isolate bg-cream px-6 py-20 sm:px-8 lg:py-[120px]" id="research">
       <div className="mx-auto max-w-[1380px]">
         {/* 550 / 155 / 675. The gutter is wider than the About row's because
             the headline column is narrower here, not because the grid moved. */}
@@ -94,16 +85,15 @@ export function Research() {
             <h2 className="mt-1 font-editorial font-extrabold text-[clamp(2rem,2.08vw,2.5rem)] uppercase leading-[1.325] tracking-[-0.01em] text-black">
               <span className="lg:block">The only hing company</span>{" "}
               <span className="lg:block">with its own Research</span>{" "}
-              <span className="lg:block">Centre.</span>
+              <span className="lg:block text-red-700">Research Centre.</span>
             </h2>
           </Reveal>
 
           <Reveal delay={0.08}>
             <p className="font-editorial text-[17px] capitalize leading-[30px] text-graphite">
-              Established in 2016, National Science is the world&rsquo;s first
-              dedicated asafoetida research facility, isolating compounds,
-              filing patents, running studies across microbiology, extraction
-              methodology and agricultural science.
+              Established in 2016, National Science is the world&rsquo;s first dedicated asafoetida
+              research facility, isolating compounds, filing patents, running studies across
+              microbiology, extraction methodology and agricultural science.
             </p>
 
             {/* 205 / 201 / 215 — the cells are uneven in the comp so each label
@@ -132,7 +122,7 @@ export function Research() {
                     <button
                       aria-controls={`research-panel-${entry.id}`}
                       aria-selected={selected}
-                      className={`flex min-h-[47px] items-center justify-center px-2 py-2 text-center font-editorial font-extrabold text-[11px] capitalize transition-colors duration-[120ms] ease-[cubic-bezier(0.23,1,0.32,1)] sm:text-[14px] ${
+                      className={`flex min-h-[47px] items-center justify-center px-2 py-2 text-center font-editorial font-extrabold text-[11px] capitalize transition-colors duration-[120ms] ease-out sm:text-[14px] ${
                         selected
                           ? "bg-vermilion text-white active:bg-[#c8151b]"
                           : "text-black hover:bg-black/5 active:bg-black/10"
@@ -157,7 +147,7 @@ export function Research() {
                 aria-hidden
                 className="-translate-x-1/2 absolute top-full h-0 w-0 border-t-[12px] border-t-vermilion border-x-[9.5px] border-x-transparent"
                 initial={false}
-                transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
+                transition={{ duration: 0.35, ease: EASE_OUT }}
               />
             </div>
           </Reveal>
@@ -180,7 +170,7 @@ export function Research() {
           initial={{ opacity: 0, y: 8 }}
           key={tab.id}
           role="tabpanel"
-          transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
+          transition={{ duration: 0.35, ease: EASE_OUT }}
         >
           <div className="lg:mt-[9px]">
             <h3 className="font-editorial font-semibold text-[clamp(1.5rem,1.56vw,1.875rem)] uppercase leading-[1.333] text-black">
@@ -211,7 +201,7 @@ export function Research() {
                   transition={{
                     duration: 0.35,
                     delay: 0.2 + index * 0.05,
-                    ease: [0.16, 1, 0.3, 1],
+                    ease: EASE_OUT,
                   }}
                 >
                   {/* These sit on one line in the comp and wrap on a phone, so
