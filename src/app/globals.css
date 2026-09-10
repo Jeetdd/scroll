@@ -3,6 +3,15 @@
    them, and the official sheet covers cases like iframes and nested scrollers. */
 @import "lenis/dist/lenis.css";
 
+/**
+ * Hover states that should only exist for a real pointer. Tailwind v4 already
+ * wraps `hover:` in `(hover: hover)`, which covers phones — this adds the
+ * `(pointer: fine)` half, for the devices that claim hover but drive it with
+ * something coarse. A hover that fires on tap sticks until the next touch
+ * somewhere else, which reads as a stuck element rather than a response.
+ */
+@custom-variant pointer-fine (@media (hover: hover) and (pointer: fine));
+
 /* Palette sampled directly from the frame sequence, so the page and the
    footage share one set of colours rather than approximating each other. */
 @theme {

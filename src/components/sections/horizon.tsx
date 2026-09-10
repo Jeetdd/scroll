@@ -23,6 +23,18 @@ export function Horizon() {
         src="/horizon/bg.png"
       />
 
+      {/* The dark half of the two seams this section sits between: cream above,
+          cream below. Same `-z-10` as the plate and after it in source, so they
+          land on the picture and stay under the copy. */}
+      <div
+        aria-hidden
+        className="-z-10 pointer-events-none absolute inset-x-0 top-0 h-20 bg-gradient-to-b from-cream/10 to-transparent"
+      />
+      <div
+        aria-hidden
+        className="-z-10 pointer-events-none absolute inset-x-0 bottom-0 h-20 bg-gradient-to-t from-cream/10 to-transparent"
+      />
+
       <div className="relative mx-auto max-w-[1380px]">
         {/* Today */}
         <div className="grid items-center gap-y-10 lg:grid-cols-[576fr_632fr] lg:gap-x-[173px]">

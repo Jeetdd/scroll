@@ -12,8 +12,12 @@ const PHONE = "1800 120 1588";
  * resolve by source order in the sheet, not by their order in the attribute.
  * The two greys are the comp's, used once each and only on this card.
  */
+// The duration is spelled out because the bare `transition-colors` inherits a
+// default that some engines resolve to 0ms — the border snapped from grey to
+// white with nothing in between. `ease-out` because the response is being
+// watched for at the moment of focus, so the move belongs at the front.
 const FIELD =
-  "w-full border border-[#5d5d5d] bg-transparent px-[22.6px] font-editorial text-[14px] text-white transition-colors placeholder:text-[#a9a9a9] focus:border-white focus:outline-none";
+  "w-full border border-[#5d5d5d] bg-transparent px-[22.6px] font-editorial text-[14px] text-white transition-colors duration-200 ease-out placeholder:text-[#a9a9a9] focus:border-white focus:outline-none";
 const LABEL =
   "mb-[9px] block font-editorial font-medium text-[14px] capitalize text-white";
 
@@ -192,8 +196,14 @@ export function Contact() {
             {/* Fluid below sm rather than the comp's fixed 248px: a fixed width
                 sets the card's min-content, which on a 320px screen pushes the
                 whole column past the viewport. */}
+            {/* Presses on pointer-down, not on release. `scale`, not
+                `transform`: Tailwind v4 compiles `scale-*` to the standalone
+                property, so a `transition-transform` here would leave the press
+                snapping in and out untransitioned. The two durations map to the
+                two properties in order — the colour has 160ms to settle, the
+                press answers in 100ms. */}
             <button
-              className="mx-auto mt-5 block h-[42.6px] w-full rounded-full bg-vermilion font-editorial font-extrabold text-[14px] capitalize text-white transition-colors hover:bg-[#c8151b] focus-visible:outline-2 focus-visible:outline-white focus-visible:outline-offset-2 sm:w-[248px]"
+              className="mx-auto mt-5 block h-[42.6px] w-full rounded-full bg-vermilion font-editorial font-extrabold text-[14px] capitalize text-white transition-[background-color,scale] duration-[160ms,100ms] ease-[cubic-bezier(0.23,1,0.32,1)] hover:bg-[#c8151b] focus-visible:outline-2 focus-visible:outline-white focus-visible:outline-offset-2 active:scale-[0.97] sm:w-[248px]"
               type="submit"
             >
               Begin the Partnership

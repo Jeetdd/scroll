@@ -101,6 +101,14 @@ const PLATE: Variants = {
 export function Trusted() {
   return (
     <section className="relative isolate bg-cream" id="trusted">
+      {/* The light side of the seam out of the dark section above. `-z-10`
+          rather than `-z-20`, so it sits on the resin plate this section paints
+          behind itself and not underneath it. */}
+      <div
+        aria-hidden
+        className="-z-10 pointer-events-none absolute inset-x-0 top-0 h-20 bg-gradient-to-b from-char/10 to-transparent"
+      />
+
       <div className="mx-auto max-w-[1380px] px-6 pt-[72px] sm:px-8 lg:pt-[111px]">
         {/* 580 / 125 / 675. */}
         <div className="grid gap-x-[125px] gap-y-6 lg:grid-cols-[580fr_675fr]">
@@ -171,7 +179,7 @@ export function Trusted() {
               >
                 {/* The hover lives one level in, on an element Motion doesn't
                     own, so the two transforms compose instead of racing. */}
-                <div className="relative size-full rounded-full bg-white shadow-[0_15px_100px_rgba(0,0,0,0.08)] transition-transform duration-300 hover:scale-105">
+                <div className="relative size-full rounded-full bg-white shadow-[0_15px_100px_rgba(0,0,0,0.08)] transition-transform duration-[250ms] ease-[cubic-bezier(0.23,1,0.32,1)] pointer-fine:hover:scale-105">
                   {brand.plate ? (
                     <span
                       className={`${CENTRED} bg-[#ba341b] ${brand.plate}`}

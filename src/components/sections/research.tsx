@@ -80,7 +80,7 @@ export function Research() {
 
   return (
     <section
-      className="bg-cream px-6 py-20 sm:px-8 lg:py-[120px]"
+      className="relative isolate bg-cream px-6 py-20 sm:px-8 lg:py-[120px]"
       id="research"
     >
       <div className="mx-auto max-w-[1380px]">
@@ -122,13 +122,20 @@ export function Research() {
                   const ruled = index > 0 && !selected && index - 1 !== active;
 
                   return (
+                    // The press is a colour step rather than the scale the
+                    // buttons elsewhere use. These cells are segments of one
+                    // pill: two of the three are transparent, so scaling them
+                    // moves nothing a reader can see, and scaling the filled
+                    // one opens a cream gap inside the pill's own border, which
+                    // reads as a rendering fault rather than a press. Colour
+                    // answers on all three and leaves the geometry alone.
                     <button
                       aria-controls={`research-panel-${entry.id}`}
                       aria-selected={selected}
-                      className={`flex min-h-[47px] items-center justify-center px-2 py-2 text-center font-editorial font-extrabold text-[11px] capitalize transition-colors sm:text-[14px] ${
+                      className={`flex min-h-[47px] items-center justify-center px-2 py-2 text-center font-editorial font-extrabold text-[11px] capitalize transition-colors duration-[120ms] ease-[cubic-bezier(0.23,1,0.32,1)] sm:text-[14px] ${
                         selected
-                          ? "bg-vermilion text-white"
-                          : "text-black hover:bg-black/5"
+                          ? "bg-vermilion text-white active:bg-[#c8151b]"
+                          : "text-black hover:bg-black/5 active:bg-black/10"
                       } ${ruled ? "border-black/20 border-l" : ""}`}
                       id={`research-tab-${entry.id}`}
                       key={entry.id}
@@ -233,6 +240,15 @@ export function Research() {
           {tab.id === "customization" ? <CustomizationPanel /> : null}
         </motion.div>
       </div>
+
+      {/* The page runs cream up to here and near-black from the next section
+          on. Both sides of that seam get 80px of the other's colour so the cut
+          lands as a fade rather than a join. Behind the content on `-z-10`, and
+          inside the section's own padding, so it never touches type. */}
+      <div
+        aria-hidden
+        className="-z-10 pointer-events-none absolute inset-x-0 bottom-0 h-20 bg-gradient-to-b from-transparent to-char/10"
+      />
     </section>
   );
 }
