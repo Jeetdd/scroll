@@ -53,14 +53,14 @@ const BRANDS = [
   },
   {
     alt: "Hamdard",
-    box: "h-[43.87%] w-[59.66%] lg:h-[54.84%] lg:w-[74.58%]",
+    box: "h-[43.87%] w-[59.66%] lg:h-[65.84%] lg:w-[74.58%]",
     src: "/trusted/brand-hamdard.jpg",
     x: "39.67%",
     y: "75.47%",
   },
   {
     alt: "Wonder Masala",
-    box: "h-[34.6%] w-[75.5%] lg:h-[55.25%] lg:w-[94.38%]",
+    box: "h-[34.6%] w-[75.5%] lg:h-[70.25%] lg:w-[94.38%]",
     src: "/trusted/brand-wonder-masala.png",
     x: "60.39%",
     y: "75.47%",
