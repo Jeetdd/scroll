@@ -1,3 +1,6 @@
+"use client";
+
+import { motion, type Variants } from "motion/react";
 import Image from "next/image";
 import { Reveal } from "@/components/ui/reveal";
 
@@ -72,6 +75,29 @@ const BRANDS = [
 
 const CENTRED = "-translate-x-1/2 -translate-y-1/2 absolute top-1/2 left-1/2";
 
+/**
+ * The nine logos are read as one constellation, so they enter as one — 50ms
+ * apart, which is enough to be a settling rather than a flash and short enough
+ * that the last plate lands well before the eye has finished the first.
+ */
+const PLATES: Variants = {
+  hidden: {},
+  shown: { transition: { staggerChildren: 0.05 } },
+};
+
+/**
+ * From 0.92, never from 0: a plate that grows out of nothing reads as an
+ * effect, where one that settles the last 8% reads as it arriving.
+ */
+const PLATE: Variants = {
+  hidden: { opacity: 0, scale: 0.92 },
+  shown: {
+    opacity: 1,
+    scale: 1,
+    transition: { duration: 0.65, ease: [0.16, 1, 0.3, 1] },
+  },
+};
+
 export function Trusted() {
   return (
     <section className="relative isolate bg-cream" id="trusted">
@@ -120,28 +146,50 @@ export function Trusted() {
 
       <div className="relative z-10 w-full overflow-hidden">
         <div className="overflow-x-auto snap-x hide-scrollbar">
-          <div className="relative mx-auto mt-16 mb-24 aspect-[1381/483] min-w-[900px] w-full max-w-[1381px] px-8 sm:min-w-[1000px] lg:mt-24 lg:mb-32 lg:min-w-0 lg:px-0">
+          {/* The whole plate is the observer, not each logo: below lg this row
+              scrolls sideways, so a per-logo trigger would leave the ones off
+              the right edge sitting at opacity 0 until they were dragged into
+              view — the constellation would arrive in pieces. */}
+          <motion.div
+            className="relative mx-auto mt-16 mb-24 aspect-[1381/483] min-w-[900px] w-full max-w-[1381px] px-8 sm:min-w-[1000px] lg:mt-24 lg:mb-32 lg:min-w-0 lg:px-0"
+            initial="hidden"
+            variants={PLATES}
+            viewport={{ once: true, margin: "-8%" }}
+            whileInView="shown"
+          >
             {BRANDS.map((brand) => (
-              <div
+              // Centring moves into Motion's own transform rather than staying
+              // on Tailwind's: the entrance animates `scale`, and Motion writes
+              // the whole transform at once, so a `-translate-x-1/2` class here
+              // would be dropped on the first frame and every plate would jump
+              // half its width down and right.
+              <motion.div
+                className="absolute aspect-square w-[17.16%]"
                 key={brand.alt}
-                className="absolute shrink-0 rounded-full bg-white shadow-[0_15px_100px_rgba(0,0,0,0.08)] transform -translate-x-1/2 -translate-y-1/2 w-[17.16%] aspect-square hover:scale-105 transition-transform duration-300"
-                style={{ left: brand.x, top: brand.y }}
+                style={{ left: brand.x, top: brand.y, x: "-50%", y: "-50%" }}
+                variants={PLATE}
               >
-                {brand.plate ? (
-                  <span className={`${CENTRED} bg-[#ba341b] ${brand.plate}`} />
-                ) : null}
-                <div className={`${CENTRED} ${brand.box}`}>
-                  <Image
-                    alt={brand.alt}
-                    className="object-contain"
-                    fill
-                    sizes="(max-width: 1381px) 17vw, 237px"
-                    src={brand.src}
-                  />
+                {/* The hover lives one level in, on an element Motion doesn't
+                    own, so the two transforms compose instead of racing. */}
+                <div className="relative size-full rounded-full bg-white shadow-[0_15px_100px_rgba(0,0,0,0.08)] transition-transform duration-300 hover:scale-105">
+                  {brand.plate ? (
+                    <span
+                      className={`${CENTRED} bg-[#ba341b] ${brand.plate}`}
+                    />
+                  ) : null}
+                  <div className={`${CENTRED} ${brand.box}`}>
+                    <Image
+                      alt={brand.alt}
+                      className="object-contain"
+                      fill
+                      sizes="(max-width: 1381px) 17vw, 237px"
+                      src={brand.src}
+                    />
+                  </div>
                 </div>
-              </div>
+              </motion.div>
             ))}
-          </div>
+          </motion.div>
         </div>
       </div>
     </section>

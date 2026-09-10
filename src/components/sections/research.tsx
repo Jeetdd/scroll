@@ -183,11 +183,22 @@ export function Research() {
               {tab.body}
             </p>
 
+            {/* The panel is keyed on the tab, so these remount on every switch
+                and run their entrance again. Starting at 0.2s puts them inside
+                the panel's own 450ms crossfade rather than after it — the tab
+                should feel like one move, not a swap followed by a list. */}
             <ul className="mt-[31px] grid gap-y-3">
-              {tab.points.map((point) => (
-                <li
+              {tab.points.map((point, index) => (
+                <motion.li
+                  animate={{ opacity: 1, y: 0 }}
                   className="flex items-start gap-[10px] leading-[28px]"
+                  initial={{ opacity: 0, y: 8 }}
                   key={point}
+                  transition={{
+                    duration: 0.35,
+                    delay: 0.2 + index * 0.05,
+                    ease: [0.16, 1, 0.3, 1],
+                  }}
                 >
                   {/* These sit on one line in the comp and wrap on a phone, so
                       the dot is pinned to the first line's centre instead of
@@ -199,7 +210,7 @@ export function Research() {
                   <span className="font-editorial font-semibold text-[18px] uppercase tracking-[0.1em] text-black">
                     {point}
                   </span>
-                </li>
+                </motion.li>
               ))}
             </ul>
           </div>

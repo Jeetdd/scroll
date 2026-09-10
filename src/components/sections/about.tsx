@@ -1,3 +1,6 @@
+"use client";
+
+import { motion, type Variants } from "motion/react";
 import Image from "next/image";
 import { Reveal } from "@/components/ui/reveal";
 
@@ -11,6 +14,30 @@ const STATS = [
   { label: "Generations of focus. Zero distraction.", value: "3rd" },
   { label: "Years. One ingredient.", value: "55+" },
 ];
+
+/**
+ * The four stats enter one at a time rather than as a block, so the eye is
+ * given the reading order the grid is built around.
+ *
+ * Staggered from the container rather than by per-item delays: one observer
+ * for the set means the cascade always runs in row-major order. Four separate
+ * `whileInView` items would each start on their own row crossing the margin,
+ * and on a phone — where the grid is two columns tall — the delays would stack
+ * on top of that and the last pair would arrive long after it was on screen.
+ */
+const GRID: Variants = {
+  hidden: {},
+  shown: { transition: { staggerChildren: 0.06 } },
+};
+
+const STAT: Variants = {
+  hidden: { opacity: 0, y: 20 },
+  shown: {
+    opacity: 1,
+    y: 0,
+    transition: { duration: 0.7, ease: [0.16, 1, 0.3, 1] },
+  },
+};
 
 export function About() {
   return (
@@ -66,23 +93,33 @@ export function About() {
               </p>
 
               <hr className="mt-[21px] border-black/20" />
-
-              {/* The comp's columns are deliberately uneven — the left labels
-                  run longer. That only helps at full width; below lg the two
-                  even out so neither label wraps harder than the other. */}
-              <dl className="mt-[44px] grid grid-cols-2 gap-x-4 gap-y-[39px] lg:grid-cols-[353fr_322fr] lg:gap-x-0">
-                {STATS.map((stat) => (
-                  <div key={stat.value}>
-                    <dt className="font-editorial font-bold text-[30px] leading-[1.16] text-black">
-                      {stat.value}
-                    </dt>
-                    <dd className="mt-[9px] font-editorial font-medium text-[18px] capitalize leading-[1.16] text-graphite">
-                      {stat.label}
-                    </dd>
-                  </div>
-                ))}
-              </dl>
             </Reveal>
+
+            {/* Outside the Reveal above, not inside it: nesting the stagger in
+                a block that is itself fading in would fade each stat twice, and
+                the cascade would be lost inside the parent's own 850ms.
+
+                The comp's columns are deliberately uneven — the left labels run
+                longer. That only helps at full width; below lg the two even out
+                so neither label wraps harder than the other. */}
+            <motion.dl
+              className="mt-[44px] grid grid-cols-2 gap-x-4 gap-y-[39px] lg:grid-cols-[353fr_322fr] lg:gap-x-0"
+              initial="hidden"
+              variants={GRID}
+              viewport={{ once: true, margin: "-12%" }}
+              whileInView="shown"
+            >
+              {STATS.map((stat) => (
+                <motion.div key={stat.value} variants={STAT}>
+                  <dt className="font-editorial font-bold text-[30px] leading-[1.16] text-black">
+                    {stat.value}
+                  </dt>
+                  <dd className="mt-[9px] font-editorial font-medium text-[18px] capitalize leading-[1.16] text-graphite">
+                    {stat.label}
+                  </dd>
+                </motion.div>
+              ))}
+            </motion.dl>
 
             <Reveal delay={0.2}>
               <div className="relative mt-[56px] aspect-[675/396] overflow-hidden">
