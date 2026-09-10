@@ -84,7 +84,7 @@ export function Research() {
             </p>
             <h2 className="mt-1 font-editorial font-extrabold text-[clamp(2rem,2.08vw,2.5rem)] uppercase leading-[1.325] tracking-[-0.01em] text-black">
               <span className="lg:block">The only hing company</span>{" "}
-              <span className="lg:block">with its own Research</span>{" "}
+              <span className="lg:block">with its own</span>{" "}
               <span className="lg:block text-red-700">Research Centre.</span>
             </h2>
           </Reveal>

@@ -118,22 +118,17 @@ export function Trusted() {
               Trusted by India&rsquo;s most respected food brands
             </p>
             <h2 className="mt-1 font-editorial font-extrabold text-[clamp(2rem,2.08vw,2.5rem)] uppercase leading-[1.325] tracking-[-0.01em] text-black">
-              <span className="lg:block lg:whitespace-nowrap">
-                The specialists behind
-              </span>{" "}
-              <span className="lg:block lg:whitespace-nowrap">
-                the Brands you Already
-              </span>{" "}
-              <span className="lg:block">Trust.</span>
+              <span className="lg:block lg:whitespace-nowrap">The specialists behind</span>{" "}
+              <span className="lg:block lg:whitespace-nowrap">the Brands you Already</span>{" "}
+              <span className="lg:block text-red-700 font-semibold text-5xl">Trust.</span>
             </h2>
           </Reveal>
 
           <Reveal className="lg:mt-[48px]" delay={0.08}>
             <p className="font-editorial text-[17px] capitalize leading-[30px] text-graphite">
-              When India&rsquo;s most respected food companies need hing, for
-              their signature blends, their ready-to-eat lines, their most
-              protected recipes, they come to Waghodia. Some relationships span
-              decades. All of them began with a single conversation.
+              When India&rsquo;s most respected food companies need hing, for their signature
+              blends, their ready-to-eat lines, their most protected recipes, they come to Waghodia.
+              Some relationships span decades. All of them began with a single conversation.
             </p>
           </Reveal>
         </div>
@@ -182,9 +177,7 @@ export function Trusted() {
                     own, so the two transforms compose instead of racing. */}
                 <div className="relative size-full rounded-full bg-white shadow-[0_15px_100px_rgba(0,0,0,0.08)] transition-transform duration-[250ms] ease-out pointer-fine:hover:scale-105">
                   {brand.plate ? (
-                    <span
-                      className={`${CENTRED} bg-[#ba341b] ${brand.plate}`}
-                    />
+                    <span className={`${CENTRED} bg-[#ba341b] ${brand.plate}`} />
                   ) : null}
                   <div className={`${CENTRED} ${brand.box}`}>
                     <Image
