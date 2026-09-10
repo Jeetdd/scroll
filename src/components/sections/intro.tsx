@@ -2,7 +2,10 @@
 
 import { useRef } from "react";
 import MaskedHeading from "@/components/ui/MaskedHeading";
-import { FRAME_MASK_FILL } from "@/lib/frames.generated";
+import {
+  FRAME_MASK_FILL,
+  FRAME_MASK_FILL_PORTRAIT,
+} from "@/lib/frames.generated";
 import { gsap, useGSAP } from "@/lib/gsap";
 import { INTRO_VH } from "@/lib/scroll-plan";
 import { useMediaQuery } from "@/lib/use-media-query";
@@ -24,6 +27,9 @@ const MASKED = {
   // than passing `brightness`/`saturation` keeps a filter off this heading,
   // which repaints on every frame of the growth.
   src: FRAME_MASK_FILL,
+  // Matched to the sequence loader's own tier query, so the letters are cut
+  // out of the same crop the canvas behind the veil is about to show.
+  srcNarrow: FRAME_MASK_FILL_PORTRAIT,
   stagger: 0.1,
   tag: "h1",
   text: HEADING,

@@ -22,6 +22,9 @@ export const FRAME_LQIP =
  */
 export const FRAME_MASK_FILL = "/frames/mask-fill.webp";
 
+/** The same still, cut to the portrait tier for phones. */
+export const FRAME_MASK_FILL_PORTRAIT = "/frames/mask-fill-portrait.webp";
+
 export function frameSrc(tier: FrameTier, index: number): string {
   return `/frames/${tier}/f-${String(index + 1).padStart(3, "0")}.webp`;
 }

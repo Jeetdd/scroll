@@ -43,6 +43,9 @@ const CONCURRENCY = 8;
 const MASK_FILL = {
   brightness: 0.55,
   file: "mask-fill.webp",
+  // Cut the same still to the portrait tier as well, so a phone downloads the
+  // crop it is already showing behind the veil rather than the 16:9 one.
+  portraitFile: "mask-fill-portrait.webp",
   saturation: 1.45,
 };
 
@@ -114,18 +117,29 @@ async function main() {
   // runtime because that layer is deliberately not composited (see
   // MaskedHeading), so it repaints every frame — and a filter over a
   // full-bleed image is the most expensive thing in that repaint.
-  const maskFill = await sharp(path.join(SRC_DIR, sources[0]))
-    .resize(TIERS[0].width, TIERS[0].height, { fit: "cover" })
-    .modulate({
-      brightness: MASK_FILL.brightness,
-      saturation: MASK_FILL.saturation,
-    })
-    .webp({ quality: QUALITY, effort: 5, smartSubsample: true })
-    .toFile(path.join(OUT_DIR, MASK_FILL.file));
+  const portraitTier = TIERS.find((tier) => tier.name === "portrait");
+
+  const gradeMaskFill = (tier, file) =>
+    sharp(path.join(SRC_DIR, sources[0]))
+      .resize(tier.width, tier.height, { fit: "cover" })
+      .modulate({
+        brightness: MASK_FILL.brightness,
+        saturation: MASK_FILL.saturation,
+      })
+      .webp({ quality: QUALITY, effort: 5, smartSubsample: true })
+      .toFile(path.join(OUT_DIR, file));
+
+  const maskFill = await gradeMaskFill(TIERS[0], MASK_FILL.file);
+  const maskFillPortrait = await gradeMaskFill(
+    portraitTier,
+    MASK_FILL.portraitFile,
+  );
 
   console.log(
     `\nmask fill  ${TIERS[0].width}x${TIERS[0].height}  ` +
-      `${(maskFill.size / 1024).toFixed(1)} KB`,
+      `${(maskFill.size / 1024).toFixed(1)} KB` +
+      `\nmask fill  ${portraitTier.width}x${portraitTier.height}  ` +
+      `${(maskFillPortrait.size / 1024).toFixed(1)} KB`,
   );
 
   const tierEntries = TIERS.map(
@@ -149,6 +163,8 @@ async function main() {
       ` * note in scripts/process-frames.mjs.\n` +
       ` */\n` +
       `export const FRAME_MASK_FILL = "/frames/${MASK_FILL.file}";\n\n` +
+      `/** The same still, cut to the portrait tier for phones. */\n` +
+      `export const FRAME_MASK_FILL_PORTRAIT = "/frames/${MASK_FILL.portraitFile}";\n\n` +
       `export function frameSrc(tier: FrameTier, index: number): string {\n` +
       `  return \`/frames/\${tier}/f-\${String(index + 1).padStart(3, "0")}.webp\`;\n` +
       `}\n`,

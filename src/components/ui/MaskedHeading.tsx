@@ -1,6 +1,5 @@
 "use client";
 
-import Image from "next/image";
 import type { CSSProperties, ElementType } from "react";
 import {
   Fragment,
@@ -23,6 +22,9 @@ export interface MaskedHeadingProps {
   tag?: ElementType;
   mediaType?: "image" | "video";
   src?: string;
+  /** Alternate still for `srcNarrowMedia`. Only one of the two is fetched. */
+  srcNarrow?: string;
+  srcNarrowMedia?: string;
   poster?: string;
   fillScale?: number;
   parallax?: number;
@@ -49,6 +51,8 @@ const MaskedHeading: React.FC<MaskedHeadingProps> = ({
   tag = "h2",
   mediaType = "image",
   src = "",
+  srcNarrow = "",
+  srcNarrowMedia = "(max-width: 768px) and (orientation: portrait)",
   poster = "",
   fillScale = 1.25,
   parallax = 26,
@@ -456,19 +460,24 @@ const MaskedHeading: React.FC<MaskedHeadingProps> = ({
               />
             ) : (
               src && (
-                // Frames are already sized and compressed by
-                // scripts/process-frames.mjs, so a second pass through the
-                // optimiser would only cost a round trip.
-                <Image
-                  alt=""
-                  className="select-none object-cover"
-                  draggable={false}
-                  fill
-                  priority
-                  sizes="100vw"
-                  src={src}
-                  unoptimized
-                />
+                // A plain <picture>, not next/image: the stills are already
+                // sized and compressed by scripts/process-frames.mjs, so the
+                // optimiser would only cost a round trip — and `media` here is
+                // what keeps a phone from downloading the landscape cut as
+                // well as its own. The preload scanner still starts the fetch
+                // before the parser reaches this node.
+                <picture>
+                  {srcNarrow && (
+                    <source media={srcNarrowMedia} srcSet={srcNarrow} />
+                  )}
+                  <img
+                    alt=""
+                    className="absolute inset-0 block size-full select-none object-cover"
+                    draggable={false}
+                    fetchPriority="high"
+                    src={src}
+                  />
+                </picture>
               )
             )}
           </span>
