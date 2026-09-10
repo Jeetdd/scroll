@@ -166,16 +166,21 @@ export function Research() {
         <hr className="mt-[46px] border-black/20" />
 
         {/* 675 / 56 / 649. Keyed on the tab so the swap animates in; the
-            surrounding Reveal keeps owning the scroll entrance. */}
+            surrounding Reveal keeps owning the scroll entrance.
+
+            8px over 350ms, not 14 over 450. A tab swap is a channel flip, not
+            a page turn — at 14px the shift was legible as its own phase, so
+            the panel read as arriving from below rather than replacing in
+            place. The opacity does the work now; the y only reinforces it. */}
         <motion.div
           animate={{ opacity: 1, y: 0 }}
           aria-labelledby={`research-tab-${tab.id}`}
           className="mt-[60px] grid gap-x-[56px] gap-y-12 lg:grid-cols-[675fr_649fr]"
           id={`research-panel-${tab.id}`}
-          initial={{ opacity: 0, y: 14 }}
+          initial={{ opacity: 0, y: 8 }}
           key={tab.id}
           role="tabpanel"
-          transition={{ duration: 0.45, ease: [0.16, 1, 0.3, 1] }}
+          transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
         >
           <div className="lg:mt-[9px]">
             <h3 className="font-editorial font-semibold text-[clamp(1.5rem,1.56vw,1.875rem)] uppercase leading-[1.333] text-black">
@@ -191,9 +196,11 @@ export function Research() {
             </p>
 
             {/* The panel is keyed on the tab, so these remount on every switch
-                and run their entrance again. Starting at 0.2s puts them inside
-                the panel's own 450ms crossfade rather than after it — the tab
-                should feel like one move, not a swap followed by a list. */}
+                and run their entrance again. Starting at 0.2s puts all three
+                inside the panel's own 350ms crossfade rather than after it —
+                the tab should feel like one move, not a swap followed by a
+                list. The last one still begins at 0.3s, so the relationship
+                survived the panel dropping from 450ms. */}
             <ul className="mt-[31px] grid gap-y-3">
               {tab.points.map((point, index) => (
                 <motion.li

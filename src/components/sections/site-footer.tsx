@@ -1,4 +1,16 @@
 import Image from "next/image";
+import { Reveal } from "@/components/ui/reveal";
+
+/**
+ * The footer arrives in reading order rather than as one block: the mark and
+ * what the company is, then how to reach it, then where it is, then the fine
+ * print. 60ms apart, which is a cascade rather than a flash.
+ *
+ * `Reveal` takes the container's own classes and replaces it, so nothing new
+ * enters the flex layout — the animated element is the same flex item that was
+ * there before.
+ */
+const STAGGER = { brand: 0, contact: 0.06, visit: 0.12, legal: 0.18 };
 
 export function SiteFooter() {
   return (
@@ -6,7 +18,10 @@ export function SiteFooter() {
       <div className="mx-auto flex max-w-[1920px] flex-col px-[6vw] 2xl:px-[60px]">
         <div className="flex flex-col lg:flex-row lg:items-start justify-between py-20 gap-12">
           {/* Logos and Intro */}
-          <div className="flex flex-col md:flex-row md:items-center gap-8 md:gap-[130px] max-w-4xl">
+          <Reveal
+            className="flex flex-col md:flex-row md:items-center gap-8 md:gap-[130px] max-w-4xl"
+            delay={STAGGER.brand}
+          >
             <a
               href="#top"
               className="shrink-0 flex items-center justify-center"
@@ -23,11 +38,11 @@ export function SiteFooter() {
               National Foods — the hing specialist. Crafting Hira Hing
               Compounded Asafoetida with the same care, every single batch.
             </p>
-          </div>
+          </Reveal>
 
           {/* Addresses and Contact */}
           <div className="flex flex-col md:flex-row gap-12 md:gap-[90px] pt-4">
-            <div>
+            <Reveal delay={STAGGER.contact}>
               <h3 className="font-editorial font-semibold text-marigold uppercase tracking-[0.2em] mb-4 2xl:mb-8 text-sm">
                 Contact
               </h3>
@@ -35,8 +50,8 @@ export function SiteFooter() {
                 <li>1800 120 1588</li>
                 <li>info@nationalfoods.co.in</li>
               </ul>
-            </div>
-            <div>
+            </Reveal>
+            <Reveal delay={STAGGER.visit}>
               <h3 className="font-editorial font-semibold text-marigold uppercase tracking-[0.2em] mb-4 2xl:mb-8 text-sm">
                 Visit
               </h3>
@@ -45,13 +60,22 @@ export function SiteFooter() {
                 <br />
                 Dist. Vadodara, Gujarat 391760
               </address>
-            </div>
+            </Reveal>
           </div>
         </div>
 
         <hr className="border-t border-ink/40 2xl:border-ink/20" />
 
-        <div className="flex flex-col sm:flex-row justify-between items-center py-6 text-[13px] font-editorial font-medium text-ink gap-4">
+        {/* No inset on this one. It is the last element on the document, so at
+            full scroll it sits below where the default -12% root ends and would
+            never be reached — see the note on Reveal's `margin`. At 0 it fires
+            as soon as it touches the viewport, which for the final line on the
+            page is the right moment anyway. */}
+        <Reveal
+          className="flex flex-col sm:flex-row justify-between items-center py-6 text-[13px] font-editorial font-medium text-ink gap-4"
+          delay={STAGGER.legal}
+          margin="0px"
+        >
           <p>
             © 2026{" "}
             <span className="font-bold text-vermilion">National Foods.</span>{" "}
@@ -80,7 +104,7 @@ export function SiteFooter() {
               role="img"
             />
           </a>
-        </div>
+        </Reveal>
       </div>
     </footer>
   );
