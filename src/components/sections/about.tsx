@@ -30,6 +30,20 @@ const GRID: Variants = {
   shown: { transition: { staggerChildren: 0.06 } },
 };
 
+/**
+ * The two pictures lift under a real pointer. Not a link affordance — there is
+ * nothing to click — but a material signal that the surface is live.
+ *
+ * `scale`, not `transform`: Tailwind v4 compiles `scale-*` to the standalone
+ * `scale` property, so a `transition-[transform,box-shadow]` would leave the
+ * lift jumping between its two ends untransitioned.
+ *
+ * The scale is `motion-safe` and the shadow isn't, so under reduced motion the
+ * frame still answers — it just deepens instead of moving.
+ */
+const LIFT =
+  "transition-[scale,box-shadow] duration-[400ms] ease-[cubic-bezier(0.23,1,0.32,1)] pointer-fine:hover:shadow-[0_20px_60px_rgba(0,0,0,0.12)] motion-safe:pointer-fine:hover:scale-[1.02]";
+
 const STAT: Variants = {
   hidden: { opacity: 0, y: 20 },
   shown: {
@@ -55,7 +69,7 @@ export function About() {
               {/* The comp sets these three lines by hand. Inline spans that go
                   block at lg keep those breaks where there's room for them and
                   let the sentence reflow when there isn't. */}
-              <h2 className="mt-1 font-editorial font-extrabold text-[clamp(2rem,2.08vw,2.5rem)] uppercase leading-[1.325] text-black">
+              <h2 className="mt-1 font-editorial font-extrabold text-[clamp(2rem,2.08vw,2.5rem)] uppercase leading-[1.325] tracking-[-0.01em] text-black">
                 <span className="lg:block">The invisible giant of</span>{" "}
                 <span className="lg:block">a five-thousand-year-old</span>{" "}
                 <span className="lg:block">ingredient.</span>
@@ -63,7 +77,9 @@ export function About() {
             </Reveal>
 
             <Reveal delay={0.12}>
-              <div className="relative mt-[46px] aspect-[652/634] overflow-hidden">
+              <div
+                className={`relative mt-[46px] aspect-[652/634] overflow-hidden ${LIFT}`}
+              >
                 <Image
                   alt="Golden asafoetida granules spilling from a wooden scoop onto a wood surface"
                   className="object-cover"
@@ -109,12 +125,19 @@ export function About() {
               viewport={{ once: true, margin: "-12%" }}
               whileInView="shown"
             >
+              {/* 1.3 rather than the 1.16 both of these carried. The value
+                  never wraps at any width, so it only gains a little air; the
+                  label does — "Global compliance. Zero compromises." is two
+                  lines from 1440 down — and at 1.16 those two lines set 18px
+                  type on a 20.9px slug, which is tighter than anything else on
+                  the page. They keep one number because they read as one
+                  block. */}
               {STATS.map((stat) => (
                 <motion.div key={stat.value} variants={STAT}>
-                  <dt className="font-editorial font-bold text-[30px] leading-[1.16] text-black">
+                  <dt className="font-editorial font-bold text-[30px] leading-[1.3] text-black">
                     {stat.value}
                   </dt>
-                  <dd className="mt-[9px] font-editorial font-medium text-[18px] capitalize leading-[1.16] text-graphite">
+                  <dd className="mt-[9px] font-editorial font-medium text-[18px] capitalize leading-[1.3] text-graphite">
                     {stat.label}
                   </dd>
                 </motion.div>
@@ -122,7 +145,9 @@ export function About() {
             </motion.dl>
 
             <Reveal delay={0.2}>
-              <div className="relative mt-[56px] aspect-[675/396] overflow-hidden">
+              <div
+                className={`relative mt-[56px] aspect-[675/396] overflow-hidden ${LIFT}`}
+              >
                 <Image
                   alt="Line workers in hairnets and gloves processing hing granules in National Foods' pharma-grade facility"
                   className="object-cover rounded-b-lg"

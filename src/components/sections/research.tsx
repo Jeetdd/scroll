@@ -91,7 +91,7 @@ export function Research() {
             <p className="font-editorial font-semibold text-[14px] uppercase leading-[28px] tracking-[0.2em] text-marigold">
               The National Science Research Centre
             </p>
-            <h2 className="mt-1 font-editorial font-extrabold text-[clamp(2rem,2.08vw,2.5rem)] uppercase leading-[1.325] text-black">
+            <h2 className="mt-1 font-editorial font-extrabold text-[clamp(2rem,2.08vw,2.5rem)] uppercase leading-[1.325] tracking-[-0.01em] text-black">
               <span className="lg:block">The only hing company</span>{" "}
               <span className="lg:block">with its own Research</span>{" "}
               <span className="lg:block">Centre.</span>

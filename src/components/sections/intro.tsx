@@ -154,9 +154,12 @@ export function Intro() {
           className="pointer-events-none absolute inset-x-0 bottom-8 flex justify-center"
           ref={cueRef}
         >
+          {/* 0.25em, the same as the beat labels inside the scene. At 0.4em a
+              five-letter word stops reading as a word and starts reading as
+              five letters, which is the opposite of a legible affordance. */}
           <span
             aria-hidden
-            className="font-mono text-[0.625rem] uppercase tracking-[0.4em] text-ink-soft/60"
+            className="font-mono text-[0.625rem] uppercase tracking-[0.25em] text-ink-soft/60"
           >
             Scroll
           </span>

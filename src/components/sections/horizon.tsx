@@ -3,11 +3,27 @@ import { Reveal } from "@/components/ui/reveal";
 
 const EYEBROW =
   "font-editorial font-semibold text-[14px] uppercase leading-[28px] tracking-[0.2em] text-marigold";
+// The negative tracking is what the size is for: at the clamp's 2.5rem top end
+// an uppercase extrabold line reads loose, and the same -0.01em on all five
+// section headings keeps them one voice rather than five near-misses.
 const HEADING =
-  "mt-1 font-editorial font-extrabold text-[clamp(2rem,2.08vw,2.5rem)] uppercase leading-[1.325] text-white";
+  "mt-1 font-editorial font-extrabold text-[clamp(2rem,2.08vw,2.5rem)] uppercase leading-[1.325] tracking-[-0.01em] text-white";
 const BODY =
   "mt-6 font-editorial text-[17px] capitalize leading-[30px] text-white";
 const CAPTION = `${EYEBROW} mt-4 text-center`;
+
+/**
+ * The same lift the About pictures carry, with the shadow inverted. These sit
+ * on `char` (#0e0a06) — a black shadow there is invisible, so the depth cue has
+ * to be light spilling off the edges rather than dark pooling under them.
+ *
+ * `scale` rather than `transform`, because Tailwind v4 compiles `scale-*` to
+ * the standalone property; and the scale is `motion-safe` while the shadow
+ * isn't, so reduced motion keeps the response without the movement.
+ */
+const LIFT =
+  "transition-[scale,box-shadow] duration-[400ms] ease-[cubic-bezier(0.23,1,0.32,1)] pointer-fine:hover:shadow-[0_20px_60px_rgba(247,243,238,0.1)] motion-safe:pointer-fine:hover:scale-[1.02]";
+const FRAME = `relative aspect-[632/587] overflow-hidden rounded-[10px] ${LIFT}`;
 
 export function Horizon() {
   return (
@@ -53,7 +69,7 @@ export function Horizon() {
           </Reveal>
 
           <Reveal delay={0.12}>
-            <div className="relative aspect-[632/587] overflow-hidden rounded-[10px]">
+            <div className={FRAME}>
               <Image
                 alt="A home cook inspecting a jar of hing-seasoned pickles amid rows of preserve jars"
                 className="object-cover"
@@ -87,7 +103,7 @@ export function Horizon() {
         {/* Tomorrow */}
         <div className="mt-16 grid items-center gap-y-10 lg:grid-cols-[632fr_631fr] lg:gap-x-[117px]">
           <Reveal>
-            <div className="relative aspect-[632/587] overflow-hidden rounded-[10px]">
+            <div className={FRAME}>
               <Image
                 alt="A branded National Foods jar of hing beside a glass vial of capsules, representing hing's future in pharmaceutical formulation"
                 className="object-cover"
