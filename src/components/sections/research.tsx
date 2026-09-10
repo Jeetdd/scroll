@@ -26,7 +26,7 @@ const TABS = [
   },
   {
     body: "India's first and largest hing processing plant produces over five tonnes per shift, with the automation to scale without the quality drift that plagues this industry. Whether you need a container or a supply contract, capacity is never your constraint. It's ours to manage, and we've been managing it for over five decades.",
-    heading: ["Pilot run or national rollout.", "Same line. Same standard."],
+    heading: ["Pilot run or national rollout.", "Same line.", "Same standard."],
     id: "capacity",
     label: "02 / Capacity",
     points: [
@@ -174,8 +174,17 @@ export function Research() {
         >
           <div className="lg:mt-[9px]">
             <h3 className="font-editorial font-semibold text-[clamp(1.5rem,1.56vw,1.875rem)] uppercase leading-[1.333] text-black">
-              {tab.heading.map((line) => (
-                <span className="lg:block" key={line}>
+              {/* The closing line of each tab's heading carries the accent, the
+                  same way the section's own h2 does above. Keyed off the end of
+                  the array rather than a flag per tab, so a heading that gains
+                  or loses a line keeps the colour on whatever now closes it. */}
+              {tab.heading.map((line, index) => (
+                <span
+                  className={`lg:block font-bold ${
+                    index === tab.heading.length - 1 ? "text-red-700" : ""
+                  }`}
+                  key={line}
+                >
                   {line}{" "}
                 </span>
               ))}
