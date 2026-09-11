@@ -5,43 +5,34 @@ import Image from "next/image";
 import { Reveal } from "@/components/ui/reveal";
 import { EASE_OUT } from "@/lib/ease";
 
-/**
- * Row-major, so the pairing reads across rather than down: scale beside
- * compliance, lineage beside longevity.
- */
 const STATS = [
-  { label: "Tons per shift. Industrial scale.", value: "5T+" },
-  { label: "Global compliance. Zero compromises.", value: "10+" },
-  { label: "Generations of focus. Zero distraction.", value: "3rd" },
-  { label: "Years. One ingredient.", value: "55+" },
+  {
+    label: "Tons Per Shift.\nIndustrial Scale.",
+    value: "5T+",
+    icon: "/about/04_icon_factory.png",
+  },
+  {
+    label: "Global Compliance.\nZero Compromises.",
+    value: "10+",
+    icon: "/about/05_icon_global.png",
+  },
+  {
+    label: "Generations Of Focus.\nZero Distraction.",
+    value: "3rd",
+    icon: "/about/06_icon_generations.png",
+  },
+  {
+    label: "Years. One Ingredient.",
+    value: "55+",
+    icon: "/about/07_icon_heritage.png",
+  },
 ];
 
-/**
- * The four stats enter one at a time rather than as a block, so the eye is
- * given the reading order the grid is built around.
- *
- * Staggered from the container rather than by per-item delays: one observer
- * for the set means the cascade always runs in row-major order. Four separate
- * `whileInView` items would each start on their own row crossing the margin,
- * and on a phone — where the grid is two columns tall — the delays would stack
- * on top of that and the last pair would arrive long after it was on screen.
- */
 const GRID: Variants = {
   hidden: {},
   shown: { transition: { staggerChildren: 0.06 } },
 };
 
-/**
- * The two pictures lift under a real pointer. Not a link affordance — there is
- * nothing to click — but a material signal that the surface is live.
- *
- * `scale`, not `transform`: Tailwind v4 compiles `scale-*` to the standalone
- * `scale` property, so a `transition-[transform,box-shadow]` would leave the
- * lift jumping between its two ends untransitioned.
- *
- * The scale is `motion-safe` and the shadow isn't, so under reduced motion the
- * frame still answers — it just deepens instead of moving.
- */
 const LIFT =
   "transition-[scale,box-shadow] duration-[400ms] ease-out pointer-fine:hover:shadow-[0_20px_60px_rgba(0,0,0,0.12)] motion-safe:pointer-fine:hover:scale-[1.02]";
 
@@ -58,36 +49,78 @@ export function About() {
   return (
     <section className="bg-cream px-6 py-20 sm:px-8 lg:py-[120px]" id="about">
       <div className="mx-auto max-w-[1380px]">
-        {/* 652 / 53 / 675 out of 1380, straight from the comp. Ratio columns
-            rather than percentages so the gutter stays a constant 53px and
-            only the two picture columns absorb the difference. */}
         <div className="grid gap-x-[53px] gap-y-16 lg:grid-cols-[652fr_675fr]">
           <div>
             <Reveal>
-              <p className="font-editorial font-semibold text-[14px] uppercase leading-[28px] tracking-[0.2em] text-marigold">
-                About National Foods
-              </p>
-              {/* The comp sets these three lines by hand. Inline spans that go
-                  block at lg keep those breaks where there's room for them and
-                  let the sentence reflow when there isn't. */}
+              <div className="flex items-center gap-4">
+                <p className="font-editorial font-semibold text-[14px] uppercase leading-[28px] tracking-[0.2em] text-marigold">
+                  About National Foods
+                </p>
+                <div className="h-px w-[60px] bg-marigold" />
+              </div>
               <h2 className="mt-1 font-editorial font-extrabold text-[clamp(2rem,2.08vw,2.5rem)] uppercase leading-[1.325] tracking-[-0.01em] text-black">
                 <span className="lg:block">The invisible giant of</span>{" "}
                 <span className="lg:block">a five-thousand-year-old</span>{" "}
-                <span className="lg:block">ingredient.</span>
+                <span className="lg:block text-vermilion">ingredient.</span>
               </h2>
             </Reveal>
 
             <Reveal delay={0.12}>
-              <div
-                className={`relative mt-[46px] aspect-[652/634] overflow-hidden ${LIFT}`}
-              >
-                <Image
-                  alt="Golden asafoetida granules spilling from a wooden scoop onto a wood surface"
-                  className="object-cover"
-                  fill
-                  sizes="(min-width: 1024px) 47vw, 100vw"
-                  src="/about/about-hing-masked.png"
-                />
+              <div className="relative mt-[46px]">
+                <div className="absolute -top-10 right-4 z-10 hidden sm:flex size-[140px] items-center justify-center rounded-full border border-black/10 bg-cream/30 backdrop-blur-sm pointer-events-none">
+                  <svg
+                    role="img"
+                    aria-label="Nature's Power Badge"
+                    className="absolute inset-0 size-full animate-[spin_20s_linear_infinite]"
+                    viewBox="0 0 100 100"
+                  >
+                    <path
+                      id="curve"
+                      d="M 50,50 m -35,0 a 35,35 0 1,1 70,0 a 35,35 0 1,1 -70,0"
+                      fill="transparent"
+                    />
+                    <text
+                      className="font-editorial text-[9.5px] font-bold tracking-[0.2em] uppercase mix-blend-multiply"
+                      fill="currentColor"
+                    >
+                      <textPath
+                        href="#curve"
+                        startOffset="0%"
+                        className="text-graphite"
+                      >
+                        NATURE&apos;S POWER • A HEALTHIER TOMORROW •&nbsp;
+                      </textPath>
+                    </text>
+                  </svg>
+                  <Image
+                    src="/about/07_icon_heritage.png"
+                    alt=""
+                    width={28}
+                    height={28}
+                    className="opacity-80 mix-blend-multiply"
+                  />
+                </div>
+
+                <div
+                  className={`relative aspect-[652/634] overflow-hidden ${LIFT}`}
+                >
+                  <Image
+                    alt="Golden asafoetida granules spilling from a wooden scoop onto a wood surface"
+                    className="object-cover"
+                    fill
+                    sizes="(min-width: 1024px) 47vw, 100vw"
+                    src="/about/hing_spoon.png"
+                  />
+                </div>
+
+                <div className="mt-5">
+                  <hr className="mb-3 w-10 border-black/30" />
+                  <p className="font-editorial text-[11px] font-bold uppercase tracking-[0.12em] leading-[1.7] text-graphite">
+                    Same roots.
+                    <br />
+                    New possibilities.
+                  </p>
+                </div>
               </div>
             </Reveal>
           </div>
@@ -104,58 +137,72 @@ export function About() {
                 intervention.
               </p>
 
-              <p className="mt-[40px] font-editorial font-semibold text-[18px] capitalize leading-[30px] text-black">
+              <p className="mt-6 font-editorial font-semibold text-[18px] capitalize leading-[30px] text-black">
                 What leaves our facility is pure hing engineered to strict
                 pharmaceutical standards.
               </p>
 
-              <hr className="mt-[21px] border-black/20" />
+              <hr className="mt-4 border-black/20" />
             </Reveal>
 
-            {/* Outside the Reveal above, not inside it: nesting the stagger in
-                a block that is itself fading in would fade each stat twice, and
-                the cascade would be lost inside the parent's own 850ms.
-
-                The comp's columns are deliberately uneven — the left labels run
-                longer. That only helps at full width; below lg the two even out
-                so neither label wraps harder than the other. */}
             <motion.dl
-              className="mt-[44px] grid grid-cols-2 gap-x-4 gap-y-[39px] lg:grid-cols-[353fr_322fr] lg:gap-x-0"
+              className="mt-8 grid grid-cols-2 lg:grid-cols-[353fr_322fr]"
               initial="hidden"
               variants={GRID}
               viewport={{ once: true, margin: "-12%" }}
               whileInView="shown"
             >
-              {/* 1.3 rather than the 1.16 both of these carried. The value
-                  never wraps at any width, so it only gains a little air; the
-                  label does — "Global compliance. Zero compromises." is two
-                  lines from 1440 down — and at 1.16 those two lines set 18px
-                  type on a 20.9px slug, which is tighter than anything else on
-                  the page. They keep one number because they read as one
-                  block. */}
-              {STATS.map((stat) => (
-                <motion.div key={stat.value} variants={STAT}>
-                  <dt className="font-editorial font-bold text-[30px] leading-[1.3] text-black">
-                    {stat.value}
-                  </dt>
-                  <dd className="mt-[9px] font-editorial font-medium text-[18px] capitalize leading-[1.3] text-graphite">
-                    {stat.label}
-                  </dd>
+              {STATS.map((stat, i) => (
+                <motion.div
+                  key={stat.value}
+                  variants={STAT}
+                  className={`flex items-start gap-4 py-4 ${
+                    i < 2 ? "border-b border-black/10" : ""
+                  } ${i % 2 === 0 ? "pr-4 border-r border-black/10" : "pl-6"}`}
+                >
+                  <div className="flex size-[56px] shrink-0 items-center justify-center rounded-full bg-[#fce9e9]">
+                    <Image
+                      src={stat.icon}
+                      alt=""
+                      width={28}
+                      height={28}
+                      className="object-contain"
+                    />
+                  </div>
+                  <div>
+                    <dt className="font-editorial font-bold text-[30px] leading-[1.3] text-black">
+                      {stat.value}
+                    </dt>
+                    <dd className="mt-[9px] font-editorial font-medium text-[15px] capitalize leading-[1.3] text-graphite whitespace-pre-line">
+                      {stat.label}
+                    </dd>
+                  </div>
                 </motion.div>
               ))}
             </motion.dl>
 
             <Reveal delay={0.2}>
               <div
-                className={`relative mt-[56px] aspect-[675/396] overflow-hidden ${LIFT}`}
+                className={`relative mt-10 aspect-[675/310] overflow-hidden ${LIFT}`}
               >
                 <Image
                   alt="Line workers in hairnets and gloves processing hing granules in National Foods' pharma-grade facility"
-                  className="object-cover rounded-b-lg"
+                  className="object-cover"
                   fill
                   sizes="(min-width: 1024px) 49vw, 100vw"
-                  src="/about/about-pharma-new.png"
+                  src="/about/factory_new.png"
                 />
+                <div className="absolute right-0 top-0 bottom-0 w-[120px] bg-white/70 backdrop-blur-md flex flex-col justify-center px-5">
+                  <p className="font-editorial text-[10px] font-bold tracking-[0.15em] text-graphite uppercase leading-[1.8]">
+                    Purity
+                    <br />
+                    Processed
+                    <br />
+                    For a brighter
+                    <br />
+                    Tomorrow.
+                  </p>
+                </div>
               </div>
             </Reveal>
           </div>

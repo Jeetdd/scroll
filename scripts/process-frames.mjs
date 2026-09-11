@@ -32,7 +32,7 @@ const TIERS = [
   { name: "mobile", width: 960, height: 540 },
   { name: "portrait", width: 540, height: 960 },
 ];
-const QUALITY = 78;
+const QUALITY = 100;
 const CONCURRENCY = 8;
 
 /**
