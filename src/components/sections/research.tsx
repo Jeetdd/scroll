@@ -3,7 +3,10 @@
 import { motion } from "motion/react";
 import Image from "next/image";
 import { type KeyboardEvent, useRef, useState } from "react";
-import { CapacityPanel, CustomizationPanel } from "@/components/sections/research-panels";
+import {
+  CapacityPanel,
+  CustomizationPanel,
+} from "@/components/sections/research-panels";
 import { Reveal } from "@/components/ui/reveal";
 import { EASE_OUT } from "@/lib/ease";
 
@@ -53,7 +56,10 @@ const TAB_WIDTHS = [205, 201, 215];
 const BAR_WIDTH = TAB_WIDTHS.reduce((total, width) => total + width, 0);
 
 function pointerLeft(index: number) {
-  const before = TAB_WIDTHS.slice(0, index).reduce((total, width) => total + width, 0);
+  const before = TAB_WIDTHS.slice(0, index).reduce(
+    (total, width) => total + width,
+    0,
+  );
   return `${((before + TAB_WIDTHS[index] / 2) / BAR_WIDTH) * 100}%`;
 }
 
@@ -63,7 +69,8 @@ export function Research() {
   const tab = TABS[active];
 
   const onKeyDown = (event: KeyboardEvent<HTMLDivElement>) => {
-    const delta = event.key === "ArrowRight" ? 1 : event.key === "ArrowLeft" ? -1 : 0;
+    const delta =
+      event.key === "ArrowRight" ? 1 : event.key === "ArrowLeft" ? -1 : 0;
     if (delta === 0) return;
 
     event.preventDefault();
@@ -73,7 +80,10 @@ export function Research() {
   };
 
   return (
-    <section className="relative isolate bg-cream px-6 py-20 sm:px-8 lg:py-[120px]" id="research">
+    <section
+      className="relative isolate bg-cream px-6 py-20 sm:px-8 lg:py-[120px]"
+      id="research"
+    >
       <div className="mx-auto max-w-[1380px]">
         {/* 550 / 155 / 675. The gutter is wider than the About row's because
             the headline column is narrower here, not because the grid moved. */}
@@ -91,9 +101,10 @@ export function Research() {
 
           <Reveal delay={0.08}>
             <p className="font-editorial text-[17px] capitalize leading-[30px] text-graphite">
-              Established in 2016, National Science is the world&rsquo;s first dedicated asafoetida
-              research facility, isolating compounds, filing patents, running studies across
-              microbiology, extraction methodology and agricultural science.
+              Established in 2016, National Science is the world&rsquo;s first
+              dedicated asafoetida research facility, isolating compounds,
+              filing patents, running studies across microbiology, extraction
+              methodology and agricultural science.
             </p>
 
             {/* 205 / 201 / 215 — the cells are uneven in the comp so each label
