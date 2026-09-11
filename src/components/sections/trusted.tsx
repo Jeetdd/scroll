@@ -145,7 +145,7 @@ export function Trusted() {
       <div className="-z-20 absolute inset-0 hidden lg:block opacity-0 lg:opacity-100 bg-[url('/trusted/hero-resin-new.png')] bg-fixed bg-cover bg-top" />
 
       {/* Mobile background block */}
-      <div className="-z-20 relative mt-12 aspect-[16/10] lg:hidden">
+      <div className="-z-20 absolute inset-0 lg:hidden">
         <Image
           alt=""
           className="object-cover object-top"
@@ -156,32 +156,20 @@ export function Trusted() {
       </div>
 
       <div className="relative z-10 w-full overflow-hidden">
-        <div className="overflow-x-auto snap-x hide-scrollbar">
-          {/* The whole plate is the observer, not each logo: below lg this row
-              scrolls sideways, so a per-logo trigger would leave the ones off
-              the right edge sitting at opacity 0 until they were dragged into
-              view — the constellation would arrive in pieces. */}
-          <motion.div
-            className="relative mx-auto mt-16 mb-24 aspect-[1381/483] min-w-[900px] w-full max-w-[1381px] px-8 sm:min-w-[1000px] lg:mt-24 lg:mb-32 lg:min-w-0 lg:px-0"
-            initial="hidden"
-            variants={PLATES}
-            viewport={{ once: true, margin: "-8%" }}
-            whileInView="shown"
-          >
-            {BRANDS.map((brand) => (
-              // Centring moves into Motion's own transform rather than staying
-              // on Tailwind's: the entrance animates `scale`, and Motion writes
-              // the whole transform at once, so a `-translate-x-1/2` class here
-              // would be dropped on the first frame and every plate would jump
-              // half its width down and right.
-              <motion.div
-                className="absolute aspect-square w-[17.16%]"
-                key={brand.alt}
-                style={{ left: brand.x, top: brand.y, x: "-50%", y: "-50%" }}
-                variants={PLATE}
-              >
-                {/* The hover lives one level in, on an element Motion doesn't
-                    own, so the two transforms compose instead of racing. */}
+        <motion.div
+          className="relative mx-auto mt-16 mb-24 grid w-full max-w-[1381px] grid-cols-3 gap-4 px-6 sm:gap-6 lg:mt-24 lg:mb-32 lg:block lg:aspect-[1381/483] lg:p-0"
+          initial="hidden"
+          variants={PLATES}
+          viewport={{ once: true, margin: "-8%" }}
+          whileInView="shown"
+        >
+          {BRANDS.map((brand) => (
+            <div
+              className="relative w-full lg:absolute lg:left-[var(--bx)] lg:top-[var(--by)] lg:w-[17.16%] lg:-translate-x-1/2 lg:-translate-y-1/2"
+              key={brand.alt}
+              style={{ "--bx": brand.x, "--by": brand.y } as React.CSSProperties}
+            >
+              <motion.div className="relative aspect-square w-full" variants={PLATE}>
                 <div className="relative size-full rounded-full bg-white shadow-[0_15px_100px_rgba(0,0,0,0.08)] transition-transform duration-[250ms] ease-out pointer-fine:hover:scale-105">
                   {brand.plate ? (
                     <span
@@ -193,15 +181,15 @@ export function Trusted() {
                       alt={brand.alt}
                       className="object-contain"
                       fill
-                      sizes="(max-width: 1381px) 17vw, 237px"
+                      sizes="(max-width: 1023px) 33vw, (max-width: 1381px) 17vw, 237px"
                       src={brand.src}
                     />
                   </div>
                 </div>
               </motion.div>
-            ))}
-          </motion.div>
-        </div>
+            </div>
+          ))}
+        </motion.div>
       </div>
     </section>
   );
