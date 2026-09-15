@@ -22,7 +22,7 @@ export function BeatCopy({ beat }: { beat: Beat }) {
             copy instead of permanently dulling the frame. */}
         <div
           aria-hidden
-          className="-inset-x-[20vw] -top-24 -bottom-[16vh] absolute bg-gradient-to-t from-cream from-35% via-cream/80 to-transparent sm:hidden"
+          className="-inset-x-[20vw] -top-24 -bottom-[16vh] absolute bg-gradient-to-t from-cream from-43% via-cream/80 to-transparent sm:hidden"
         />
         {/* Positioned, so it paints over the scrim above rather than under it —
             an absolute box outranks static siblings whatever the source order. */}
