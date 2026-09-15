@@ -3,6 +3,7 @@
 import { useLenis } from "lenis/react";
 import { AnimatePresence, motion } from "motion/react";
 import Image from "next/image";
+import Link from "next/link";
 import { type MouseEvent, useEffect, useState } from "react";
 import { EASE_DRAWER } from "@/lib/ease";
 
@@ -140,7 +141,7 @@ export function SiteHeader() {
             invisible against the cream the nav sits on — so the neutrals are
             recoloured to ink and the brand red is left alone. Keep the
             original for anything on `bg-ink`, like the footer. */}
-        <a className="block shrink-0" href="/">
+        <Link className="block shrink-0" href="/">
           <Image
             alt="National Foods — the hing specialist"
             // Height, not a transform: this fires once per visit, and shrinking
@@ -154,7 +155,7 @@ export function SiteHeader() {
             src="/nf-logo-ink.png"
             width={324}
           />
-        </a>
+        </Link>
 
         <div className="hidden items-center gap-9 lg:flex">
           <ul className="flex items-center gap-9">
