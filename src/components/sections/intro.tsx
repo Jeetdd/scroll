@@ -2,16 +2,13 @@
 
 import { useRef } from "react";
 import MaskedHeading from "@/components/ui/MaskedHeading";
-import {
-  FRAME_MASK_FILL,
-  FRAME_MASK_FILL_PORTRAIT,
-} from "@/lib/frames.generated";
+import { FRAME_MASK_FILL, FRAME_MASK_FILL_PORTRAIT } from "@/lib/frames.generated";
 import { gsap, useGSAP } from "@/lib/gsap";
 import { INTRO_VH } from "@/lib/scroll-plan";
 import { useMediaQuery } from "@/lib/use-media-query";
 import { usePrefersReducedMotion } from "@/lib/use-prefers-reduced-motion";
 
-const HEADING = "World's largest producers of asafoetida.";
+const HEADING = "WORLD'S LARGEST PRODUCERS OF ASAFOETIDA.";
 
 const MASKED = {
   align: "center",
@@ -79,20 +76,10 @@ export function Intro() {
         .to(cue, { autoAlpha: 0, duration: 0.05, ease: "none" }, 0)
         // Eased in, not linear: the growth should accelerate into the
         // hand-off rather than crawl to a stop at full size.
-        .fromTo(
-          heading,
-          { scale: 1 },
-          { scale: 3.4, ease: "power2.in", duration: 1 },
-          0,
-        )
+        .fromTo(heading, { scale: 1 }, { scale: 3.4, ease: "power2.in", duration: 1 }, 0)
         // Lifting the veil is the reveal. There is nothing behind it but the
         // scene's canvas, already pinned and holding frame 0.
-        .fromTo(
-          veil,
-          { autoAlpha: 1 },
-          { autoAlpha: 0, ease: "power1.inOut", duration: 0.3 },
-          0.4,
-        )
+        .fromTo(veil, { autoAlpha: 1 }, { autoAlpha: 0, ease: "power1.inOut", duration: 0.3 }, 0.4)
         .to(heading, { autoAlpha: 0, ease: "power2.in", duration: 0.24 }, 0.61);
     },
     { scope: rootRef, dependencies: [reduced] },
@@ -120,12 +107,7 @@ export function Intro() {
 
   return (
     // Above the scene, which is lifted to sit underneath this whole section.
-    <section
-      className="relative z-10"
-      id="top"
-      ref={rootRef}
-      style={{ height: `${INTRO_VH}vh` }}
-    >
+    <section className="relative z-10" id="top" ref={rootRef} style={{ height: `${INTRO_VH}vh` }}>
       {/* Centred at every size: the canvas behind the veil now fills the
           viewport on portrait too, so there is no band to line the type up
           with. */}
@@ -138,16 +120,8 @@ export function Intro() {
             texture, which smears one row of the clip mask into a hairline
             across the top of its bounding box. Letting it re-rasterise per
             frame costs a little and looks right. */}
-        <div
-          className="relative mx-auto w-full max-w-6xl px-[6vw] sm:px-8"
-          ref={headingRef}
-        >
-          <MaskedHeading
-            {...MASKED}
-            reveal="rise"
-            textScale={textScale}
-            trigger="view"
-          />
+        <div className="relative mx-auto w-full max-w-6xl px-[6vw] sm:px-8" ref={headingRef}>
+          <MaskedHeading {...MASKED} reveal="rise" textScale={textScale} trigger="view" />
         </div>
 
         <div
