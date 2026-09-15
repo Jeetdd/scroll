@@ -72,15 +72,29 @@ export function Intro() {
         },
       });
 
+      // Every position below is a fraction of the runway, so halving INTRO_VH
+      // halves the scroll each move costs without changing how they overlap.
+      // The move ends at 1, not 0.85: a tail of runway with nothing left to
+      // animate is scroll the reader pays for and gets nothing back from, and
+      // it reads as the headline refusing to leave.
       timeline
-        .to(cue, { autoAlpha: 0, duration: 0.05, ease: "none" }, 0)
-        // Eased in, not linear: the growth should accelerate into the
-        // hand-off rather than crawl to a stop at full size.
-        .fromTo(heading, { scale: 1 }, { scale: 3.4, ease: "power2.in", duration: 1 }, 0)
+        .to(cue, { autoAlpha: 0, duration: 0.06, ease: "none" }, 0)
+        // `power1.in`, not `power2.in`. Both accelerate into the hand-off, but
+        // a quadratic ease-in is nearly flat for its first third — over a long
+        // runway that's a slow build, over this one it's a first flick of the
+        // wheel that appears to do nothing, which is the complaint. The gentler
+        // curve moves on the first pixel and still gathers pace.
+        .fromTo(heading, { scale: 1 }, { scale: 2.6, ease: "power1.in", duration: 1 }, 0)
         // Lifting the veil is the reveal. There is nothing behind it but the
-        // scene's canvas, already pinned and holding frame 0.
-        .fromTo(veil, { autoAlpha: 1 }, { autoAlpha: 0, ease: "power1.inOut", duration: 0.3 }, 0.4)
-        .to(heading, { autoAlpha: 0, ease: "power2.in", duration: 0.24 }, 0.61);
+        // scene's canvas, already pinned and holding frame 0. It gets a larger
+        // share of a shorter runway than it had of the long one — a dissolve is
+        // the one move here that cheapens if it's hurried, and stretching it
+        // means the film is already showing through while the type is still
+        // growing, so the hand-off overlaps instead of stepping.
+        .fromTo(veil, { autoAlpha: 1 }, { autoAlpha: 0, ease: "power1.inOut", duration: 0.46 }, 0.3)
+        // Out on `power2.in` — slow to let go, then gone. An exit that leaves
+        // at a constant rate reads as a dropped layer rather than a departure.
+        .to(heading, { autoAlpha: 0, ease: "power2.in", duration: 0.38 }, 0.62);
     },
     { scope: rootRef, dependencies: [reduced] },
   );

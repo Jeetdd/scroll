@@ -10,8 +10,14 @@
  * hand-off or a scene that has already scrubbed past its opening frame.
  */
 
-/** Runway the intro overlay gets, in viewport-heights. */
-export const INTRO_VH = 400;
+/**
+ * Runway the intro overlay gets, in viewport-heights. Minus the 100 the unpin
+ * costs, this is the whole cost of getting past the headline — at 200 that's
+ * one viewport of travel, roughly two flicks of a wheel or one firm swipe.
+ * This is the knob: raise it if the growth starts feeling hurried, lower it if
+ * the headline still outstays its welcome. Nothing else needs to move with it.
+ */
+export const INTRO_VH = 200;
 
 /**
  * Of that runway, how much is actual travel. A sticky child unpins once the
