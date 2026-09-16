@@ -17,12 +17,8 @@
 @theme {
   --color-cream: #f7f3ee;
   --color-canvas: #dfd8ce;
-  --color-sand: #cec6b3;
-  --color-clay: #b5afa5;
   --color-saffron: #db9d4a;
   --color-resin: #d4630b;
-  --color-ember: #b8541b;
-  --color-leaf: #838c45;
   --color-ink: #2a211a;
   --color-ink-soft: #443830;
 
@@ -41,7 +37,6 @@
      is why it isn't reused — the two sit far apart on the page. */
   --color-obsidian: #12100a;
 
-  --text-display: clamp(2.75rem, 7vw, 6.5rem);
   --text-headline: clamp(2rem, 4.5vw, 3.75rem);
   --text-lede: clamp(1.0625rem, 1.5vw, 1.375rem);
 

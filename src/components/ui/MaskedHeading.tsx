@@ -1,6 +1,6 @@
 "use client";
 
-import type { CSSProperties, ElementType } from "react";
+import type { ElementType } from "react";
 import {
   Fragment,
   useCallback,
@@ -14,64 +14,44 @@ import { gsap } from "@/lib/gsap";
 const clamp = (v: number, a: number, b: number): number =>
   v < a ? a : v > b ? b : v;
 
-type Reveal = "rise" | "wipe" | "fade" | "none";
-type Trigger = "view" | "mount" | "hover";
-
 export interface MaskedHeadingProps {
   text?: string;
   tag?: ElementType;
-  mediaType?: "image" | "video";
   src?: string;
   /** Alternate still for `srcNarrowMedia`. Only one of the two is fetched. */
   srcNarrow?: string;
   srcNarrowMedia?: string;
-  poster?: string;
   fillScale?: number;
   parallax?: number;
   drift?: number;
-  brightness?: number;
-  saturation?: number;
-  grayscale?: boolean;
-  reveal?: Reveal;
+  /** `none` settles the type where it lands — the reduced-motion telling. */
+  reveal?: "rise" | "none";
   duration?: number;
   stagger?: number;
-  trigger?: Trigger;
   align?: "left" | "center" | "right";
   weight?: number;
   tracking?: number;
   lineHeight?: number;
   textScale?: number;
-  className?: string;
-  style?: CSSProperties;
-  [key: string]: unknown;
 }
 
 const MaskedHeading: React.FC<MaskedHeadingProps> = ({
   text = "Designed in the details",
   tag = "h2",
-  mediaType = "image",
   src = "",
   srcNarrow = "",
   srcNarrowMedia = "(max-width: 768px) and (orientation: portrait)",
-  poster = "",
   fillScale = 1.25,
   parallax = 26,
   drift = 18,
-  brightness = 1,
-  saturation = 1,
-  grayscale = false,
   reveal = "rise",
   duration = 1.1,
   stagger = 0.09,
-  trigger = "view",
   align = "center",
   weight = 700,
   tracking = -0.03,
   lineHeight = 1.06,
   textScale = 0.115,
-  className = "",
-  style,
-  ...rest
 }: MaskedHeadingProps) => {
   const rootRef = useRef<HTMLElement | null>(null);
   const measureRef = useRef<HTMLSpanElement | null>(null);
@@ -104,17 +84,11 @@ const MaskedHeading: React.FC<MaskedHeadingProps> = ({
     fillScale: number;
     parallax: number;
     drift: number;
-    brightness: number;
-    saturation: number;
-    grayscale: boolean;
     textScale: number;
   }>({
     fillScale: 1,
     parallax: 0,
     drift: 0,
-    brightness: 1,
-    saturation: 1,
-    grayscale: false,
     textScale: 0.115,
   });
 
@@ -137,14 +111,9 @@ const MaskedHeading: React.FC<MaskedHeadingProps> = ({
     // it. Nothing is lost by staying on the main thread: the offsets below are
     // rewritten from rAF every frame anyway, so there is no compositor-driven
     // animation to hand off. See also: no `will-change` on the element.
+    // No `filter` here: the one caller grades its source file instead, which
+    // keeps a repaint-per-frame filter off the heading entirely.
     media.style.transform = `translate(${clamp(off.x, -maxX, maxX).toFixed(2)}px, ${clamp(off.y, -maxY, maxY).toFixed(2)}px) scale(${s.fillScale})`;
-
-    // `none` rather than `brightness(1) saturate(1)`, so a caller that grades
-    // its source image doesn't pay for a no-op filter on every frame.
-    const graded = s.brightness !== 1 || s.saturation !== 1 || s.grayscale;
-    media.style.filter = graded
-      ? `brightness(${s.brightness}) saturate(${s.saturation})${s.grayscale ? " grayscale(1)" : ""}`
-      : "none";
   }, []);
 
   const sync = useCallback(() => {
@@ -176,26 +145,9 @@ const MaskedHeading: React.FC<MaskedHeadingProps> = ({
   // re-subscribing every render. Declared first so the mount effect that reads
   // them already sees the real props rather than the placeholder defaults.
   useEffect(() => {
-    settingsRef.current = {
-      fillScale,
-      parallax,
-      drift,
-      brightness,
-      saturation,
-      grayscale,
-      textScale,
-    };
+    settingsRef.current = { fillScale, parallax, drift, textScale };
     sync();
-  }, [
-    fillScale,
-    parallax,
-    drift,
-    brightness,
-    saturation,
-    grayscale,
-    textScale,
-    sync,
-  ]);
+  }, [fillScale, parallax, drift, textScale, sync]);
 
   useEffect(() => {
     const root = rootRef.current;
@@ -281,16 +233,6 @@ const MaskedHeading: React.FC<MaskedHeadingProps> = ({
       gsap.set(layer, { opacity: 1, scale: 1, clipPath: "inset(0% 0% 0% 0%)" });
     };
 
-    const rest = () => {
-      if (reveal === "rise") {
-        gsap.set(glyphs, { y: riseDistance() });
-      } else if (reveal === "wipe") {
-        gsap.set(layer, { clipPath: "inset(0% 100% 0% 0%)" });
-      } else if (reveal === "fade") {
-        gsap.set(layer, { opacity: 0, scale: 1.08 });
-      }
-    };
-
     const reduce = window.matchMedia(
       "(prefers-reduced-motion: reduce)",
     ).matches;
@@ -299,96 +241,45 @@ const MaskedHeading: React.FC<MaskedHeadingProps> = ({
       return;
     }
 
-    const play = () => {
-      tweenRef.current?.kill();
-      if (reveal === "rise") {
-        gsap.set(layer, {
-          opacity: 1,
-          scale: 1,
-          clipPath: "inset(0% 0% 0% 0%)",
-        });
+    settle();
+    gsap.set(glyphs, { y: riseDistance() });
+
+    // Played once, when the heading is a quarter into view.
+    const io = new IntersectionObserver(
+      (entries) => {
+        if (!entries.some((e) => e.isIntersecting)) return;
+        tweenRef.current?.kill();
         tweenRef.current = gsap.fromTo(
           glyphs,
           { y: riseDistance() },
           { y: 0, duration, stagger, ease: "power4.out", overwrite: "auto" },
         );
-      } else if (reveal === "wipe") {
-        gsap.set(glyphs, { y: 0 });
-        const state = { p: 100 };
-        tweenRef.current = gsap.to(state, {
-          p: 0,
-          duration,
-          ease: "power3.inOut",
-          overwrite: "auto",
-          onUpdate: () => {
-            layer.style.clipPath = `inset(0% ${state.p}% 0% 0%)`;
-          },
-        });
-      } else {
-        gsap.set(glyphs, { y: 0 });
-        tweenRef.current = gsap.fromTo(
-          layer,
-          { opacity: 0, scale: 1.08 },
-          {
-            opacity: 1,
-            scale: 1,
-            duration,
-            ease: "power3.out",
-            overwrite: "auto",
-          },
-        );
-      }
-    };
-
-    if (trigger === "hover") {
-      settle();
-      root.addEventListener("pointerenter", play);
-      return () => {
-        root.removeEventListener("pointerenter", play);
-        tweenRef.current?.kill();
-      };
-    }
-
-    if (trigger === "view") {
-      settle();
-      rest();
-      const io = new IntersectionObserver(
-        (entries) => {
-          if (entries.some((e) => e.isIntersecting)) {
-            play();
-            io.disconnect();
-          }
-        },
-        { threshold: 0.25 },
-      );
-      io.observe(root);
-      return () => {
         io.disconnect();
-        tweenRef.current?.kill();
-      };
-    }
+      },
+      { threshold: 0.25 },
+    );
+    io.observe(root);
 
-    play();
-    return () => tweenRef.current?.kill();
-  }, [reveal, trigger, duration, stagger, words]);
+    return () => {
+      io.disconnect();
+      tweenRef.current?.kill();
+    };
+  }, [reveal, duration, stagger, words]);
 
-  // A polymorphic `tag` can't be typed narrowly enough to take a ref plus
-  // arbitrary passthrough props, which is exactly what this component is for.
+  // A polymorphic `tag` can't be typed narrowly enough to also take a ref.
   // biome-ignore lint/suspicious/noExplicitAny: polymorphic element type
   const Tag = tag as any;
 
   return (
     <Tag
-      className={`relative m-0 w-full p-0 antialiased [text-wrap:balance] ${className}`.trim()}
+      className="relative m-0 w-full p-0 antialiased [text-wrap:balance]"
       ref={rootRef}
       style={{
         textAlign: align,
         fontWeight: weight,
         letterSpacing: `${tracking}em`,
         lineHeight,
-        ...style,
       }}
-      {...rest}
     >
       <span className="text-transparent" ref={measureRef}>
         {words.map(({ word, key }, i) => (
@@ -448,37 +339,25 @@ const MaskedHeading: React.FC<MaskedHeadingProps> = ({
               promote this to a composited layer, and a clip-path over a
               composited layer leaks a row of the mask. See place(). */}
           <span className="absolute inset-0 block" ref={mediaRef}>
-            {mediaType === "video" ? (
-              <video
-                autoPlay
-                className="block size-full select-none object-cover"
-                loop
-                muted
-                playsInline
-                poster={poster}
-                src={src}
-              />
-            ) : (
-              src && (
-                // A plain <picture>, not next/image: the stills are already
-                // sized and compressed by scripts/process-frames.mjs, so the
-                // optimiser would only cost a round trip — and `media` here is
-                // what keeps a phone from downloading the landscape cut as
-                // well as its own. The preload scanner still starts the fetch
-                // before the parser reaches this node.
-                <picture>
-                  {srcNarrow && (
-                    <source media={srcNarrowMedia} srcSet={srcNarrow} />
-                  )}
-                  <img
-                    alt=""
-                    className="absolute inset-0 block size-full select-none object-cover"
-                    draggable={false}
-                    fetchPriority="high"
-                    src={src}
-                  />
-                </picture>
-              )
+            {src && (
+              // A plain <picture>, not next/image: the stills are already
+              // sized and compressed by scripts/process-frames.mjs, so the
+              // optimiser would only cost a round trip — and `media` here is
+              // what keeps a phone from downloading the landscape cut as
+              // well as its own. The preload scanner still starts the fetch
+              // before the parser reaches this node.
+              <picture>
+                {srcNarrow && (
+                  <source media={srcNarrowMedia} srcSet={srcNarrow} />
+                )}
+                <img
+                  alt=""
+                  className="absolute inset-0 block size-full select-none object-cover"
+                  draggable={false}
+                  fetchPriority="high"
+                  src={src}
+                />
+              </picture>
             )}
           </span>
         </span>

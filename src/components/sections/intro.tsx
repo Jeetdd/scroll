@@ -2,7 +2,10 @@
 
 import { useRef } from "react";
 import MaskedHeading from "@/components/ui/MaskedHeading";
-import { FRAME_MASK_FILL, FRAME_MASK_FILL_PORTRAIT } from "@/lib/frames.generated";
+import {
+  FRAME_MASK_FILL,
+  FRAME_MASK_FILL_PORTRAIT,
+} from "@/lib/frames.generated";
 import { gsap, useGSAP } from "@/lib/gsap";
 import { INTRO_VH } from "@/lib/scroll-plan";
 import { useMediaQuery } from "@/lib/use-media-query";
@@ -84,14 +87,24 @@ export function Intro() {
         // runway that's a slow build, over this one it's a first flick of the
         // wheel that appears to do nothing, which is the complaint. The gentler
         // curve moves on the first pixel and still gathers pace.
-        .fromTo(heading, { scale: 1 }, { scale: 2.6, ease: "power1.in", duration: 1 }, 0)
+        .fromTo(
+          heading,
+          { scale: 1 },
+          { scale: 2.6, ease: "power1.in", duration: 1 },
+          0,
+        )
         // Lifting the veil is the reveal. There is nothing behind it but the
         // scene's canvas, already pinned and holding frame 0. It gets a larger
         // share of a shorter runway than it had of the long one — a dissolve is
         // the one move here that cheapens if it's hurried, and stretching it
         // means the film is already showing through while the type is still
         // growing, so the hand-off overlaps instead of stepping.
-        .fromTo(veil, { autoAlpha: 1 }, { autoAlpha: 0, ease: "power1.inOut", duration: 0.46 }, 0.3)
+        .fromTo(
+          veil,
+          { autoAlpha: 1 },
+          { autoAlpha: 0, ease: "power1.inOut", duration: 0.46 },
+          0.3,
+        )
         // Out on `power2.in` — slow to let go, then gone. An exit that leaves
         // at a constant rate reads as a dropped layer rather than a departure.
         .to(heading, { autoAlpha: 0, ease: "power2.in", duration: 0.38 }, 0.62);
@@ -121,7 +134,12 @@ export function Intro() {
 
   return (
     // Above the scene, which is lifted to sit underneath this whole section.
-    <section className="relative z-10" id="top" ref={rootRef} style={{ height: `${INTRO_VH}vh` }}>
+    <section
+      className="relative z-10"
+      id="top"
+      ref={rootRef}
+      style={{ height: `${INTRO_VH}vh` }}
+    >
       {/* Centred at every size: the canvas behind the veil now fills the
           viewport on portrait too, so there is no band to line the type up
           with. */}
@@ -134,8 +152,11 @@ export function Intro() {
             texture, which smears one row of the clip mask into a hairline
             across the top of its bounding box. Letting it re-rasterise per
             frame costs a little and looks right. */}
-        <div className="relative mx-auto w-full max-w-6xl px-[6vw] sm:px-8" ref={headingRef}>
-          <MaskedHeading {...MASKED} reveal="rise" textScale={textScale} trigger="view" />
+        <div
+          className="relative mx-auto w-full max-w-6xl px-[6vw] sm:px-8"
+          ref={headingRef}
+        >
+          <MaskedHeading {...MASKED} reveal="rise" textScale={textScale} />
         </div>
 
         <div
