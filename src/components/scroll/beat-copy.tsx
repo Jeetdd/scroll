@@ -11,7 +11,7 @@ export function BeatCopy({ beat }: { beat: Beat }) {
   return (
     <div
       aria-hidden
-      className={`pointer-events-none absolute inset-0 flex items-end px-[6vw] pb-[14vh] sm:items-center sm:pb-0 ${
+      className={`pointer-events-none absolute inset-0 flex items-end px-[6vw] pb-[9vh] sm:items-center sm:pb-0 ${
         beat.align === "left" ? "justify-start" : "justify-end"
       }`}
     >
