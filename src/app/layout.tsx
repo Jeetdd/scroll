@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import {
   Archivo,
   Corinthia,
@@ -61,11 +61,16 @@ export const metadata: Metadata = {
     "Compounded asafoetida. From a single drop of ferula resin to the pinch that finishes your tadka.",
 };
 
+// Paints the mobile browser chrome (address bar) to match the page.
+export const viewport: Viewport = {
+  themeColor: "#f7f3ee",
+};
+
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html
       lang="en"
-      className={`${spotifyMix.variable} ${geistMono.variable} ${archivo.variable} ${corinthia.variable} ${eduQldBeginner.variable} h-full antialiased`}
+      className={`${spotifyMix.variable} ${geistMono.variable} ${archivo.variable} ${corinthia.variable} ${eduQldBeginner.variable} h-full bg-cream antialiased`}
     >
       <body className="flex min-h-full flex-col">
         <SmoothScroll>{children}</SmoothScroll>
