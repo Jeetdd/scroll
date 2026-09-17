@@ -68,12 +68,24 @@ export function TeamHero() {
               className={`${TRIM} relative inline-block align-top font-editorial font-black capitalize text-[clamp(2.25rem,7.3vw,4.6875rem)] leading-[1.0667] text-black`}
             >
               {HERO_LINES}
-              <span
+              {/* The photograph floods into the letterforms a beat after the
+                  black type has landed, rather than arriving already poured
+                  in. It's the one piece of motion here that explains the
+                  page — the picture filling the words is the headline's whole
+                  idea, and a static fill hides that it's a photograph at all.
+                  Opacity only, so it's a single compositor property and it
+                  survives reduced motion untouched: a fill appearing is
+                  comprehension, not vestibular movement. */}
+              <motion.span
                 aria-hidden
-                className={`${TRIM} absolute inset-0 ${HERO_FILL} bg-clip-text text-transparent opacity-60`}
+                className={`${TRIM} absolute inset-0 ${HERO_FILL} bg-clip-text text-transparent`}
+                initial={{ opacity: 0 }}
+                transition={{ delay: 0.5, duration: 0.9, ease: EASE_OUT }}
+                viewport={{ once: true }}
+                whileInView={{ opacity: 0.6 }}
               >
                 {HERO_LINES}
-              </span>
+              </motion.span>
             </span>
           </h1>
 
@@ -100,23 +112,35 @@ export function TeamHero() {
             only ever sees that context's own backdrop, which is empty. So the
             still rendered on an opaque white plate over the cream. On the
             element itself the blend is against the page behind it, which is
-            what it needs to see. */}
-        <Reveal
-          className="mx-auto w-full max-w-[955px] mix-blend-multiply lg:-mt-[337px]"
-          delay={0.1}
-          margin="-4%"
-        >
-          <div className="relative mt-10 aspect-[955/550] lg:mt-0">
-            <Image
-              alt="Double exposure of a team walking together, the city skyline and Ferula flower heads printed through their silhouettes"
-              className="object-contain"
-              fill
-              priority
-              sizes="(min-width: 1024px) 955px, 100vw"
-              src="/team/hero-collage.png"
-            />
-          </div>
-        </Reveal>
+            what it needs to see.
+
+            It settles out of a 4% oversize rather than sliding up like the
+            rest of the page. 28px of travel is invisible on a 955px-wide
+            still, so the standard `Reveal` rise was costing a frame budget
+            for nothing; a scale settle reads as the image coming to rest at
+            its depth, which is the same language the philosophy band on
+            /about uses. `transform` as a full string, not Motion's `scale`
+            shorthand — the shorthand isn't hardware-accelerated. */}
+        <MotionConfig reducedMotion="user">
+          <motion.div
+            className="mx-auto w-full max-w-[955px] mix-blend-multiply lg:-mt-[337px]"
+            initial={{ opacity: 0, transform: "scale(1.04)" }}
+            transition={{ delay: 0.1, duration: 0.9, ease: EASE_OUT }}
+            viewport={{ margin: "-4%", once: true }}
+            whileInView={{ opacity: 1, transform: "scale(1)" }}
+          >
+            <div className="relative mt-10 aspect-[955/550] lg:mt-0">
+              <Image
+                alt="Double exposure of a team walking together, the city skyline and Ferula flower heads printed through their silhouettes"
+                className="object-contain"
+                fill
+                priority
+                sizes="(min-width: 1024px) 955px, 100vw"
+                src="/team/hero-collage.png"
+              />
+            </div>
+          </motion.div>
+        </MotionConfig>
       </div>
     </section>
   );
@@ -159,6 +183,28 @@ const CARDS: Variants = {
 const CARD: Variants = {
   hidden: { opacity: 0, y: 20 },
   shown: { opacity: 1, y: 0, transition: { duration: 0.7, ease: EASE_OUT } },
+};
+
+/**
+ * The badge lands after its own card, not with it — that beat is what turns
+ * four photographs into a numbered sequence instead of a row of stills.
+ *
+ * 0.6, not 0: a marker that grows out of nothing reads as an effect, the same
+ * reasoning as the timeline dots on /about. No overshoot either — nothing the
+ * reader did carried momentum into this, so a bounce would be decoration
+ * pretending to be physics.
+ *
+ * `transform` rather than Motion's `scale`, and it composes with the badge's
+ * Tailwind `-translate-x-1/2`: v4 writes that to the standalone `translate`
+ * property, so the two never fight over one declaration.
+ */
+const BADGE: Variants = {
+  hidden: { opacity: 0, transform: "scale(0.6)" },
+  shown: {
+    opacity: 1,
+    transform: "scale(1)",
+    transition: { delay: 0.18, duration: 0.4, ease: EASE_OUT },
+  },
 };
 
 export function TeamRoles() {
@@ -214,12 +260,13 @@ export function TeamRoles() {
 
                 {/* Decorative: it numbers the card, it doesn't label it, and
                     the heading below already names the role. */}
-                <span
+                <motion.span
                   aria-hidden
                   className={`-top-[26px] -translate-x-1/2 absolute left-1/2 flex size-[51px] items-center justify-center rounded-full bg-marigold font-editorial font-bold text-[20px] text-white shadow-[0_8px_18px_rgba(0,0,0,0.18)] ${TRIM}`}
+                  variants={BADGE}
                 >
                   {String(i + 1).padStart(2, "0")}
-                </span>
+                </motion.span>
 
                 <h3
                   className={`${TRIM} mt-[30px] font-editorial font-bold text-[20px] capitalize leading-[1.16] text-black`}
