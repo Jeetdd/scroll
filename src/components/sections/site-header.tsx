@@ -7,12 +7,20 @@ import Link from "next/link";
 import { type MouseEvent, useEffect, useState } from "react";
 import { EASE_DRAWER } from "@/lib/ease";
 
-/** In page order, so the nav reads as a map of the scroll rather than a menu. */
+/**
+ * In page order, so the nav reads as a map of the scroll rather than a menu.
+ *
+ * The section links are root-relative, not bare fragments: the bar is on
+ * `/about` as well as `/`, and `#research` there points at nothing. Written
+ * as `/#research` the browser navigates home and lands on the section, and
+ * `goTo` below only intercepts when the target is already on this page.
+ * `#contact` stays a bare fragment — both pages carry that section.
+ */
 const LINKS = [
-  { href: "#about", label: "About" },
-  { href: "#research", label: "Research" },
-  { href: "#horizon", label: "Horizon" },
-  { href: "#trusted", label: "Clients" },
+  { href: "/about", label: "About" },
+  { href: "/#research", label: "Research" },
+  { href: "/#horizon", label: "Horizon" },
+  { href: "/#trusted", label: "Clients" },
 ];
 
 /**
@@ -87,7 +95,12 @@ export function SiteHeader() {
   // Under reduced motion Lenis has been destroyed and the native path is the
   // correct one — and an instant jump is what was asked for anyway.
   const goTo = (event: MouseEvent<HTMLAnchorElement>, href: string) => {
-    const target = document.querySelector(href);
+    // Only a fragment that resolves on the current page is a scroll. `/about`
+    // has no fragment at all, and `/#research` read from `/about` points at a
+    // section that isn't mounted here — both are real navigations, so the
+    // handler stands aside and lets the link behave like a link.
+    const hash = href.slice(href.indexOf("#"));
+    const target = hash.startsWith("#") ? document.querySelector(hash) : null;
     if (!target) return;
 
     event.preventDefault();
@@ -161,13 +174,13 @@ export function SiteHeader() {
           <ul className="flex items-center gap-9">
             {LINKS.map((link) => (
               <li key={link.href}>
-                <a
+                <Link
                   className={LINK}
                   href={link.href}
                   onClick={(event) => goTo(event, link.href)}
                 >
                   {link.label}
-                </a>
+                </Link>
               </li>
             ))}
           </ul>
@@ -219,13 +232,13 @@ export function SiteHeader() {
             <ul className="flex flex-col gap-1 px-[6vw] py-5 sm:px-8">
               {LINKS.map((link) => (
                 <li key={link.href}>
-                  <a
+                  <Link
                     className={`${LINK} block py-3 text-[15px]`}
                     href={link.href}
                     onClick={(event) => goTo(event, link.href)}
                   >
                     {link.label}
-                  </a>
+                  </Link>
                 </li>
               ))}
               <li className="mt-3">

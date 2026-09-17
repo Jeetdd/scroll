@@ -28,6 +28,10 @@
   --color-marigold: #ff872a;
   --color-graphite: #2a2a2a;
   --color-onyx: #181818;
+  /* Body copy on the About page. The comps set every paragraph there in this
+     grey rather than `graphite` — lighter, so a 16px line reads as supporting
+     text next to the near-black headings above it. */
+  --color-slate: #414141;
   /* The mark's red, used for the one selected state on the page. */
   --color-vermilion: #ea1d24;
   /* Backstop behind the shelf plate while it loads, sampled from its darkest
