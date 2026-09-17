@@ -3,6 +3,7 @@
 import { motion } from "motion/react";
 import type { ReactNode } from "react";
 import { EASE_OUT } from "@/lib/ease";
+import { usePrefersReducedMotion } from "@/lib/use-prefers-reduced-motion";
 
 /**
  * Entrance animation for the unpinned sections. GSAP owns the pinned scene's
@@ -31,11 +32,25 @@ export function Reveal({
    */
   margin?: string;
 }) {
+  // The switch lives in `transition`, not in `initial`: `initial` is read once
+  // at mount, and the hook starts `false` and corrects itself after — so a
+  // conditional there would never reach anything below the fold. `transition`
+  // is re-read when the animation starts, which is when the element scrolls in.
+  //
+  // `y: { duration: 0 }` rather than dropping the offset: the element snaps to
+  // its final position at t=0, still at opacity 0, and cross-fades from there.
+  // Reduced motion means gentler, not absent — the fade still says "this is new".
+  const reduced = usePrefersReducedMotion();
+
   return (
     <motion.div
       className={className}
       initial={{ opacity: 0, y: 28 }}
-      transition={{ duration: 0.85, delay, ease: EASE_OUT }}
+      transition={
+        reduced
+          ? { duration: 0.3, delay, ease: EASE_OUT, y: { duration: 0 } }
+          : { duration: 0.85, delay, ease: EASE_OUT }
+      }
       viewport={{ once: true, margin }}
       whileInView={{ opacity: 1, y: 0 }}
     >

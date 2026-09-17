@@ -1,6 +1,17 @@
+"use client";
+
+import {
+  MotionConfig,
+  motion,
+  useScroll,
+  useTransform,
+  type Variants,
+} from "motion/react";
 import Image from "next/image";
-import type { ReactNode } from "react";
+import { type ReactNode, useRef } from "react";
 import { Reveal } from "@/components/ui/reveal";
+import { EASE_OUT } from "@/lib/ease";
+import { usePrefersReducedMotion } from "@/lib/use-prefers-reduced-motion";
 
 /**
  * The /about route, comped as one 1920×7194 frame in Figma (node `14:2`).
@@ -204,6 +215,44 @@ const MILESTONES = [
   },
 ];
 
+/**
+ * The timeline draws itself: each row lands, its dot pops, and the rail runs
+ * down from that dot to the next one. It is the one piece of motion on this
+ * page that carries meaning rather than polish — the line being drawn IS the
+ * chronology the copy is describing.
+ *
+ * The stagger is 0.3s against a 0.6s draw, so a row arrives while the rail
+ * above it is still travelling. Matching them exactly (draw, pause, next)
+ * stretched the sequence past 2s and read as a loading bar.
+ */
+const TIMELINE: Variants = {
+  hidden: {},
+  shown: { transition: { staggerChildren: 0.3 } },
+};
+
+const TIMELINE_ROW: Variants = {
+  hidden: { opacity: 0, y: 24 },
+  shown: { opacity: 1, y: 0, transition: { duration: 0.6, ease: EASE_OUT } },
+};
+
+/** 0.6, not 0 — a marker that grows out of nothing reads as an effect. */
+const TIMELINE_DOT: Variants = {
+  hidden: { opacity: 0, scale: 0.6 },
+  shown: {
+    opacity: 1,
+    scale: 1,
+    transition: { duration: 0.35, ease: EASE_OUT },
+  },
+};
+
+const TIMELINE_RAIL: Variants = {
+  hidden: { scaleY: 0 },
+  shown: {
+    scaleY: 1,
+    transition: { duration: 0.6, delay: 0.12, ease: EASE_OUT },
+  },
+};
+
 export function AboutStory() {
   return (
     // 47px, not 120: the spoon above already overhangs into this section's
@@ -245,23 +294,45 @@ export function AboutStory() {
         </div>
 
         <div className="mt-[60px] grid gap-x-[45px] gap-y-12 lg:mt-[80px] lg:grid-cols-[778px_1fr]">
-          <Reveal delay={0.04}>
-            <ol>
+          {/* Motion's own reduced-motion switch, rather than a flag threaded
+              through four variants. It drops every transform in this subtree —
+              the draw, the pop, the rise — and leaves the opacity fades. */}
+          <MotionConfig reducedMotion="user">
+            <motion.ol
+              initial="hidden"
+              variants={TIMELINE}
+              viewport={{ once: true, margin: "-12%" }}
+              whileInView="shown"
+            >
               {MILESTONES.map((milestone, i) => (
-                <li
+                <motion.li
                   // 120px of trailing space per row, with the rule at its
                   // midpoint — that reproduces the comp's 249px row pitch and
                   // puts the separator 60px clear of the copy either side.
-                  // `before` is the rail: it runs from this row's dot to the
-                  // next one's, so hiding it on the last row stops the line at
-                  // the final dot instead of running past it. `after` is the
-                  // rule, inset to the copy column the way the comp draws it.
-                  className="relative grid grid-cols-[15px_1fr] items-start gap-x-[30px] pb-[120px] before:absolute before:-bottom-[10px] before:left-[7px] before:top-[10px] before:w-px before:bg-black/15 after:absolute after:right-0 after:bottom-[60px] after:left-[48px] after:h-px after:bg-black/10 last:pb-0 last:before:hidden last:after:hidden sm:grid-cols-[15px_1fr_52px]"
+                  // `after` is that rule, inset to the copy column the way the
+                  // comp draws it. The rail below used to be a `before` pseudo;
+                  // it is a real element now because a pseudo cannot be handed
+                  // to Motion, and drawing it is the whole point of this block.
+                  className="relative grid grid-cols-[15px_1fr] items-start gap-x-[30px] pb-[120px] after:absolute after:right-0 after:bottom-[60px] after:left-[48px] after:h-px after:bg-black/10 last:pb-0 last:after:hidden sm:grid-cols-[15px_1fr_52px]"
                   key={milestone.year}
+                  variants={TIMELINE_ROW}
                 >
-                  <span
+                  {/* Absolutely positioned, so it takes no grid track. It runs
+                      from this row's dot to the next one's — 10px past the
+                      row's own box, which is where that dot's centre sits — and
+                      the last row has none, so the line stops at the final dot
+                      instead of running off the end. */}
+                  {i < MILESTONES.length - 1 && (
+                    <motion.span
+                      aria-hidden
+                      className="-bottom-[10px] absolute top-[10px] left-[7px] w-px origin-top bg-black/15"
+                      variants={TIMELINE_RAIL}
+                    />
+                  )}
+                  <motion.span
                     aria-hidden
                     className="mt-[3px] size-[15px] rounded-full bg-marigold"
+                    variants={TIMELINE_DOT}
                   />
                   <div>
                     <p
@@ -293,10 +364,10 @@ export function AboutStory() {
                     }
                     width={52}
                   />
-                </li>
+                </motion.li>
               ))}
-            </ol>
-          </Reveal>
+            </motion.ol>
+          </MotionConfig>
 
           <Reveal delay={0.12}>
             <div className="relative aspect-[570/637] w-full overflow-hidden lg:-mt-[5px]">
@@ -324,16 +395,41 @@ const VALUES = [
 ];
 
 export function AboutPhilosophy() {
+  const band = useRef<HTMLElement>(null);
+  const reduced = usePrefersReducedMotion();
+
+  // Tied to the band's own travel rather than a clock: the still only moves
+  // while it is on screen, and it moves at whatever speed the reader scrolls
+  // — so it can't be the slow background oscillation that reads as a loop.
+  // 8% over the full pass is enough to feel like depth and small enough that
+  // nothing in the photograph crosses the crop edge.
+  const { scrollYProgress } = useScroll({
+    offset: ["start end", "end start"],
+    target: band,
+  });
+  const scale = useTransform(scrollYProgress, [0, 1], [1, 1.08]);
+
   // 120 + 525 of content + 120 = the comp's 765px band.
   return (
-    <section className="relative isolate overflow-hidden bg-obsidian px-6 py-20 sm:px-8 lg:py-[120px]">
-      <Image
-        alt=""
-        className="-z-10 object-cover"
-        fill
-        sizes="100vw"
-        src="/about-us/philosophy-bg.png"
-      />
+    <section
+      className="relative isolate overflow-hidden bg-obsidian px-6 py-20 sm:px-8 lg:py-[120px]"
+      ref={band}
+    >
+      {/* Pinned at 1 under reduced motion rather than softened — a moving
+          full-viewport background is the single thing that setting exists for. */}
+      <motion.div
+        aria-hidden
+        className="-z-10 absolute inset-0"
+        style={{ scale: reduced ? 1 : scale }}
+      >
+        <Image
+          alt=""
+          className="object-cover"
+          fill
+          sizes="100vw"
+          src="/about-us/philosophy-bg.png"
+        />
+      </motion.div>
 
       <div className="mx-auto max-w-[1380px]">
         <Reveal>
@@ -428,6 +524,24 @@ const USPS = [
   },
 ];
 
+const USP_GRID: Variants = {
+  hidden: {},
+  shown: { transition: { staggerChildren: 0.06 } },
+};
+
+const USP_CARD: Variants = {
+  hidden: { opacity: 0, y: 20 },
+  shown: { opacity: 1, y: 0, transition: { duration: 0.7, ease: EASE_OUT } },
+};
+
+/**
+ * `translate`, not `transform`. Tailwind v4 writes lifts to the standalone
+ * property, which leaves Motion's entrance transform on the same element alone
+ * instead of the two fighting over one declaration.
+ */
+const USP_LIFT =
+  "transition-[translate,box-shadow] duration-[250ms] ease-out pointer-fine:hover:shadow-[0_18px_50px_rgba(0,0,0,0.08)] motion-safe:pointer-fine:hover:-translate-y-1";
+
 export function AboutUsps() {
   return (
     <section className="bg-white px-6 py-20 sm:px-8 lg:py-[120px]">
@@ -445,43 +559,54 @@ export function AboutUsps() {
 
         {/* Six columns rather than two grids stacked: at 30px gutters a
             six-track row gives exactly the comp's 675/675 and 440/440/440
-            rows from one definition. */}
-        <Reveal
-          className="mt-[60px] grid gap-[30px] sm:grid-cols-2 lg:mt-[80px] lg:grid-cols-6"
-          delay={0.08}
-        >
-          {USPS.map((usp, i) => (
-            <article
-              className={`rounded-[20px] bg-cream p-8 sm:p-10 ${usp.span}`}
-              key={usp.title}
-            >
-              <div className="flex items-start justify-between gap-6">
-                <Image
-                  alt=""
-                  className="h-[82px] w-auto"
-                  height={82}
-                  src={usp.icon}
-                  width={82}
-                />
-                <span
-                  className={`${TRIM} font-editorial font-bold text-[40px] capitalize leading-[1.16] text-black/20`}
+            rows from one definition.
+
+            The cards used to sit inside one `Reveal` around this grid, so all
+            five arrived on the same frame. Staggered, the row reads as five
+            things rather than one block — 60ms, enough to see and short enough
+            that the last card isn't still waiting. */}
+        <MotionConfig reducedMotion="user">
+          <motion.div
+            className="mt-[60px] grid gap-[30px] sm:grid-cols-2 lg:mt-[80px] lg:grid-cols-6"
+            initial="hidden"
+            variants={USP_GRID}
+            viewport={{ once: true, margin: "-10%" }}
+            whileInView="shown"
+          >
+            {USPS.map((usp, i) => (
+              <motion.article
+                className={`rounded-[20px] bg-cream p-8 sm:p-10 ${USP_LIFT} ${usp.span}`}
+                key={usp.title}
+                variants={USP_CARD}
+              >
+                <div className="flex items-start justify-between gap-6">
+                  <Image
+                    alt=""
+                    className="h-[82px] w-auto"
+                    height={82}
+                    src={usp.icon}
+                    width={82}
+                  />
+                  <span
+                    className={`${TRIM} font-editorial font-bold text-[40px] capitalize leading-[1.16] text-black/20`}
+                  >
+                    {String(i + 1).padStart(2, "0")}
+                  </span>
+                </div>
+                <h3
+                  className={`${TRIM} mt-[41px] font-editorial font-bold text-[26px] capitalize leading-[1.16] text-black`}
                 >
-                  {String(i + 1).padStart(2, "0")}
-                </span>
-              </div>
-              <h3
-                className={`${TRIM} mt-[41px] font-editorial font-bold text-[26px] capitalize leading-[1.16] text-black`}
-              >
-                {usp.title}
-              </h3>
-              <p
-                className={`${TRIM} mt-[25px] font-editorial font-medium text-[17px] capitalize leading-[28px] text-slate`}
-              >
-                {usp.body}
-              </p>
-            </article>
-          ))}
-        </Reveal>
+                  {usp.title}
+                </h3>
+                <p
+                  className={`${TRIM} mt-[25px] font-editorial font-medium text-[17px] capitalize leading-[28px] text-slate`}
+                >
+                  {usp.body}
+                </p>
+              </motion.article>
+            ))}
+          </motion.div>
+        </MotionConfig>
       </div>
     </section>
   );
@@ -506,6 +631,29 @@ function Pledge({
     </div>
   );
 }
+
+/**
+ * The page's only glass surface, so it materializes rather than fades: blur
+ * and scale move together and the card reads as a pane arriving in front of
+ * the photographs, not a div turning opaque.
+ *
+ * Only the unprefixed `backdrop-filter` is animated, and the Tailwind
+ * `backdrop-blur-[7.5px]` class stays on the card underneath it. Motion types
+ * `Variant` off CSS properties it knows, so `-webkit-backdrop-filter` can't go
+ * in here — and it doesn't need to. The inline value overrides the class's
+ * unprefixed declaration and leaves its `-webkit-` twin alone, so Safari
+ * before 18, which only reads the prefixed one, holds a constant 7.5px blur:
+ * no materialize, but a legible card, which is the right thing to lose.
+ */
+const VISION_CARD: Variants = {
+  hidden: { backdropFilter: "blur(0px)", opacity: 0, scale: 0.97 },
+  shown: {
+    backdropFilter: "blur(7.5px)",
+    opacity: 1,
+    scale: 1,
+    transition: { duration: 0.6, ease: EASE_OUT },
+  },
+};
 
 export function AboutVision() {
   // 120 + 552 of card + 120 = the comp's 792px band.
@@ -539,12 +687,18 @@ export function AboutVision() {
         <div className="absolute inset-0 bg-[linear-gradient(to_left,transparent_15%,var(--color-cream)_85%)]" />
       </div>
 
-      <Reveal className="mx-auto max-w-[793px]">
-        {/* 20% white is the comp's value, and it works there because the two
-            stills have already faded to cream behind the card. Narrow, the
-            card spans the full column and sits over the photos themselves, so
-            below `lg` the veil is opaque enough to read against. */}
-        <div className="rounded-[20px] bg-white/70 py-[55px] shadow-[0_0_80px_rgba(0,0,0,0.08)] backdrop-blur-[7.5px] lg:bg-white/20">
+      {/* 20% white is the comp's value, and it works there because the two
+          stills have already faded to cream behind the card. Narrow, the card
+          spans the full column and sits over the photos themselves, so below
+          `lg` the veil is opaque enough to read against. */}
+      <MotionConfig reducedMotion="user">
+        <motion.div
+          className="mx-auto max-w-[793px] rounded-[20px] bg-white/70 py-[55px] shadow-[0_0_80px_rgba(0,0,0,0.08)] backdrop-blur-[7.5px] lg:bg-white/20"
+          initial="hidden"
+          variants={VISION_CARD}
+          viewport={{ once: true, margin: "-12%" }}
+          whileInView="shown"
+        >
           <Pledge
             body="A world where good health, better taste and viability belong together."
             eyebrow="Our Vision"
@@ -562,8 +716,8 @@ export function AboutVision() {
             <span className="block">To take our presence</span>
             <span className="block">global.</span>
           </Pledge>
-        </div>
-      </Reveal>
+        </motion.div>
+      </MotionConfig>
     </section>
   );
 }
