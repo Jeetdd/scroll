@@ -18,6 +18,7 @@ import { EASE_DRAWER } from "@/lib/ease";
  */
 const LINKS = [
   { href: "/about", label: "About" },
+  { href: "/team", label: "Team" },
   { href: "/#research", label: "Research" },
   { href: "/#horizon", label: "Horizon" },
   { href: "/#trusted", label: "Clients" },

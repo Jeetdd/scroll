@@ -40,18 +40,24 @@ import { usePrefersReducedMotion } from "@/lib/use-prefers-reduced-motion";
  * heights of 765, 792 and 543.
  */
 
-/** Figma's `text-box-trim`, so a comp y-gap is a CSS margin with no fudge. */
-const TRIM = "[text-box:trim-both_cap_alphabetic]";
+/**
+ * Figma's `text-box-trim`, so a comp y-gap is a CSS margin with no fudge.
+ *
+ * These five are exported because `/team` is comped in the same file, on the
+ * same 1380 column, with the same lockup — it imports them (and
+ * `AboutCertificates`) rather than restating the scale.
+ */
+export const TRIM = "[text-box:trim-both_cap_alphabetic]";
 
-const EYEBROW = `${TRIM} font-editorial font-semibold text-[15px] uppercase leading-[28px] tracking-[0.2em] text-marigold`;
+export const EYEBROW = `${TRIM} font-editorial font-semibold text-[15px] uppercase leading-[28px] tracking-[0.2em] text-marigold`;
 
 /** 41px in the comp; reached at 1024px wide and held from there up. */
-const HEADLINE = `${TRIM} font-editorial font-extrabold text-[clamp(1.75rem,4vw,2.5625rem)] uppercase leading-[1.293] text-black`;
+export const HEADLINE = `${TRIM} font-editorial font-extrabold text-[clamp(1.75rem,4vw,2.5625rem)] uppercase leading-[1.293] text-black`;
 
-const BODY = `${TRIM} font-editorial text-[16px] capitalize leading-[30px] text-slate`;
+export const BODY = `${TRIM} font-editorial text-[16px] capitalize leading-[30px] text-slate`;
 
 /** The lockup that opens every section: eyebrow, 25px, headline. */
-function SectionHead({
+export function SectionHead({
   children,
   eyebrow,
   tone = "dark",
