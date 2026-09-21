@@ -562,8 +562,12 @@ export function AboutPhilosophy() {
     offset: ["start end", "center center"],
     target: watermark,
   });
-  const fillTop = useTransform(watermarkPass, [0, 1], ["100%", "0%"]);
-  const fillClip = useMotionTemplate`inset(${fillTop} 0 0 0)`;
+  //
+  // The wipe runs left to right, which means clipping from the right edge
+  // inward — the inset's *right* value retreats to 0 rather than its top. Both
+  // lines fill together, in reading direction.
+  const fillRight = useTransform(watermarkPass, [0, 1], ["100%", "0%"]);
+  const fillClip = useMotionTemplate`inset(0 ${fillRight} 0 0)`;
 
   // 120 + 525 of content + 120 = the comp's 765px band.
   return (
@@ -668,7 +672,7 @@ export function AboutPhilosophy() {
               className={`${TRIM} absolute inset-0 text-white`}
               style={{
                 WebkitTextStroke: "1px #ffffff",
-                clipPath: reduced ? "inset(100% 0 0 0)" : fillClip,
+                clipPath: reduced ? "inset(0 100% 0 0)" : fillClip,
               }}
             >
               {WATERMARK}
