@@ -96,9 +96,9 @@ export function TeamHero() {
 
         <Reveal delay={0.1}>
           <p className={`${BODY} mx-auto mt-[50px] max-w-[675px]`}>
-            National Foods is carried by artisans, specialists, and stewards
-            whose dedication turns hard-won knowledge into consistent
-            purity&nbsp;&mdash; every day, across every generation.
+            National Foods is carried by artisans, specialists, and stewards whose dedication turns
+            hard-won knowledge into consistent purity&nbsp;&mdash; every day, across every
+            generation.
           </p>
         </Reveal>
       </div>
@@ -158,25 +158,25 @@ const ROLES = [
   {
     alt: "A master blender sifting ground asafoetida into a steel bowl beside jars of raw resin",
     body: "Seasoned hands balance aroma, strength, and character with the intuition that only years of practice can build.",
-    photo: "/team/role-blenders.png",
+    photo: "/dummy.webp",
     title: "Master Blenders",
   },
   {
     alt: "An analyst at a microscope testing a sample in the in-house laboratory",
     body: "Every critical standard is measured with care, protecting purity from raw ingredient to finished product.",
-    photo: "/team/role-analysts.png",
+    photo: "/dummy.webp",
     title: "Quality & Safety Analysts",
   },
   {
     alt: "Technicians in whites and gloves feeding resin into the processing line",
     body: "Precision and practical knowledge keep a modern plant moving while preserving the ingredient's natural integrity.",
-    photo: "/team/role-craftsmen.png",
+    photo: "/dummy.webp",
     title: "Processing Craftsmen",
   },
   {
     alt: "Buyers shaking hands with farmers at a collection point, raw resin in the foreground",
     body: "Trusted relationships carry quality across farmers, partners, production teams, and respected food brands.",
-    photo: "/team/role-stewards.png",
+    photo: "/dummy.webp",
     title: "Supply Stewards",
   },
 ];
@@ -224,18 +224,16 @@ export function TeamRoles() {
         <div className="grid gap-x-[45px] gap-y-8 lg:grid-cols-[660px_1fr]">
           <Reveal>
             <SectionHead eyebrow="About Team">
-              Not employees.{" "}
-              <span className="lg:block text-vermilion">Family.</span>
+              Not employees. <span className="lg:block text-vermilion">Family.</span>
             </SectionHead>
           </Reveal>
 
           {/* 23px down — the quote sits against the eyebrow, not on it. */}
           <Reveal delay={0.08}>
             <p className={`${BODY} max-w-[675px] lg:mt-[23px]`}>
-              &ldquo;We believe that our workforce is a family rather than
-              employees. There is a lot of trust and belief in the product that
-              we produce, which helps us deliver optimal output even during hard
-              times.&rdquo;
+              &ldquo;We believe that our workforce is a family rather than employees. There is a lot
+              of trust and belief in the product that we produce, which helps us deliver optimal
+              output even during hard times.&rdquo;
             </p>
           </Reveal>
         </div>
