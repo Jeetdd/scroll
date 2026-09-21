@@ -8,7 +8,7 @@ import {
   type Variants,
 } from "motion/react";
 import Image from "next/image";
-import { type ReactNode, useRef } from "react";
+import { type ReactNode, useRef, useState } from "react";
 import { Reveal } from "@/components/ui/reveal";
 import { EASE_OUT } from "@/lib/ease";
 import { usePrefersReducedMotion } from "@/lib/use-prefers-reduced-motion";
@@ -241,17 +241,25 @@ const STORY_NOTES = [
 
 const MILESTONES = [
   {
+    alt: "Technicians in whites feeding resin into a grinder on the National Foods line",
     body: "Late Shri Punamlal S Joshi establishes a traditional grinding mill founded on honest flavour and patient craft.",
+    image: "/about-us/story-plant.png",
     title: "A 10 kg beginning",
     year: "1970",
   },
   {
+    // ponytail: placeholder until the real stills land — swap `image`/`alt`
+    // here and the hover wiring below needs no change.
+    alt: "",
     body: "A second factory opens, followed by the company's first ISO certification - scale guided by discipline.",
+    image: "/not_found.png",
     title: "Building the standard",
     year: "2001–02",
   },
   {
+    alt: "",
     body: "The Joshi family now leads India's first and largest asafoetida processing plant, producing more than three tons daily.",
+    image: "/not_found.png",
     title: "Three generations forward",
     year: "Today",
   },
@@ -296,6 +304,11 @@ const TIMELINE_RAIL: Variants = {
 };
 
 export function AboutStory() {
+  // Which milestone the photo column is showing. The arrows were drawn in the
+  // comp as a static marker on the first row; they are the only affordance on
+  // this block, so they drive the photo rather than decorate the row.
+  const [active, setActive] = useState(0);
+
   return (
     // 47px, not 120: the spoon above already overhangs into this section's
     // white, and the comp measures the gap from where the still ends.
@@ -393,19 +406,31 @@ export function AboutStory() {
                       {milestone.body}
                     </p>
                   </div>
-                  {/* Decorative in the comp — it marks the row, it doesn't go
-                      anywhere — so it stays an image rather than a button. */}
-                  <Image
-                    alt=""
-                    className="mt-[39px] hidden size-[52px] sm:block"
-                    height={52}
-                    src={
-                      i === 0
-                        ? "/about-us/story-arrow-active.svg"
-                        : "/about-us/story-arrow.svg"
-                    }
-                    width={52}
-                  />
+                  {/* A real button, not the comp's static marker: it now picks
+                      which still the photo column shows. `onFocus` alongside
+                      the hover so a keyboard reaches the same thing a pointer
+                      does, and the row is only ever swapped — never navigated
+                      to — so there is nothing for an anchor to point at. */}
+                  <button
+                    aria-label={`Show ${milestone.year}: ${milestone.title}`}
+                    aria-pressed={active === i}
+                    className="mt-[39px] hidden size-[52px] rounded-full focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-vermilion sm:block"
+                    onFocus={() => setActive(i)}
+                    onMouseEnter={() => setActive(i)}
+                    type="button"
+                  >
+                    <Image
+                      alt=""
+                      className="size-[52px]"
+                      height={52}
+                      src={
+                        active === i
+                          ? "/about-us/story-arrow-active.svg"
+                          : "/about-us/story-arrow.svg"
+                      }
+                      width={52}
+                    />
+                  </button>
                 </motion.li>
               ))}
             </motion.ol>
@@ -413,13 +438,24 @@ export function AboutStory() {
 
           <Reveal delay={0.12}>
             <div className="relative aspect-[570/637] w-full overflow-hidden lg:-mt-[5px]">
-              <Image
-                alt="Technicians in whites feeding resin into a grinder on the National Foods line"
-                className="object-cover"
-                fill
-                sizes="(min-width: 1024px) 570px, 100vw"
-                src="/about-us/story-plant.png"
-              />
+              {/* All three stacked and cross-faded on opacity rather than one
+                  node with a swapped `src`: swapping the source blanks the
+                  frame while the next file decodes, which on a slow connection
+                  is a white flash on every hover. Stacked, the outgoing still
+                  holds until the incoming one is already painted. Three files
+                  is a cheap enough preload to buy that. */}
+              {MILESTONES.map((milestone, i) => (
+                <Image
+                  alt={active === i ? milestone.alt : ""}
+                  aria-hidden={active !== i}
+                  className="object-cover transition-opacity duration-500 ease-out"
+                  fill
+                  key={milestone.year}
+                  sizes="(min-width: 1024px) 570px, 100vw"
+                  src={milestone.image}
+                  style={{ opacity: active === i ? 1 : 0 }}
+                />
+              ))}
             </div>
           </Reveal>
         </div>
@@ -838,6 +874,24 @@ const CERTIFICATES = [
   },
 ];
 
+/**
+ * The marquee's track. `brand-marquee` shifts it exactly -50%, so the second
+ * half has to be a copy of the first for the loop to be invisible — which is
+ * what the doubling below guarantees whatever length `CERTIFICATES` grows to.
+ *
+ * ponytail: four passes rather than two because two 349px cards do not fill a
+ * 609px column, let alone a wide one — a track narrower than its window shows
+ * the gap behind it on every cycle. Any even count loops; drop to 2 once there
+ * are four or more certificates.
+ *
+ * Whole sets repeated, not each card doubled: the first `CERTIFICATES.length`
+ * entries are the ones left readable at the call site, so they have to be the
+ * full set. Everything after is `aria-hidden` — the copies exist to fill the
+ * track, and a reader announcing ISO 9001 four times is the marquee leaking
+ * into the content.
+ */
+const CERT_TRACK = Array.from({ length: 4 }, () => CERTIFICATES).flat();
+
 export function AboutCertificates() {
   // 100 + 343 of badges + 100 = the comp's 543px band; the shorter left
   // column centres against it, which is where the comp puts it too.
@@ -866,34 +920,54 @@ export function AboutCertificates() {
           </a>
         </Reveal>
 
-        <Reveal delay={0.08}>
-          <div className="grid gap-x-[93px] gap-y-14 sm:grid-cols-2">
-            {CERTIFICATES.map((certificate) => (
-              <div className="text-center" key={certificate.name}>
-                <Image
-                  alt=""
-                  className="mx-auto size-[157px]"
-                  height={157}
-                  src={certificate.badge}
-                  width={157}
-                />
-                <h3
-                  className={`${TRIM} mt-[31px] font-editorial font-semibold text-[22px] capitalize leading-[1.16] text-black`}
+        {/* `min-w-0` is load-bearing. A `1fr` track is `minmax(auto, 1fr)`, and
+            that `auto` floor lets the column grow to its content — so the 2792px
+            track below dragged the whole grid item out to 2792px and
+            `overflow-hidden` clipped nothing, because the box doing the
+            clipping had been stretched to fit what it was meant to clip.
+            Worse, it made this element wider than the viewport, and `Reveal`
+            waits for half its *area* to intersect: a 2792px box inside a
+            1240px grid tops out around 44%, so the fade-in never fired and the
+            whole band sat at `opacity: 0`. Floor the track at zero and the
+            column is the 1fr it reads as. */}
+        <Reveal className="min-w-0" delay={0.08}>
+          {/* The track has to be clipped by something that is not also the
+              thing being translated, hence the wrapper. `mask-image` fades
+              both ends so a card enters and leaves rather than being cut off
+              at a hard edge. */}
+          <div className="w-full overflow-hidden [mask-image:linear-gradient(to_right,transparent,black_8%,black_92%,transparent)]">
+            <div className="flex w-max motion-safe:animate-cert-marquee hover:[animation-play-state:paused]">
+              {CERT_TRACK.map((certificate, i) => (
+                <div
+                  aria-hidden={i >= CERTIFICATES.length}
+                  className="w-[349px] shrink-0 px-[16px] text-center"
+                  key={`${certificate.name}-${i}`}
                 >
-                  {certificate.name}
-                </h3>
-                <p
-                  className={`${TRIM} mx-auto mt-[15px] max-w-[256px] font-editorial text-[14px] capitalize leading-[20px] text-slate`}
-                >
-                  {certificate.body}
-                </p>
-                <p
-                  className={`${TRIM} mt-[30px] font-editorial text-[13px] uppercase leading-[28px] tracking-[0.16em] text-vermilion`}
-                >
-                  Scope &middot; Full plant
-                </p>
-              </div>
-            ))}
+                  <Image
+                    alt=""
+                    className="mx-auto size-[157px]"
+                    height={157}
+                    src={certificate.badge}
+                    width={157}
+                  />
+                  <h3
+                    className={`${TRIM} mt-[31px] font-editorial font-semibold text-[22px] capitalize leading-[1.16] text-black`}
+                  >
+                    {certificate.name}
+                  </h3>
+                  <p
+                    className={`${TRIM} mx-auto mt-[15px] max-w-[256px] font-editorial text-[14px] capitalize leading-[20px] text-slate`}
+                  >
+                    {certificate.body}
+                  </p>
+                  <p
+                    className={`${TRIM} mt-[30px] font-editorial text-[13px] uppercase leading-[28px] tracking-[0.16em] text-vermilion`}
+                  >
+                    Scope &middot; Full plant
+                  </p>
+                </div>
+              ))}
+            </div>
           </div>
 
           {/* The comp's pager. It is inert here — there are two certificates

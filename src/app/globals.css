@@ -74,6 +74,13 @@
     }
   }
 
+  /* The certificates band, on the same keyframe — any track that holds its
+     set twice loops seamlessly at -50%, so there is one shift to express and
+     only the pace differs. 32s, not 46: these cards carry a name and two
+     lines of scope copy, and the brand row's pace gives a reader nowhere near
+     long enough to finish one before it leaves. */
+  --animate-cert-marquee: brand-marquee 32s linear infinite;
+
   /* The intro's scroll cue. 4px over a 2.5s period — a drift the eye reads as
      the page breathing rather than a label blinking at it. `ease-in-out`, so
      the two ends of the travel are symmetric; `ease-in` would make it fall and
