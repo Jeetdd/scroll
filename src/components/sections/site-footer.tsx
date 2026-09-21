@@ -66,11 +66,11 @@ export function SiteFooter() {
 
         <hr className="border-t border-ink/40 2xl:border-ink/20" />
 
-        {/* No inset on this one. It is the last element on the document, so at
-            full scroll it sits below where the default -12% root ends and would
-            never be reached — see the note on Reveal's `margin`. At 0 it fires
-            as soon as it touches the viewport, which for the final line on the
-            page is the right moment anyway. */}
+        {/* No inset on this one. It is the last element on the document, and a
+            bottom inset pulls the root's bottom edge up — so the final line on
+            the page can sit below it even at full scroll and never fire. At 0
+            it reveals as soon as it touches the viewport, which for the last
+            line is the right moment anyway. */}
         <Reveal
           className="flex flex-col sm:flex-row justify-between items-center py-6 text-[13px] font-editorial font-medium text-ink gap-4"
           delay={STAGGER.legal}

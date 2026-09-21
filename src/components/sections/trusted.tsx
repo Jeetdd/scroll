@@ -2,7 +2,7 @@
 
 import { motion, type Variants } from "motion/react";
 import Image from "next/image";
-import { Reveal } from "@/components/ui/reveal";
+import { IN_VIEW, Reveal } from "@/components/ui/reveal";
 import { EASE_OUT } from "@/lib/ease";
 
 const BRANDS = [
@@ -160,16 +160,21 @@ export function Trusted() {
           className="relative mx-auto mt-16 mb-24 grid w-full max-w-[1381px] grid-cols-3 gap-4 px-6 sm:gap-6 lg:mt-24 lg:mb-32 lg:block lg:aspect-[1381/483] lg:p-0"
           initial="hidden"
           variants={PLATES}
-          viewport={{ once: true, margin: "-8%", amount: 0.5 }}
+          viewport={IN_VIEW}
           whileInView="shown"
         >
           {BRANDS.map((brand) => (
             <div
               className="relative w-full lg:absolute lg:left-[var(--bx)] lg:top-[var(--by)] lg:w-[17.16%] lg:-translate-x-1/2 lg:-translate-y-1/2"
               key={brand.alt}
-              style={{ "--bx": brand.x, "--by": brand.y } as React.CSSProperties}
+              style={
+                { "--bx": brand.x, "--by": brand.y } as React.CSSProperties
+              }
             >
-              <motion.div className="relative aspect-square w-full" variants={PLATE}>
+              <motion.div
+                className="relative aspect-square w-full"
+                variants={PLATE}
+              >
                 <div className="relative size-full rounded-full bg-white shadow-[0_15px_100px_rgba(0,0,0,0.08)] transition-transform duration-[250ms] ease-out pointer-fine:hover:scale-105">
                   {brand.plate ? (
                     <span

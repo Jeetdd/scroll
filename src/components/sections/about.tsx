@@ -2,7 +2,7 @@
 
 import { motion, type Variants } from "motion/react";
 import Image from "next/image";
-import { Reveal } from "@/components/ui/reveal";
+import { IN_VIEW, Reveal } from "@/components/ui/reveal";
 import { EASE_OUT } from "@/lib/ease";
 
 const STATS = [
@@ -149,7 +149,7 @@ export function About() {
               className="mt-8 grid grid-cols-2 lg:grid-cols-[353fr_322fr]"
               initial="hidden"
               variants={GRID}
-              viewport={{ once: true, margin: "-12%", amount: 0.5 }}
+              viewport={IN_VIEW}
               whileInView="shown"
             >
               {STATS.map((stat, i) => (

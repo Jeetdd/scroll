@@ -5,11 +5,12 @@ import Image from "next/image";
 import {
   BODY,
   EYEBROW,
+  HERO_FILL_IN,
   HeroLines,
   SectionHead,
   TRIM,
 } from "@/components/sections/about-us";
-import { Reveal } from "@/components/ui/reveal";
+import { IN_VIEW, Reveal } from "@/components/ui/reveal";
 import { EASE_OUT } from "@/lib/ease";
 
 /**
@@ -53,7 +54,13 @@ export function TeamHero() {
       <div className="bg-cream px-6 pt-[140px] pb-16 text-center sm:px-8 lg:pt-[255px] lg:pb-[353px]">
         <Reveal>
           <p className={EYEBROW}>Team National</p>
+        </Reveal>
 
+        {/* Outside the `Reveal` — see the same note in `AboutHero`. The roll
+            is CSS and starts at first paint; `Reveal` cannot fade its block in
+            until hydration, so nested the roll played out behind `opacity: 0`
+            and the headline just appeared already settled. */}
+        <div>
           {/* Two stacked copies rather than one `bg-clip-text` element: the
               photo layer is decorative, so if it fails to load the headline
               underneath is still solid black rather than invisible. The type
@@ -71,20 +78,23 @@ export function TeamHero() {
                   idea, and a static fill hides that it's a photograph at all.
                   Opacity only, so it's a single compositor property and it
                   survives reduced motion untouched: a fill appearing is
-                  comprehension, not vestibular movement. */}
-              <motion.span
+                  comprehension, not vestibular movement.
+
+                  CSS now, not Motion: this copy must not roll (the transform
+                  breaks its `bg-clip-text` outright — see `HERO_FILL_IN`), and
+                  once it is standing still a keyframe fade is the whole job,
+                  with no observer to keep in step with the roll's clock. */}
+              <span
                 aria-hidden
-                className={`${TRIM} absolute inset-0 ${HERO_FILL} bg-clip-text text-transparent`}
-                initial={{ opacity: 0 }}
-                transition={{ delay: 0.5, duration: 1.8, ease: EASE_OUT }}
-                viewport={{ once: true, amount: 0.5 }}
-                whileInView={{ opacity: 0.6 }}
+                className={`${TRIM} absolute inset-0 ${HERO_FILL} ${HERO_FILL_IN} bg-clip-text text-transparent opacity-60`}
               >
-                <HeroLines lines={HERO_LINES} />
-              </motion.span>
+                <HeroLines lines={HERO_LINES} roll={false} />
+              </span>
             </span>
           </h1>
+        </div>
 
+        <Reveal delay={0.1}>
           <p className={`${BODY} mx-auto mt-[50px] max-w-[675px]`}>
             National Foods is carried by artisans, specialists, and stewards
             whose dedication turns hard-won knowledge into consistent
@@ -122,7 +132,7 @@ export function TeamHero() {
             className="mx-auto w-full max-w-[955px] mix-blend-multiply lg:-mt-[337px]"
             initial={{ opacity: 0, transform: "scale(1.04)" }}
             transition={{ delay: 0.1, duration: 1.8, ease: EASE_OUT }}
-            viewport={{ margin: "-4%", once: true, amount: 0.5 }}
+            viewport={IN_VIEW}
             whileInView={{ opacity: 1, transform: "scale(1)" }}
           >
             <div className="relative mt-10 aspect-[955/550] lg:mt-0">
@@ -239,7 +249,7 @@ export function TeamRoles() {
             className="mt-[80px] grid gap-x-[30px] gap-y-[60px] sm:grid-cols-2 lg:mt-[106px] lg:grid-cols-4"
             initial="hidden"
             variants={CARDS}
-            viewport={{ once: true, margin: "-10%", amount: 0.5 }}
+            viewport={IN_VIEW}
             whileInView="shown"
           >
             {ROLES.map((role, i) => (
@@ -332,7 +342,7 @@ export function TeamValues() {
             className="mt-[60px] grid gap-[30px] lg:mt-[80px] lg:grid-cols-2"
             initial="hidden"
             variants={CARDS}
-            viewport={{ once: true, margin: "-10%", amount: 0.5 }}
+            viewport={IN_VIEW}
             whileInView="shown"
           >
             {PLEDGES.map((pledge, i) => (

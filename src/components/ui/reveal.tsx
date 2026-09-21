@@ -6,6 +6,34 @@ import { EASE_OUT } from "@/lib/ease";
 import { usePrefersReducedMotion } from "@/lib/use-prefers-reduced-motion";
 
 /**
+ * When anything on this page counts as on screen.
+ *
+ * `amount: "some"` — one intersecting pixel is enough. The old default asked
+ * for half the element's *area*, which had two problems. A tall block only
+ * reached 50% once you had scrolled most of the way past it, so its contents
+ * sat blank through the entire approach and then animated somewhere behind
+ * you — the gap this replaces. Worse, 50% of an element taller or wider than
+ * the viewport can be unreachable outright, and an element that never reaches
+ * its threshold never animates: it stays at `opacity: 0` permanently. The
+ * certificates band hit exactly that and rendered invisible.
+ *
+ * The inset is bottom-only and in viewport units, so it means the same thing
+ * to a 40px eyebrow and an 800px collage: fire when the element's top edge is
+ * a tenth of the screen above the bottom. Enough that nothing animates on a
+ * one-pixel graze, early enough that it has finished by the time it is
+ * properly in front of the reader.
+ *
+ * Exported because the staggered containers drive Motion directly rather than
+ * through `Reveal`, and a second opinion about what "on screen" means is how
+ * the two drift apart.
+ */
+export const IN_VIEW = {
+  amount: "some",
+  margin: "0px 0px -10% 0px",
+  once: true,
+} as const;
+
+/**
  * Entrance animation for the unpinned sections. GSAP owns the pinned scene's
  * timeline; everything outside it is Motion's, which keeps the two libraries
  * from competing for the same scroll.
@@ -14,23 +42,13 @@ export function Reveal({
   children,
   className,
   delay = 0,
-  margin = "-12%",
-  amount = 0.5,
+  margin = IN_VIEW.margin,
+  amount = IN_VIEW.amount,
 }: {
   children: ReactNode;
   className?: string;
   delay?: number;
-  /**
-   * The observer's inset, as `IntersectionObserver` rootMargin. The default
-   * holds an element back until it is properly into the viewport rather than
-   * grazing the edge.
-   *
-   * It has to be relaxable for anything sitting at the very bottom of the
-   * page. -12% of a 900px viewport pulls the root's bottom edge up to 792px,
-   * and the last element on the document — the footer's copyright bar — tops
-   * out at 844px when scrolled as far as the page goes. It can never reach the
-   * root, so with the default it would sit at opacity 0 forever.
-   */
+  /** The observer's inset, as `IntersectionObserver` rootMargin. */
   margin?: string;
   amount?: number | "some" | "all";
 }) {
@@ -53,7 +71,7 @@ export function Reveal({
           ? { duration: 0.3, delay, ease: EASE_OUT, y: { duration: 0 } }
           : { duration: 0.85, delay, ease: EASE_OUT }
       }
-      viewport={{ once: true, margin, amount }}
+      viewport={{ once: IN_VIEW.once, margin, amount }}
       whileInView={{ opacity: 1, y: 0 }}
     >
       {children}

@@ -124,6 +124,18 @@
       transform: translateY(110%);
     }
   }
+
+  /* The photo fill behind that roll. It starts at 1.45s because that is where
+     the last line lands, and `both` holds it invisible until then. No `to`:
+     the element carries the opacity the comp asks for (0.6), so the animation
+     runs to whatever that computes to and the value lives in one place. */
+  --animate-hero-fill: hero-fill 1.4s var(--ease-out) 1.45s both;
+
+  @keyframes hero-fill {
+    from {
+      opacity: 0;
+    }
+  }
 }
 
 @theme inline {

@@ -9,7 +9,7 @@ import {
 } from "motion/react";
 import Image from "next/image";
 import { type ReactNode, useRef, useState } from "react";
-import { Reveal } from "@/components/ui/reveal";
+import { IN_VIEW, Reveal } from "@/components/ui/reveal";
 import { EASE_OUT } from "@/lib/ease";
 import { usePrefersReducedMotion } from "@/lib/use-prefers-reduced-motion";
 
@@ -86,18 +86,20 @@ export function SectionHead({
  * these two headlines are set as two deliberate lines and a word-level stagger
  * would fight that reading.
  *
- * The animation is CSS (`--animate-line-roll`) rather than Motion because both
- * heroes render their headline twice — black type with the photo fill laid
- * over it — and the two copies have to move as one. Exported so `/team` shares
- * it, like the type scale above.
- *
  * `pb`/`-mb` cancel each other for layout and exist only to give the clip box
- * room below the baseline, so descenders are not shaved off at rest. The
- * stagger starts at 0.35s: the lockup sits inside a `Reveal`, and starting
- * sooner would roll the lines while the block they are in is still fading up
- * from `opacity: 0`, where nobody sees it happen.
+ * room below the baseline, so descenders are not shaved off at rest.
+ *
+ * `roll={false}` renders the same boxes with nothing animating, and both heroes
+ * need it for their photo-fill copy — see `HERO_FILL_IN` below for why that is
+ * load-bearing rather than a preference.
  */
-export function HeroLines({ lines }: { lines: string[] }) {
+export function HeroLines({
+  lines,
+  roll = true,
+}: {
+  lines: string[];
+  roll?: boolean;
+}) {
   return (
     <>
       {lines.map((line, i) => (
@@ -108,8 +110,8 @@ export function HeroLines({ lines }: { lines: string[] }) {
           {/* `motion-safe` is the whole reduced-motion gate: with no animation
               applied the line simply renders where it lands. */}
           <span
-            className="block motion-safe:animate-line-roll"
-            style={{ animationDelay: `${0.35 + i * 0.12}s` }}
+            className={roll ? "block motion-safe:animate-line-roll" : "block"}
+            style={roll ? { animationDelay: `${0.35 + i * 0.12}s` } : undefined}
           >
             {line}
           </span>
@@ -118,6 +120,26 @@ export function HeroLines({ lines }: { lines: string[] }) {
     </>
   );
 }
+
+/**
+ * The photo pouring into the letterforms, once the black type has landed.
+ *
+ * This is not styling — the fill copy *cannot* roll. `background-clip: text`
+ * is set on the copy's outer span and clips that span's own background to the
+ * text inside it. Put the glyphs behind a transform and they land in a new
+ * containing block, the outer span's text-clip no longer sees them, and the
+ * background is clipped to nothing: the headline silently renders solid black
+ * with no photo at all. Moving the fill onto the rolling line instead would
+ * work, but then `HERO_FILL`'s percentages measure against one line's box
+ * rather than the whole headline's, which is the framing bug its comment
+ * describes. So the fill copy sits still and fades in behind the roll.
+ *
+ * 1.45s is where the roll ends — 0.35s of delay, 0.12s of stagger, a 1s
+ * travel. Both heroes use it, which is also what /team's comp asks for: the
+ * picture arriving a beat late is the headline's whole idea, and a fill that
+ * is simply always there hides that it is a photograph.
+ */
+export const HERO_FILL_IN = "motion-safe:animate-hero-fill";
 
 // ---------------------------------------------------------------------------
 
@@ -152,7 +174,16 @@ export function AboutHero() {
       <div className="bg-cream px-6 pt-[140px] pb-16 text-center sm:px-8 lg:pt-[255px] lg:pb-[353px]">
         <Reveal>
           <p className={EYEBROW}>A history of great flavour</p>
+        </Reveal>
 
+        {/* Outside the `Reveal` on purpose. `Reveal` fades its block in off an
+            IntersectionObserver, which cannot fire until hydration; the roll
+            below is CSS and starts at first paint. Nested, the whole roll
+            played out behind `opacity: 0` and the headline simply appeared
+            already settled — the animation was running, nobody was being
+            shown it. Out here the roll IS the headline's entrance, so it
+            doesn't need a fade as well. */}
+        <div>
           {/* Black type with the still laid over it at 60%, as in the comp.
               Two stacked copies rather than one `bg-clip-text` element: the
               photo layer is decorative, so if it fails to load the headline
@@ -182,13 +213,15 @@ export function AboutHero() {
                   as a ghosted double-print. */}
               <span
                 aria-hidden
-                className={`${TRIM} absolute inset-0 ${HERO_FILL} bg-clip-text text-transparent opacity-60`}
+                className={`${TRIM} absolute inset-0 ${HERO_FILL} ${HERO_FILL_IN} bg-clip-text text-transparent opacity-60`}
               >
-                <HeroLines lines={HERO_LINES} />
+                <HeroLines lines={HERO_LINES} roll={false} />
               </span>
             </span>
           </h1>
+        </div>
 
+        <Reveal delay={0.1}>
           <p className={`${BODY} mx-auto mt-[49px] max-w-[675px]`}>
             India&rsquo;s first and largest processing plant&mdash;shaped by
             three generations of the Joshi family and one uncompromising
@@ -209,7 +242,6 @@ export function AboutHero() {
         <Reveal
           className="mx-auto w-full max-w-[898px] lg:-mt-[403px]"
           delay={0.1}
-          margin="-4%"
         >
           <div className="relative mt-10 aspect-[898/598] lg:mt-0">
             <Image
@@ -356,7 +388,7 @@ export function AboutStory() {
             <motion.ol
               initial="hidden"
               variants={TIMELINE}
-              viewport={{ once: true, margin: "-12%", amount: 0.5 }}
+              viewport={IN_VIEW}
               whileInView="shown"
             >
               {MILESTONES.map((milestone, i) => (
@@ -648,7 +680,7 @@ export function AboutUsps() {
             className="mt-[60px] grid gap-[30px] sm:grid-cols-2 lg:mt-[80px] lg:grid-cols-6"
             initial="hidden"
             variants={USP_GRID}
-            viewport={{ once: true, margin: "-10%", amount: 0.5 }}
+            viewport={IN_VIEW}
             whileInView="shown"
           >
             {USPS.map((usp, i) => (
@@ -774,7 +806,7 @@ export function AboutVision() {
           className="mx-auto max-w-[793px] rounded-[20px] bg-white/70 py-[55px] shadow-[0_0_80px_rgba(0,0,0,0.08)] backdrop-blur-[7.5px] lg:bg-white/20"
           initial="hidden"
           variants={VISION_CARD}
-          viewport={{ once: true, margin: "-12%", amount: 0.5 }}
+          viewport={IN_VIEW}
           whileInView="shown"
         >
           <Pledge

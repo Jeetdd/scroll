@@ -2,7 +2,7 @@
 
 import { motion } from "motion/react";
 import Image from "next/image";
-import { Reveal } from "@/components/ui/reveal";
+import { IN_VIEW, Reveal } from "@/components/ui/reveal";
 import { EASE_OUT } from "@/lib/ease";
 
 const EYEBROW =
@@ -105,7 +105,7 @@ export function Horizon() {
             className="absolute top-[calc(41%-360px)] left-[37%] h-[760px] w-[17%]"
             initial={{ opacity: 0 }}
             transition={{ duration: 2.0, ease: EASE_OUT }}
-            viewport={{ once: true, margin: "-20%", amount: 0.5 }}
+            viewport={IN_VIEW}
             whileInView={{ opacity: 0.7 }}
           >
             <Image
