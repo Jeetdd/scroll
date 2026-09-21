@@ -96,6 +96,27 @@
       transform: translateY(4px);
     }
   }
+
+  /* The /about and /team headline roll, one line at a time out from behind its
+     own clip — the same move `MaskedHeading` gives the intro, which does it
+     per word against a measured SVG glyph clip. CSS rather than Motion here
+     because each headline is rendered twice, black type under a photo fill,
+     and the two copies have to travel as one: two observers on two elements
+     will not start on the same frame, and a few ms of drift on stacked type
+     reads as a double-print. One keyframe with the same delay on both is
+     exact by construction.
+
+     110%, not 100%: the clip box is padded past the baseline to let
+     descenders through at rest, so a line has a little further to fall before
+     it is properly out of sight. `both` holds it there through the delay —
+     without it the type flashes in place before the animation starts. */
+  --animate-line-roll: line-roll 1s var(--ease-out) both;
+
+  @keyframes line-roll {
+    from {
+      transform: translateY(110%);
+    }
+  }
 }
 
 @theme inline {

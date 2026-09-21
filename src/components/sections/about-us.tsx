@@ -79,14 +79,49 @@ export function SectionHead({
   );
 }
 
+/**
+ * A hero headline's lines, each rolling up out from behind its own clip — the
+ * move the intro headline makes on the home page, where `MaskedHeading` drives
+ * it per word against a measured SVG glyph clip. Per line here, not per word:
+ * these two headlines are set as two deliberate lines and a word-level stagger
+ * would fight that reading.
+ *
+ * The animation is CSS (`--animate-line-roll`) rather than Motion because both
+ * heroes render their headline twice — black type with the photo fill laid
+ * over it — and the two copies have to move as one. Exported so `/team` shares
+ * it, like the type scale above.
+ *
+ * `pb`/`-mb` cancel each other for layout and exist only to give the clip box
+ * room below the baseline, so descenders are not shaved off at rest. The
+ * stagger starts at 0.35s: the lockup sits inside a `Reveal`, and starting
+ * sooner would roll the lines while the block they are in is still fading up
+ * from `opacity: 0`, where nobody sees it happen.
+ */
+export function HeroLines({ lines }: { lines: string[] }) {
+  return (
+    <>
+      {lines.map((line, i) => (
+        <span
+          className="-mb-[0.18em] block overflow-hidden pb-[0.18em]"
+          key={line}
+        >
+          {/* `motion-safe` is the whole reduced-motion gate: with no animation
+              applied the line simply renders where it lands. */}
+          <span
+            className="block motion-safe:animate-line-roll"
+            style={{ animationDelay: `${0.35 + i * 0.12}s` }}
+          >
+            {line}
+          </span>
+        </span>
+      ))}
+    </>
+  );
+}
+
 // ---------------------------------------------------------------------------
 
-const HERO_LINES = (
-  <>
-    <span className="block">Authenticity, ground</span>
-    <span className="block">into every pinch.</span>
-  </>
-);
+const HERO_LINES = ["Authenticity, ground", "into every pinch."];
 
 /**
  * Framing for the photo poured into the headline.
@@ -133,13 +168,14 @@ export function AboutHero() {
               nothing and the span measures the comp's two trimmed lines.
 
               `MaskedHeading` isn't the right tool here: it clips to measured
-              glyph boxes and drives a GSAP per-word rise, neither of which
-              this static, backed fill wants. */}
+              glyph boxes to drive its rise, which this backed fill can't give
+              it. `HeroLines` above makes the same move against a plain
+              per-line clip. */}
           <h1 className="mt-[30px] leading-[0]">
             <span
               className={`${TRIM} relative inline-block align-top font-editorial font-black capitalize text-[clamp(2.25rem,7.3vw,4.6875rem)] leading-[1.0667] text-black`}
             >
-              {HERO_LINES}
+              <HeroLines lines={HERO_LINES} />
               {/* Same TRIM as the parent. Without it this copy lays out with
                   an untrimmed line box and sits half a leading lower than the
                   black type it is meant to sit exactly on top of, which reads
@@ -148,7 +184,7 @@ export function AboutHero() {
                 aria-hidden
                 className={`${TRIM} absolute inset-0 ${HERO_FILL} bg-clip-text text-transparent opacity-60`}
               >
-                {HERO_LINES}
+                <HeroLines lines={HERO_LINES} />
               </span>
             </span>
           </h1>

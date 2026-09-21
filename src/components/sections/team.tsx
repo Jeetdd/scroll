@@ -5,6 +5,7 @@ import Image from "next/image";
 import {
   BODY,
   EYEBROW,
+  HeroLines,
   SectionHead,
   TRIM,
 } from "@/components/sections/about-us";
@@ -27,12 +28,7 @@ import { EASE_OUT } from "@/lib/ease";
 
 // ---------------------------------------------------------------------------
 
-const HERO_LINES = (
-  <>
-    <span className="block">The People Behind</span>
-    <span className="block">the Purity.</span>
-  </>
-);
+const HERO_LINES = ["The People Behind", "the Purity."];
 
 /**
  * Framing for the photo poured into the headline, by the same arithmetic as
@@ -67,7 +63,7 @@ export function TeamHero() {
             <span
               className={`${TRIM} relative inline-block align-top font-editorial font-black capitalize text-[clamp(2.25rem,7.3vw,4.6875rem)] leading-[1.0667] text-black`}
             >
-              {HERO_LINES}
+              <HeroLines lines={HERO_LINES} />
               {/* The photograph floods into the letterforms a beat after the
                   black type has landed, rather than arriving already poured
                   in. It's the one piece of motion here that explains the
@@ -84,7 +80,7 @@ export function TeamHero() {
                 viewport={{ once: true, amount: 0.5 }}
                 whileInView={{ opacity: 0.6 }}
               >
-                {HERO_LINES}
+                <HeroLines lines={HERO_LINES} />
               </motion.span>
             </span>
           </h1>
