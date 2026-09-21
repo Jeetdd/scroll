@@ -233,12 +233,12 @@ const MILESTONES = [
  */
 const TIMELINE: Variants = {
   hidden: {},
-  shown: { transition: { staggerChildren: 0.3 } },
+  shown: { transition: { staggerChildren: 0.6 } },
 };
 
 const TIMELINE_ROW: Variants = {
   hidden: { opacity: 0, y: 24 },
-  shown: { opacity: 1, y: 0, transition: { duration: 0.6, ease: EASE_OUT } },
+  shown: { opacity: 1, y: 0, transition: { duration: 1.2, ease: EASE_OUT } },
 };
 
 /** 0.6, not 0 — a marker that grows out of nothing reads as an effect. */
@@ -247,7 +247,7 @@ const TIMELINE_DOT: Variants = {
   shown: {
     opacity: 1,
     scale: 1,
-    transition: { duration: 0.35, ease: EASE_OUT },
+    transition: { duration: 0.7, ease: EASE_OUT },
   },
 };
 
@@ -255,7 +255,7 @@ const TIMELINE_RAIL: Variants = {
   hidden: { scaleY: 0 },
   shown: {
     scaleY: 1,
-    transition: { duration: 0.6, delay: 0.12, ease: EASE_OUT },
+    transition: { duration: 1.2, delay: 0.24, ease: EASE_OUT },
   },
 };
 
@@ -307,7 +307,7 @@ export function AboutStory() {
             <motion.ol
               initial="hidden"
               variants={TIMELINE}
-              viewport={{ once: true, margin: "-12%" }}
+              viewport={{ once: true, margin: "-12%", amount: 0.5 }}
               whileInView="shown"
             >
               {MILESTONES.map((milestone, i) => (
@@ -532,12 +532,12 @@ const USPS = [
 
 const USP_GRID: Variants = {
   hidden: {},
-  shown: { transition: { staggerChildren: 0.06 } },
+  shown: { transition: { staggerChildren: 0.15 } },
 };
 
 const USP_CARD: Variants = {
   hidden: { opacity: 0, y: 20 },
-  shown: { opacity: 1, y: 0, transition: { duration: 0.7, ease: EASE_OUT } },
+  shown: { opacity: 1, y: 0, transition: { duration: 1.2, ease: EASE_OUT } },
 };
 
 /**
@@ -576,7 +576,7 @@ export function AboutUsps() {
             className="mt-[60px] grid gap-[30px] sm:grid-cols-2 lg:mt-[80px] lg:grid-cols-6"
             initial="hidden"
             variants={USP_GRID}
-            viewport={{ once: true, margin: "-10%" }}
+            viewport={{ once: true, margin: "-10%", amount: 0.5 }}
             whileInView="shown"
           >
             {USPS.map((usp, i) => (
@@ -657,7 +657,7 @@ const VISION_CARD: Variants = {
     backdropFilter: "blur(7.5px)",
     opacity: 1,
     scale: 1,
-    transition: { duration: 0.6, ease: EASE_OUT },
+    transition: { duration: 1.2, ease: EASE_OUT },
   },
 };
 
@@ -702,7 +702,7 @@ export function AboutVision() {
           className="mx-auto max-w-[793px] rounded-[20px] bg-white/70 py-[55px] shadow-[0_0_80px_rgba(0,0,0,0.08)] backdrop-blur-[7.5px] lg:bg-white/20"
           initial="hidden"
           variants={VISION_CARD}
-          viewport={{ once: true, margin: "-12%" }}
+          viewport={{ once: true, margin: "-12%", amount: 0.5 }}
           whileInView="shown"
         >
           <Pledge

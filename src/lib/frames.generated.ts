@@ -13,7 +13,7 @@ export type FrameTier = keyof typeof FRAME_TIERS;
 
 /** Blurred frame 1, inlined as the pre-load poster. */
 export const FRAME_LQIP =
-  "data:image/webp;base64,UklGRroAAABXRUJQVlA4IK4AAAAQBgCdASogABIAPsFSokqnpKMhsAgA8BgJZACdMtVCv6mDp2754OUbmW1asPZgcaEJC19+MJxH6BAA/IaWh+ehhS76GswfJgUtFHVZi0MfqyEPH1sobrExHzis+QDPY+MIA+8+pI2WihMmsLQyFLxfIFEUWZ9twND7TN7nxlEtN1bAyBh11fEFSXGE51ufaYhaAXztr+hHrM8wdc92l5zlGLMOTPTxQ4QLRChYAAA=";
+  "data:image/webp;base64,UklGRrwAAABXRUJQVlA4ILAAAADwBQCdASogABIAPsFWokunpSMhsBgIAPAYCWQAnTLjf3gWAdO3QZnJbqxaPzz+bvszXhx6aLYWoAD8hpaH6Y5NJS/2u9froP2BidMvi7heWprX9OHCVBNAdWabbX1qvRaVLzRZzj5mBeZp0+OWm1D/t5x6Qf/xx/5qIqHIkmdz/4jirRDBCqtqyAAH2ve2r9EcSOGNpfzJKF88z/9vrVeGXBS6FkcksUlE08vNsX1AAA==";
 
 /**
  * Frame 1, pre-graded to brightness 0.55 / saturation 1.45, for the

@@ -30,7 +30,7 @@ const STATS = [
 
 const GRID: Variants = {
   hidden: {},
-  shown: { transition: { staggerChildren: 0.06 } },
+  shown: { transition: { staggerChildren: 0.15 } },
 };
 
 const LIFT =
@@ -41,7 +41,7 @@ const STAT: Variants = {
   shown: {
     opacity: 1,
     y: 0,
-    transition: { duration: 0.7, ease: EASE_OUT },
+    transition: { duration: 1.4, ease: EASE_OUT },
   },
 };
 
@@ -149,7 +149,7 @@ export function About() {
               className="mt-8 grid grid-cols-2 lg:grid-cols-[353fr_322fr]"
               initial="hidden"
               variants={GRID}
-              viewport={{ once: true, margin: "-12%" }}
+              viewport={{ once: true, margin: "-12%", amount: 0.5 }}
               whileInView="shown"
             >
               {STATS.map((stat, i) => (

@@ -15,6 +15,7 @@ export function Reveal({
   className,
   delay = 0,
   margin = "-12%",
+  amount = 0.5,
 }: {
   children: ReactNode;
   className?: string;
@@ -31,6 +32,7 @@ export function Reveal({
    * root, so with the default it would sit at opacity 0 forever.
    */
   margin?: string;
+  amount?: number | "some" | "all";
 }) {
   // The switch lives in `transition`, not in `initial`: `initial` is read once
   // at mount, and the hook starts `false` and corrects itself after — so a
@@ -51,7 +53,7 @@ export function Reveal({
           ? { duration: 0.3, delay, ease: EASE_OUT, y: { duration: 0 } }
           : { duration: 0.85, delay, ease: EASE_OUT }
       }
-      viewport={{ once: true, margin }}
+      viewport={{ once: true, margin, amount }}
       whileInView={{ opacity: 1, y: 0 }}
     >
       {children}

@@ -17,7 +17,7 @@
  * This is the knob: raise it if the growth starts feeling hurried, lower it if
  * the headline still outstays its welcome. Nothing else needs to move with it.
  */
-export const INTRO_VH = 200;
+export const INTRO_VH = 350;
 
 /**
  * Of that runway, how much is actual travel. A sticky child unpins once the

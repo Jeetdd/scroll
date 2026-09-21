@@ -83,7 +83,7 @@ const CENTRED = "-translate-x-1/2 -translate-y-1/2 absolute top-1/2 left-1/2";
  */
 const PLATES: Variants = {
   hidden: {},
-  shown: { transition: { staggerChildren: 0.05 } },
+  shown: { transition: { staggerChildren: 0.1 } },
 };
 
 /**
@@ -95,7 +95,7 @@ const PLATE: Variants = {
   shown: {
     opacity: 1,
     scale: 1,
-    transition: { duration: 0.65, ease: EASE_OUT },
+    transition: { duration: 1.3, ease: EASE_OUT },
   },
 };
 
@@ -160,7 +160,7 @@ export function Trusted() {
           className="relative mx-auto mt-16 mb-24 grid w-full max-w-[1381px] grid-cols-3 gap-4 px-6 sm:gap-6 lg:mt-24 lg:mb-32 lg:block lg:aspect-[1381/483] lg:p-0"
           initial="hidden"
           variants={PLATES}
-          viewport={{ once: true, margin: "-8%" }}
+          viewport={{ once: true, margin: "-8%", amount: 0.5 }}
           whileInView="shown"
         >
           {BRANDS.map((brand) => (

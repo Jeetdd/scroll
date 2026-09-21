@@ -104,8 +104,8 @@ export function Horizon() {
           <motion.div
             className="absolute top-[calc(41%-360px)] left-[37%] h-[760px] w-[17%]"
             initial={{ opacity: 0 }}
-            transition={{ duration: 1.2, ease: EASE_OUT }}
-            viewport={{ once: true, margin: "-20%" }}
+            transition={{ duration: 2.0, ease: EASE_OUT }}
+            viewport={{ once: true, margin: "-20%", amount: 0.5 }}
             whileInView={{ opacity: 0.7 }}
           >
             <Image

@@ -80,8 +80,8 @@ export function TeamHero() {
                 aria-hidden
                 className={`${TRIM} absolute inset-0 ${HERO_FILL} bg-clip-text text-transparent`}
                 initial={{ opacity: 0 }}
-                transition={{ delay: 0.5, duration: 0.9, ease: EASE_OUT }}
-                viewport={{ once: true }}
+                transition={{ delay: 0.5, duration: 1.8, ease: EASE_OUT }}
+                viewport={{ once: true, amount: 0.5 }}
                 whileInView={{ opacity: 0.6 }}
               >
                 {HERO_LINES}
@@ -125,8 +125,8 @@ export function TeamHero() {
           <motion.div
             className="mx-auto w-full max-w-[955px] mix-blend-multiply lg:-mt-[337px]"
             initial={{ opacity: 0, transform: "scale(1.04)" }}
-            transition={{ delay: 0.1, duration: 0.9, ease: EASE_OUT }}
-            viewport={{ margin: "-4%", once: true }}
+            transition={{ delay: 0.1, duration: 1.8, ease: EASE_OUT }}
+            viewport={{ margin: "-4%", once: true, amount: 0.5 }}
             whileInView={{ opacity: 1, transform: "scale(1)" }}
           >
             <div className="relative mt-10 aspect-[955/550] lg:mt-0">
@@ -177,12 +177,12 @@ const ROLES = [
 
 const CARDS: Variants = {
   hidden: {},
-  shown: { transition: { staggerChildren: 0.08 } },
+  shown: { transition: { staggerChildren: 0.16 } },
 };
 
 const CARD: Variants = {
   hidden: { opacity: 0, y: 20 },
-  shown: { opacity: 1, y: 0, transition: { duration: 0.7, ease: EASE_OUT } },
+  shown: { opacity: 1, y: 0, transition: { duration: 1.4, ease: EASE_OUT } },
 };
 
 /**
@@ -203,7 +203,7 @@ const BADGE: Variants = {
   shown: {
     opacity: 1,
     transform: "scale(1)",
-    transition: { delay: 0.18, duration: 0.4, ease: EASE_OUT },
+    transition: { delay: 0.18, duration: 0.8, ease: EASE_OUT },
   },
 };
 
@@ -243,7 +243,7 @@ export function TeamRoles() {
             className="mt-[80px] grid gap-x-[30px] gap-y-[60px] sm:grid-cols-2 lg:mt-[106px] lg:grid-cols-4"
             initial="hidden"
             variants={CARDS}
-            viewport={{ once: true, margin: "-10%" }}
+            viewport={{ once: true, margin: "-10%", amount: 0.5 }}
             whileInView="shown"
           >
             {ROLES.map((role, i) => (
@@ -336,7 +336,7 @@ export function TeamValues() {
             className="mt-[60px] grid gap-[30px] lg:mt-[80px] lg:grid-cols-2"
             initial="hidden"
             variants={CARDS}
-            viewport={{ once: true, margin: "-10%" }}
+            viewport={{ once: true, margin: "-10%", amount: 0.5 }}
             whileInView="shown"
           >
             {PLEDGES.map((pledge, i) => (

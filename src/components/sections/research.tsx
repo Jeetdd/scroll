@@ -158,7 +158,7 @@ export function Research() {
                 aria-hidden
                 className="-translate-x-1/2 absolute top-full h-0 w-0 border-t-[12px] border-t-vermilion border-x-[9.5px] border-x-transparent"
                 initial={false}
-                transition={{ duration: 0.35, ease: EASE_OUT }}
+                transition={{ duration: 0.7, ease: EASE_OUT }}
               />
             </div>
           </Reveal>
@@ -181,7 +181,7 @@ export function Research() {
           initial={{ opacity: 0, y: 8 }}
           key={tab.id}
           role="tabpanel"
-          transition={{ duration: 0.35, ease: EASE_OUT }}
+          transition={{ duration: 0.7, ease: EASE_OUT }}
         >
           <div className="lg:mt-[9px]">
             <h3 className="font-editorial font-semibold text-[clamp(1.5rem,1.56vw,1.875rem)] uppercase leading-[1.333] text-black">
@@ -219,8 +219,8 @@ export function Research() {
                   initial={{ opacity: 0, y: 8 }}
                   key={point}
                   transition={{
-                    duration: 0.35,
-                    delay: 0.2 + index * 0.05,
+                    duration: 0.7,
+                    delay: 0.4 + index * 0.1,
                     ease: EASE_OUT,
                   }}
                 >

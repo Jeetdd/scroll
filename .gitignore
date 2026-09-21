@@ -42,4 +42,4 @@ next-env.d.ts
 
 # 4K animation source frames — too heavy to track. Run `bun run frames` to
 # regenerate the WebP tiers in public/frames/, which are committed.
-/assets/frames-src/
+/assets/*
