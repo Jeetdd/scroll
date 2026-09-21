@@ -3,6 +3,7 @@
 import {
   MotionConfig,
   motion,
+  useMotionTemplate,
   useScroll,
   useTransform,
   type Variants,
@@ -402,6 +403,12 @@ export function AboutStory() {
                   // to Motion, and drawing it is the whole point of this block.
                   className="relative grid grid-cols-[15px_1fr] items-start gap-x-[30px] pb-[120px] after:absolute after:right-0 after:bottom-[60px] after:left-[48px] after:h-px after:bg-black/10 last:pb-0 last:after:hidden sm:grid-cols-[15px_1fr_52px]"
                   key={milestone.year}
+                  // The whole row is the target, not just the arrow. A 52px
+                  // marker beside 250px of copy is a small thing to find, and
+                  // the copy is what a reader is already looking at — the arrow
+                  // reads as the indicator for a row that is otherwise inert.
+                  // Hovering the arrow still lands here, so it keeps working.
+                  onMouseEnter={() => setActive(i)}
                   variants={TIMELINE_ROW}
                 >
                   {/* Absolutely positioned, so it takes no grid track. It runs
@@ -438,17 +445,17 @@ export function AboutStory() {
                       {milestone.body}
                     </p>
                   </div>
-                  {/* A real button, not the comp's static marker: it now picks
-                      which still the photo column shows. `onFocus` alongside
-                      the hover so a keyboard reaches the same thing a pointer
-                      does, and the row is only ever swapped — never navigated
-                      to — so there is nothing for an anchor to point at. */}
+                  {/* A real button, not the comp's static marker: the row's
+                      hover is pointer-only, so this is what a keyboard reaches
+                      the same thing through. The row is only ever swapped —
+                      never navigated to — so there is nothing for an anchor to
+                      point at. No `onMouseEnter` here; the row above already
+                      catches it. */}
                   <button
                     aria-label={`Show ${milestone.year}: ${milestone.title}`}
                     aria-pressed={active === i}
                     className="mt-[39px] hidden size-[52px] rounded-full focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-vermilion sm:block"
                     onFocus={() => setActive(i)}
-                    onMouseEnter={() => setActive(i)}
                     type="button"
                   >
                     <Image
@@ -504,6 +511,20 @@ const VALUES = [
   { icon: "/about-us/icon-reliability.svg", label: "Reliability" },
 ];
 
+/**
+ * The watermark, written once and rendered twice — hollow underneath, solid on
+ * top with the solid copy wiped in by scroll. Two copies rather than animating
+ * one element's stroke into a fill: `-webkit-text-stroke` is not animatable and
+ * has no per-axis clip, so there is no way to fill *part* of a glyph from a
+ * single node. Stacked, the clip on the top copy is the fill line.
+ */
+const WATERMARK = (
+  <>
+    <span className="block">Nothing hidden.</span>
+    <span className="block">Nothing diluted.</span>
+  </>
+);
+
 export function AboutPhilosophy() {
   const band = useRef<HTMLElement>(null);
   const reduced = usePrefersReducedMotion();
@@ -518,6 +539,31 @@ export function AboutPhilosophy() {
     target: band,
   });
   const scale = useTransform(scrollYProgress, [0, 1], [1, 1.08]);
+
+  // The watermark's fill line, measured against the watermark itself rather
+  // than the band around it. Reading it off scroll position (rather than
+  // firing on an intersection) is what makes it reversible for free: scroll
+  // up and the value simply runs back down, no second trigger and no state to
+  // keep in sync with the direction of travel.
+  //
+  // It used to ride the band's progress over a hand-picked 0.4–0.78 window,
+  // which was wrong in principle and wrong on screen. The watermark sits at
+  // the band's bottom edge, so band-progress and watermark-position only line
+  // up for one particular band height — and at this one the fill did not
+  // finish until the type was 110px from the top of the viewport, i.e. you
+  // had to scroll the section almost out of view to ever see it full.
+  //
+  // Against its own box there is no window to guess: it starts as the type
+  // clears the bottom of the screen and completes when it reaches the middle,
+  // so the fill lands while the reader is looking straight at it and then
+  // holds through the rest of the exit.
+  const watermark = useRef<HTMLParagraphElement>(null);
+  const { scrollYProgress: watermarkPass } = useScroll({
+    offset: ["start end", "center center"],
+    target: watermark,
+  });
+  const fillTop = useTransform(watermarkPass, [0, 1], ["100%", "0%"]);
+  const fillClip = useMotionTemplate`inset(${fillTop} 0 0 0)`;
 
   // 120 + 525 of content + 120 = the comp's 765px band.
   return (
@@ -583,15 +629,50 @@ export function AboutPhilosophy() {
             ))}
           </ul>
 
-          {/* Outlined rather than filled: at 30% a solid white would read as
-              a second paragraph competing with the copy above it, where the
-              hairline reads as a watermark. */}
+          {/* Outlined at rest: at full strength a solid white would read as a
+              second paragraph competing with the copy above it, where the
+              hairline reads as a watermark. The fill is the payoff, which is
+              why it is earned by scrolling rather than just being there.
+
+              `opacity-30` is on the hollow copy, not this element — on the
+              parent it would group both copies and take 30% off the fill too,
+              so the line would never actually arrive. */}
           <p
-            className={`${TRIM} font-editorial font-extrabold text-[clamp(2rem,5.86vw,3.75rem)] uppercase leading-[1.233] tracking-[0.085em] text-transparent opacity-30`}
-            style={{ WebkitTextStroke: "1px #ffffff" }}
+            className={`${TRIM} relative font-editorial font-extrabold text-[clamp(2rem,5.86vw,3.75rem)] uppercase leading-[1.233] tracking-[0.085em] text-transparent`}
+            ref={watermark}
           >
-            <span className="block">Nothing hidden.</span>
-            <span className="block">Nothing diluted.</span>
+            <span
+              className="block opacity-30"
+              style={{ WebkitTextStroke: "1px #ffffff" }}
+            >
+              {WATERMARK}
+            </span>
+            {/* `TRIM` again here, and it is load-bearing rather than tidy.
+                `text-box-trim` applies to a block's first and last *in-flow*
+                lines; this copy is absolutely positioned, so it is out of
+                flow and the `<p>`'s trim never reaches it. Without its own it
+                laid out on full 73.98px line boxes against the hollow copy's
+                trimmed 59.1/56, which put the second line 14.9px low — the
+                two copies read as a ghosted double-print.
+
+                Same stroke too, so the two are the same glyph weight and the
+                wipe line lands mid-letter instead of on a step. `aria-hidden`
+                and `inset-0`: it is the same words in the same place, so a
+                reader gets them once, from the copy above.
+
+                Parked empty under reduced motion — this is a full-width
+                surface changing as you scroll, which is the case that setting
+                is for. The hollow watermark is the design either way. */}
+            <motion.span
+              aria-hidden
+              className={`${TRIM} absolute inset-0 text-white`}
+              style={{
+                WebkitTextStroke: "1px #ffffff",
+                clipPath: reduced ? "inset(100% 0 0 0)" : fillClip,
+              }}
+            >
+              {WATERMARK}
+            </motion.span>
           </p>
         </Reveal>
       </div>
