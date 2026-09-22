@@ -42,8 +42,17 @@
      grey rather than `graphite` — lighter, so a 16px line reads as supporting
      text next to the near-black headings above it. */
   --color-slate: #414141;
-  /* The mark's red, used for the one selected state on the page. */
-  --color-vermilion: #ea1d24;
+  /* The mark's red, used for the one selected state on the page. Sampled
+     straight out of public/nf-logo.png rather than eyeballed, so the footer
+     wordmark and the preloader are the same red the logo above them is. */
+  --color-vermilion: #ec1c23;
+  /* The preloader's unloaded state: that same red banked down against `char`
+     at around a third, flattened to a solid. Solid on purpose — as an alpha it
+     would pick up the blurred frame behind the panel, and a value that shifts
+     with whatever is underneath it costs the fill the contrast it is made of.
+     Dim rather than pale because the panel is black: on a dark ground the ink
+     has to arrive by getting *brighter*, or the sweep reads backwards. */
+  --color-vermilion-dim: #5c1013;
   /* Backstop behind the shelf plate while it loads, sampled from its darkest
      corner so the swap isn't visible. */
   --color-char: #0e0a06;
@@ -69,6 +78,12 @@
    */
   --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
   --ease-in-out: cubic-bezier(0.77, 0, 0.175, 1);
+  /* Overwrites Tailwind's `ease-in` on the same principle as the two above.
+     Nothing arriving may use it — a curve that is flat at the start reads as
+     the interface hesitating. It is here for the one case it is right for:
+     something leaving the screen for good, which should gather pace and go.
+     The preloader's letters, and nothing else so far. */
+  --ease-in: cubic-bezier(0.55, 0, 1, 0.45);
   /* For surfaces that slide rather than fade — slower off the mark than
      `--ease-out` and flat at the end, so a panel lands instead of gliding. */
   --ease-drawer: cubic-bezier(0.32, 0.72, 0, 1);
@@ -156,10 +171,13 @@
   --font-mono: var(--font-geist-mono);
 
   /* The below-the-fold voice. `editorial` carries the weight range Black
-     hasn't got; `script` is the one handwritten caption. */
+     hasn't got; `quote` is the one pull-quote. `script` (Corinthia) was here
+     for the About caption and went with it — it had no callers left. */
   --font-editorial: var(--font-archivo);
-  --font-script: var(--font-corinthia);
   --font-quote: var(--font-edu-qld-beginner);
+  /* The preloader's wordmark only — the one screen that is neither the film
+     nor the paper below it. */
+  --font-title: var(--font-kactigona);
 }
 
 @layer base {

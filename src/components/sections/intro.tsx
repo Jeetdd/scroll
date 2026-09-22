@@ -1,12 +1,13 @@
 "use client";
 
-import { useRef } from "react";
+import { useRef, useState } from "react";
 import MaskedHeading from "@/components/ui/MaskedHeading";
 import {
   FRAME_MASK_FILL,
   FRAME_MASK_FILL_PORTRAIT,
 } from "@/lib/frames.generated";
 import { gsap, useGSAP } from "@/lib/gsap";
+import { whenIntroOpen } from "@/lib/intro-gate";
 import { INTRO_VH } from "@/lib/scroll-plan";
 import { useMediaQuery } from "@/lib/use-media-query";
 import { usePrefersReducedMotion } from "@/lib/use-prefers-reduced-motion";
@@ -50,6 +51,10 @@ export function Intro() {
   const veilRef = useRef<HTMLDivElement>(null);
   const cueRef = useRef<HTMLDivElement>(null);
   const reduced = usePrefersReducedMotion();
+  // Subscribed once per mount, not per render: as `MaskedHeading`'s `hold` it
+  // is an effect dependency, and a fresh promise every render would re-arm the
+  // observer and reset the glyphs on every pass.
+  const [introHold] = useState(whenIntroOpen);
   const narrow = useMediaQuery("(max-width: 640px)");
   const textScale = narrow ? TEXT_SCALE.narrow : TEXT_SCALE.wide;
 
@@ -156,7 +161,14 @@ export function Intro() {
           className="relative mx-auto w-full max-w-6xl px-[6vw] sm:px-8"
           ref={headingRef}
         >
-          <MaskedHeading {...MASKED} reveal="rise" textScale={textScale} />
+          {/* Held until the preloader's curtain starts lifting, so the words
+              rise out from behind its edge instead of finishing underneath it. */}
+          <MaskedHeading
+            {...MASKED}
+            hold={introHold}
+            reveal="rise"
+            textScale={textScale}
+          />
         </div>
 
         <div

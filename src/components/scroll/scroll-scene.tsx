@@ -1,13 +1,12 @@
 "use client";
 
 import { useEffect, useRef } from "react";
-import { Preloader } from "@/components/ui/preloader";
 import { BEATS, framePosition } from "@/lib/beats";
 import { FRAME_COUNT } from "@/lib/frames.generated";
 import { gsap, useGSAP } from "@/lib/gsap";
 import { INTRO_TRAVEL_VH, INTRO_VH } from "@/lib/scroll-plan";
 import { BeatCopy } from "./beat-copy";
-import { useFrameSequence } from "./use-frame-sequence";
+import { useFrames } from "./home-curtain";
 
 const LAST = FRAME_COUNT - 1;
 /** Travel the scrub itself gets — roughly 3vh per frame. */
@@ -26,7 +25,8 @@ export function ScrollScene() {
   const rootRef = useRef<HTMLDivElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const painterRef = useRef<Painter | null>(null);
-  const { framesRef, ready, progress } = useFrameSequence();
+  // Loaded by the curtain above this route, which is the thing waiting on it.
+  const { framesRef, ready } = useFrames();
 
   useGSAP(
     () => {
@@ -150,23 +150,20 @@ export function ScrollScene() {
   }, []);
 
   return (
-    <>
-      {!ready && <Preloader progress={progress} />}
-      <section
-        ref={rootRef}
-        aria-label="How National foods Hing is made"
-        className="relative"
-        style={{ height: SCENE_HEIGHT, marginTop: SCENE_LIFT }}
-      >
-        {/* Cream underneath: the canvas covers it once a frame lands, so this
-            only shows in the gap before the first paint. */}
-        <div className="sticky top-0 h-svh w-full overflow-hidden bg-cream">
-          <canvas ref={canvasRef} className="absolute inset-0 size-full" />
-          {BEATS.map((beat) => (
-            <BeatCopy key={beat.id} beat={beat} />
-          ))}
-        </div>
-      </section>
-    </>
+    <section
+      ref={rootRef}
+      aria-label="How National foods Hing is made"
+      className="relative"
+      style={{ height: SCENE_HEIGHT, marginTop: SCENE_LIFT }}
+    >
+      {/* Cream underneath: the canvas covers it once a frame lands, so this
+          only shows in the gap before the first paint. */}
+      <div className="sticky top-0 h-svh w-full overflow-hidden bg-cream">
+        <canvas ref={canvasRef} className="absolute inset-0 size-full" />
+        {BEATS.map((beat) => (
+          <BeatCopy key={beat.id} beat={beat} />
+        ))}
+      </div>
+    </section>
   );
 }

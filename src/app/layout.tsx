@@ -1,10 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import {
-  Archivo,
-  Corinthia,
-  Edu_QLD_Beginner,
-  Geist_Mono,
-} from "next/font/google";
+import { Archivo, Edu_QLD_Beginner, Geist_Mono } from "next/font/google";
 import localFont from "next/font/local";
 import { SmoothScroll } from "@/components/providers/smooth-scroll";
 import "./globals.css";
@@ -41,11 +36,32 @@ const archivo = Archivo({
   subsets: ["latin"],
 });
 
-// One line only — the handwritten caption under the About spread.
-const corinthia = Corinthia({
-  variable: "--font-corinthia",
-  subsets: ["latin"],
-  weight: ["400", "700"],
+/**
+ * The preloader's wordmark, and nothing else.
+ *
+ * A connected brush script, which is a constraint the loader has to design
+ * around rather than ignore: its letters join, so they cannot be cut into
+ * per-letter clip boxes without severing the strokes between them. The
+ * per-letter exit there translates and fades instead of rolling behind a mask.
+ * Safe to split at all only because the file carries no `GPOS` and no `kern` —
+ * per-letter boxes preserve the exact advances — and its one default `GSUB`
+ * feature is `liga`, which has no pair to form in "National Foods".
+ *
+ * `adjustFontFallback` off for the same reason SpotifyMix has it off: no
+ * system fallback has metrics anywhere near a brush script, so a metric-matched
+ * fallback would make the swap more visible, not less. The preloader does not
+ * mount its wordmark until `document.fonts.ready` anyway.
+ *
+ * Corinthia used to live here for the About caption and was dropped with it —
+ * `font-script` had no callers left.
+ */
+const kactigona = localFont({
+  adjustFontFallback: false,
+  display: "swap",
+  src: "../../public/Kactigona.ttf",
+  style: "normal",
+  variable: "--font-kactigona",
+  weight: "400",
 });
 
 // The updated font for the quote in the About section.
@@ -70,7 +86,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html
       lang="en"
-      className={`${spotifyMix.variable} ${geistMono.variable} ${archivo.variable} ${corinthia.variable} ${eduQldBeginner.variable} h-full bg-cream antialiased`}
+      className={`${spotifyMix.variable} ${geistMono.variable} ${archivo.variable} ${eduQldBeginner.variable} ${kactigona.variable} h-full bg-cream antialiased`}
     >
       <body className="flex min-h-full flex-col">
         <SmoothScroll>{children}</SmoothScroll>

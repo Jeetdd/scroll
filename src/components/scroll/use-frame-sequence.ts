@@ -70,7 +70,7 @@ function plan(): { order: number[]; gate: number } {
  * decoded data behind an `Image` it hasn't painted lately. Across 241 frames
  * that is the difference between a working page and an out-of-memory tab.
  */
-export function useFrameSequence(): FrameSequence {
+export function useFrameSequence(enabled = true): FrameSequence {
   const framesRef = useRef<(HTMLImageElement | null)[]>(
     new Array(FRAME_COUNT).fill(null),
   );
@@ -78,6 +78,18 @@ export function useFrameSequence(): FrameSequence {
   const [progress, setProgress] = useState(0);
 
   useEffect(() => {
+    // Reduced motion swaps the pinned scene for a static one, which needs no
+    // frames — so there is nothing to fetch and nothing to wait on. Reported
+    // as finished rather than never starting: the preloader gates on `ready`,
+    // and a sequence that is never going to load is still a sequence that has
+    // finished loading as far as the curtain is concerned. The flip happens
+    // here rather than in the initial state because the media-query hook
+    // starts `false` and corrects itself a tick later.
+    if (!enabled) {
+      setProgress(1);
+      setReady(true);
+      return;
+    }
     // Phones get a tier cropped to their own orientation — the sequence is
     // drawn full-bleed, so a landscape frame on an upright phone would be
     // mostly cropped away. A small screen held sideways still wants the
@@ -129,7 +141,7 @@ export function useFrameSequence(): FrameSequence {
     return () => {
       cancelled = true;
     };
-  }, []);
+  }, [enabled]);
 
   return { framesRef, ready, progress };
 }

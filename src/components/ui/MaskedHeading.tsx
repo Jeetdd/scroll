@@ -26,6 +26,13 @@ export interface MaskedHeadingProps {
   drift?: number;
   /** `none` settles the type where it lands — the reduced-motion telling. */
   reveal?: "rise" | "none";
+  /**
+   * Arms the rise only once this resolves. The intro heading is at the top of
+   * the document, so it is intersecting from the first frame and would play its
+   * whole rise behind the preloader. Opt-in: headings with nothing covering
+   * them leave it unset and observe immediately.
+   */
+  hold?: Promise<void> | null;
   duration?: number;
   stagger?: number;
   align?: "left" | "center" | "right";
@@ -45,6 +52,7 @@ const MaskedHeading: React.FC<MaskedHeadingProps> = ({
   parallax = 26,
   drift = 18,
   reveal = "rise",
+  hold = null,
   duration = 1.1,
   stagger = 0.09,
   align = "center",
@@ -244,27 +252,47 @@ const MaskedHeading: React.FC<MaskedHeadingProps> = ({
     settle();
     gsap.set(glyphs, { y: riseDistance() });
 
+    let cancelled = false;
+    let io: IntersectionObserver | null = null;
+
     // Played once, when the heading is a quarter into view.
-    const io = new IntersectionObserver(
-      (entries) => {
-        if (!entries.some((e) => e.isIntersecting)) return;
-        tweenRef.current?.kill();
-        tweenRef.current = gsap.fromTo(
-          glyphs,
-          { y: riseDistance() },
-          { y: 0, duration, stagger, ease: "power4.out", overwrite: "auto" },
-        );
-        io.disconnect();
-      },
-      { threshold: 0.25 },
-    );
-    io.observe(root);
+    const arm = () => {
+      if (cancelled) return;
+      io = new IntersectionObserver(
+        (entries) => {
+          if (!entries.some((e) => e.isIntersecting)) return;
+          tweenRef.current?.kill();
+          tweenRef.current = gsap.fromTo(
+            glyphs,
+            { y: riseDistance() },
+            { y: 0, duration, stagger, ease: "power4.out", overwrite: "auto" },
+          );
+          io?.disconnect();
+        },
+        { threshold: 0.25 },
+      );
+      io.observe(root);
+    };
+
+    if (hold) {
+      // Raced against a deadline rather than awaited outright. Whatever holds
+      // the gate is a different component's problem, and a headline stuck at
+      // `y: riseDistance()` for good is a blank hero — the wrong way to fail.
+      const timer = setTimeout(arm, 6000);
+      hold.then(() => {
+        clearTimeout(timer);
+        arm();
+      });
+    } else {
+      arm();
+    }
 
     return () => {
-      io.disconnect();
+      cancelled = true;
+      io?.disconnect();
       tweenRef.current?.kill();
     };
-  }, [reveal, duration, stagger, words]);
+  }, [reveal, hold, duration, stagger, words]);
 
   // A polymorphic `tag` can't be typed narrowly enough to also take a ref.
   // biome-ignore lint/suspicious/noExplicitAny: polymorphic element type
