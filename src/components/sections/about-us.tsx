@@ -12,6 +12,7 @@ import Image from "next/image";
 import { type ReactNode, useRef, useState } from "react";
 import { IN_VIEW, Reveal } from "@/components/ui/reveal";
 import { EASE_OUT } from "@/lib/ease";
+import { useMediaQuery } from "@/lib/use-media-query";
 import { usePrefersReducedMotion } from "@/lib/use-prefers-reduced-motion";
 
 /**
@@ -56,6 +57,34 @@ export const EYEBROW = `${TRIM} font-editorial font-semibold text-[15px] upperca
 export const HEADLINE = `${TRIM} font-editorial font-extrabold text-[clamp(1.75rem,4vw,2.5625rem)] uppercase leading-[1.293] text-black`;
 
 export const BODY = `${TRIM} font-editorial text-[16px] capitalize leading-[30px] text-slate`;
+
+/**
+ * The card hover lift, shared by /about's USP grid and /team's pledge grid.
+ *
+ * `translate`, not `transform`. Tailwind v4 writes lifts to the standalone
+ * property, which leaves Motion's entrance transform on the same element alone
+ * instead of the two fighting over one declaration.
+ *
+ * Exported for the same reason the type scale is: this was two byte-identical
+ * copies in two files, which is a token waiting to drift.
+ */
+export const LIFT =
+  "transition-[translate,box-shadow] duration-[250ms] ease-out pointer-fine:hover:shadow-[0_18px_50px_rgba(0,0,0,0.08)] motion-safe:pointer-fine:hover:-translate-y-1";
+
+/**
+ * Press feedback for the site's pill buttons.
+ *
+ * The scale is what makes a button feel like it heard the tap, and it has to
+ * land on the press rather than the release — so it is `:active`, not a click
+ * handler. 120ms for the scale against 200ms for the colour: the response is
+ * the fast half, the recolour is allowed to follow.
+ *
+ * `scale`, not `transform`, in the transition list. Tailwind v4 writes
+ * `scale-*` to the standalone property, so a `transition-[transform]` never
+ * sees it and the press lands as an instant snap instead of a squeeze.
+ */
+export const PRESS =
+  "transition-[background-color,scale,box-shadow] duration-[200ms,120ms,200ms] ease-out active:scale-[0.97]";
 
 /** The lockup that opens every section: eyebrow, 25px, headline. */
 export function SectionHead({
@@ -240,23 +269,32 @@ export function AboutHero() {
             seam at 67.5% of the still — exactly where the white fade starts.
             Below `lg` the column is too narrow to overlap anything, so the
             still just follows the copy. */}
+        {/* `mix-blend-multiply` sits on `Reveal`'s own element, not on the
+            `Image` inside it. Motion leaves a transform on that element, which
+            makes it a stacking context — and a blend mode on a *descendant* of
+            one only ever sees that context's own backdrop, which is empty. On
+            the image the still rendered on an opaque white plate over the
+            cream; out here the blend is against the page behind it, which is
+            what it needs to see. Same construction as /team's collage. */}
         <Reveal
-          className="mx-auto w-full max-w-[898px] lg:-mt-[403px]"
+          className="mx-auto w-full max-w-[898px] mix-blend-multiply lg:-mt-[403px]"
           delay={0.1}
         >
           <div className="relative mt-10 aspect-[898/598] lg:mt-0">
             <Image
               alt="Ground asafoetida heaped in a wooden spoon, with resin pearls scattered around it"
-              className="object-contain mix-blend-multiply"
+              className="object-contain"
               fill
               priority
               sizes="(min-width: 1024px) 898px, 100vw"
               src="/about-us/hero-spoon.png"
             />
-            <div
-              aria-hidden
-              className="absolute inset-0 bg-gradient-to-b from-[67.5%] from-transparent to-white/60"
-            />
+            {/* The `from-transparent to-white/60` scrim that used to sit here
+                is gone with the blend fix above. It existed to hide the
+                cream/white seam the opaque white plate created — and under
+                `mix-blend-multiply` it is a no-op anyway, because white
+                multiplied against anything is the identity. Multiply handles
+                the seam correctly on its own. */}
           </div>
         </Reveal>
       </div>
@@ -304,18 +342,21 @@ const MILESTONES = [
  * page that carries meaning rather than polish — the line being drawn IS the
  * chronology the copy is describing.
  *
- * The stagger is 0.3s against a 0.6s draw, so a row arrives while the rail
- * above it is still travelling. Matching them exactly (draw, pause, next)
- * stretched the sequence past 2s and read as a loading bar.
+ * Each row carries its own trigger rather than the list staggering all three
+ * from one. The list is about 1100px tall, so a single trigger on the `ol`
+ * fired when row one appeared and rows two and three then drew, paused and
+ * finished entirely below the fold — by the time a reader scrolled to 2001 the
+ * rail into it was long since settled. No duration fixes that; the motion was
+ * running where nobody was looking, which is what "the animations are too fast
+ * to see" actually was.
+ *
+ * Per row it is also the truer reading of the block: the rail draws into each
+ * milestone as you arrive at it, so the line being drawn tracks the
+ * chronology the copy is describing instead of racing ahead of it.
  */
-const TIMELINE: Variants = {
-  hidden: {},
-  shown: { transition: { staggerChildren: 0.6 } },
-};
-
 const TIMELINE_ROW: Variants = {
-  hidden: { opacity: 0, y: 24 },
-  shown: { opacity: 1, y: 0, transition: { duration: 1.2, ease: EASE_OUT } },
+  hidden: { opacity: 0, y: 28 },
+  shown: { opacity: 1, y: 0, transition: { duration: 0.9, ease: EASE_OUT } },
 };
 
 /** 0.6, not 0 — a marker that grows out of nothing reads as an effect. */
@@ -324,7 +365,7 @@ const TIMELINE_DOT: Variants = {
   shown: {
     opacity: 1,
     scale: 1,
-    transition: { duration: 0.7, ease: EASE_OUT },
+    transition: { duration: 0.6, ease: EASE_OUT },
   },
 };
 
@@ -332,7 +373,7 @@ const TIMELINE_RAIL: Variants = {
   hidden: { scaleY: 0 },
   shown: {
     scaleY: 1,
-    transition: { duration: 1.2, delay: 0.24, ease: EASE_OUT },
+    transition: { duration: 0.9, delay: 0.16, ease: EASE_OUT },
   },
 };
 
@@ -386,14 +427,17 @@ export function AboutStory() {
               through four variants. It drops every transform in this subtree —
               the draw, the pop, the rise — and leaves the opacity fades. */}
           <MotionConfig reducedMotion="user">
-            <motion.ol
-              initial="hidden"
-              variants={TIMELINE}
-              viewport={IN_VIEW}
-              whileInView="shown"
-            >
+            {/* A plain `ol`. The trigger lives on each row below — see the
+                note on `TIMELINE_ROW`. The dot and the rail inside a row still
+                inherit their state from it, because a Motion element with
+                `variants` propagates to Motion children that have `variants`
+                and no animation props of their own. */}
+            <ol>
               {MILESTONES.map((milestone, i) => (
                 <motion.li
+                  initial="hidden"
+                  viewport={IN_VIEW}
+                  whileInView="shown"
                   // 120px of trailing space per row, with the rule at its
                   // midpoint — that reproduces the comp's 249px row pitch and
                   // puts the separator 60px clear of the copy either side.
@@ -401,7 +445,7 @@ export function AboutStory() {
                   // comp draws it. The rail below used to be a `before` pseudo;
                   // it is a real element now because a pseudo cannot be handed
                   // to Motion, and drawing it is the whole point of this block.
-                  className="relative grid grid-cols-[15px_1fr] items-start gap-x-[30px] pb-[120px] after:absolute after:right-0 after:bottom-[60px] after:left-[48px] after:h-px after:bg-black/10 last:pb-0 last:after:hidden sm:grid-cols-[15px_1fr_52px]"
+                  className="relative grid grid-cols-[15px_1fr_44px] items-start gap-x-[16px] pb-[120px] after:absolute after:right-0 after:bottom-[60px] after:left-[48px] after:h-px after:bg-black/10 last:pb-0 last:after:hidden sm:grid-cols-[15px_1fr_52px] sm:gap-x-[30px]"
                   key={milestone.year}
                   // The whole row is the target, not just the arrow. A 52px
                   // marker beside 250px of copy is a small thing to find, and
@@ -446,33 +490,52 @@ export function AboutStory() {
                     </p>
                   </div>
                   {/* A real button, not the comp's static marker: the row's
-                      hover is pointer-only, so this is what a keyboard reaches
-                      the same thing through. The row is only ever swapped —
-                      never navigated to — so there is nothing for an anchor to
-                      point at. No `onMouseEnter` here; the row above already
-                      catches it. */}
+                      hover is pointer-only, so this is what a keyboard — and a
+                      touchscreen — reaches the same thing through. It used to
+                      be `hidden sm:block`, which left every phone with no
+                      hover and no control, so the photo column was pinned to
+                      the first milestone for the whole block. The comp's 52px
+                      marker drops to 44 below `sm` (still over the 44px touch
+                      target floor) so the copy column keeps its width.
+
+                      The row is only ever swapped — never navigated to — so
+                      there is nothing for an anchor to point at. `onClick` for
+                      touch, `onFocus` for the keyboard; no `onMouseEnter`
+                      here, the row above already catches the pointer. */}
                   <button
                     aria-label={`Show ${milestone.year}: ${milestone.title}`}
                     aria-pressed={active === i}
-                    className="mt-[39px] hidden size-[52px] rounded-full focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-vermilion sm:block"
+                    className={`relative mt-[39px] size-[44px] rounded-full focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-vermilion sm:size-[52px] ${PRESS}`}
+                    onClick={() => setActive(i)}
                     onFocus={() => setActive(i)}
                     type="button"
                   >
+                    {/* Stacked and cross-faded rather than a swapped `src`.
+                        This is the only affordance on the block, and hard-
+                        cutting between two SVGs gave the one thing a reader
+                        can actually press no transition at all — the marker
+                        just was different afterwards. 150ms is short enough to
+                        still read as immediate feedback on the press. */}
                     <Image
                       alt=""
-                      className="size-[52px]"
+                      className="absolute inset-0 size-full transition-opacity duration-150 ease-out"
                       height={52}
-                      src={
-                        active === i
-                          ? "/about-us/story-arrow-active.svg"
-                          : "/about-us/story-arrow.svg"
-                      }
+                      src="/about-us/story-arrow.svg"
+                      style={{ opacity: active === i ? 0 : 1 }}
+                      width={52}
+                    />
+                    <Image
+                      alt=""
+                      className="absolute inset-0 size-full transition-opacity duration-150 ease-out"
+                      height={52}
+                      src="/about-us/story-arrow-active.svg"
+                      style={{ opacity: active === i ? 1 : 0 }}
                       width={52}
                     />
                   </button>
                 </motion.li>
               ))}
-            </motion.ol>
+            </ol>
           </MotionConfig>
 
           <Reveal delay={0.12}>
@@ -487,12 +550,24 @@ export function AboutStory() {
                 <Image
                   alt={active === i ? milestone.alt : ""}
                   aria-hidden={active !== i}
-                  className="object-cover transition-opacity duration-500 ease-out"
+                  // 250ms, not 500: this fires every time a pointer crosses a
+                  // row, so it is a hover response rather than an entrance,
+                  // and half a second of it made scanning the three rows feel
+                  // like the column was lagging behind the cursor.
+                  //
+                  // The outgoing still blurs 2px as it leaves. Without it a
+                  // crossfade is visibly two photographs holding at 50% each;
+                  // the blur bridges them so the eye reads one image changing
+                  // rather than a pair swapping places.
+                  className="object-cover transition-[opacity,filter] duration-[250ms] ease-out"
                   fill
                   key={milestone.year}
                   sizes="(min-width: 1024px) 570px, 100vw"
                   src={milestone.image}
-                  style={{ opacity: active === i ? 1 : 0 }}
+                  style={{
+                    filter: active === i ? "blur(0px)" : "blur(2px)",
+                    opacity: active === i ? 1 : 0,
+                  }}
                 />
               ))}
             </div>
@@ -538,7 +613,14 @@ export function AboutPhilosophy() {
     offset: ["start end", "end start"],
     target: band,
   });
+  //
+  // Composed into a full `transform` string rather than handed to Motion's
+  // `scale` shorthand. The shorthand is not hardware-accelerated — it runs on
+  // `requestAnimationFrame` on the main thread — and this is a 100vw still
+  // being rescaled on every scroll frame, which is the worst case for that.
+  // Same construction, and the same reason, as /team's hero collage.
   const scale = useTransform(scrollYProgress, [0, 1], [1, 1.08]);
+  const bandScale = useMotionTemplate`scale(${scale})`;
 
   // The watermark's fill line, measured against the watermark itself rather
   // than the band around it. Reading it off scroll position (rather than
@@ -580,7 +662,7 @@ export function AboutPhilosophy() {
       <motion.div
         aria-hidden
         className="-z-10 absolute inset-0"
-        style={{ scale: reduced ? 1 : scale }}
+        style={{ transform: reduced ? "scale(1)" : bandScale }}
       >
         <Image
           alt=""
@@ -719,23 +801,30 @@ const USPS = [
   },
 ];
 
-const USP_GRID: Variants = {
-  hidden: {},
-  shown: { transition: { staggerChildren: 0.15 } },
-};
-
-const USP_CARD: Variants = {
-  hidden: { opacity: 0, y: 20 },
-  shown: { opacity: 1, y: 0, transition: { duration: 1.2, ease: EASE_OUT } },
-};
-
 /**
- * `translate`, not `transform`. Tailwind v4 writes lifts to the standalone
- * property, which leaves Motion's entrance transform on the same element alone
- * instead of the two fighting over one declaration.
+ * Per card, not per grid — the same trigger move as the timeline above, and
+ * for the same reason: stacked to one column on a phone this grid is over
+ * 1500px tall, so one trigger on the container animated cards three through
+ * five hundreds of pixels below the fold and they were settled long before
+ * anyone scrolled to them.
+ *
+ * `custom` carries the beat, because a container-level `staggerChildren` is
+ * exactly the thing being given up. Alternating 0 / 90ms by index keeps the
+ * cascade a row of cards is worth having, at every breakpoint and without
+ * caring how many columns the row actually has — this grid is 1 column, then
+ * 2, then an irregular 2-and-3 across six tracks, so anything that counted
+ * columns would need three answers and get the last row wrong anyway. Down a
+ * single column the 90ms lands as a hair of offset between neighbours rather
+ * than a wait.
  */
-const USP_LIFT =
-  "transition-[translate,box-shadow] duration-[250ms] ease-out pointer-fine:hover:shadow-[0_18px_50px_rgba(0,0,0,0.08)] motion-safe:pointer-fine:hover:-translate-y-1";
+const USP_CARD: Variants = {
+  hidden: { opacity: 0, y: 28 },
+  shown: (beat = 0) => ({
+    opacity: 1,
+    y: 0,
+    transition: { delay: beat, duration: 1, ease: EASE_OUT },
+  }),
+};
 
 export function AboutUsps() {
   return (
@@ -758,21 +847,22 @@ export function AboutUsps() {
 
             The cards used to sit inside one `Reveal` around this grid, so all
             five arrived on the same frame. Staggered, the row reads as five
-            things rather than one block — 60ms, enough to see and short enough
-            that the last card isn't still waiting. */}
+            things rather than one block — 100ms, enough to see as a cascade
+            and short enough that the fifth card isn't still waiting. 150ms
+            against a 1.2s card put it 1.8s behind the headline and turned the
+            cascade into a queue; 60ms against 0.7s closed the gap so far that
+            the five may as well have arrived together again. */}
         <MotionConfig reducedMotion="user">
-          <motion.div
-            className="mt-[60px] grid gap-[30px] sm:grid-cols-2 lg:mt-[80px] lg:grid-cols-6"
-            initial="hidden"
-            variants={USP_GRID}
-            viewport={IN_VIEW}
-            whileInView="shown"
-          >
+          <div className="mt-[60px] grid gap-[30px] sm:grid-cols-2 lg:mt-[80px] lg:grid-cols-6">
             {USPS.map((usp, i) => (
               <motion.article
-                className={`rounded-[20px] bg-cream p-8 sm:p-10 ${USP_LIFT} ${usp.span}`}
+                className={`rounded-[20px] bg-cream p-8 sm:p-10 ${LIFT} ${usp.span}`}
+                custom={(i % 2) * 0.09}
+                initial="hidden"
                 key={usp.title}
                 variants={USP_CARD}
+                viewport={IN_VIEW}
+                whileInView="shown"
               >
                 <div className="flex items-start justify-between gap-6">
                   <Image
@@ -800,7 +890,7 @@ export function AboutUsps() {
                 </p>
               </motion.article>
             ))}
-          </motion.div>
+          </div>
         </MotionConfig>
       </div>
     </section>
@@ -846,11 +936,30 @@ const VISION_CARD: Variants = {
     backdropFilter: "blur(7.5px)",
     opacity: 1,
     scale: 1,
-    transition: { duration: 1.2, ease: EASE_OUT },
+    transition: { duration: 1, ease: EASE_OUT },
+  },
+};
+
+/**
+ * The same arrival with no glass in it, for `prefers-reduced-transparency`.
+ *
+ * It has to be a second variant rather than a class override: the blur above
+ * is an inline style Motion writes every frame, and no `opaque-ui:` utility
+ * can outrank that. Dropping the property entirely also drops the per-frame
+ * backdrop recompute, which is the expensive half of this animation.
+ */
+const VISION_CARD_OPAQUE: Variants = {
+  hidden: { opacity: 0, scale: 0.97 },
+  shown: {
+    opacity: 1,
+    scale: 1,
+    transition: { duration: 1, ease: EASE_OUT },
   },
 };
 
 export function AboutVision() {
+  const opaque = useMediaQuery("(prefers-reduced-transparency: reduce)");
+
   // 120 + 552 of card + 120 = the comp's 792px band.
   return (
     <section className="relative isolate overflow-hidden bg-cream px-6 py-20 sm:px-8 lg:py-[120px]">
@@ -888,9 +997,9 @@ export function AboutVision() {
           `lg` the veil is opaque enough to read against. */}
       <MotionConfig reducedMotion="user">
         <motion.div
-          className="mx-auto max-w-[793px] rounded-[20px] bg-white/70 py-[55px] shadow-[0_0_80px_rgba(0,0,0,0.08)] backdrop-blur-[7.5px] lg:bg-white/20"
+          className="mx-auto max-w-[793px] rounded-[20px] bg-white/70 py-[55px] shadow-[0_0_80px_rgba(0,0,0,0.08)] backdrop-blur-[7.5px] opaque-ui:bg-white opaque-ui:backdrop-blur-none lg:bg-white/20 lg:opaque-ui:bg-white"
           initial="hidden"
-          variants={VISION_CARD}
+          variants={opaque ? VISION_CARD_OPAQUE : VISION_CARD}
           viewport={IN_VIEW}
           whileInView="shown"
         >
@@ -1030,7 +1139,7 @@ export function AboutCertificates() {
               dossier is something you have to ask for, and the form is the
               only place on the site that takes a request — so it goes there. */}
           <a
-            className="mt-[50px] inline-flex h-[47px] min-w-[324px] items-center justify-center rounded-full bg-vermilion px-8 font-editorial font-bold text-[13px] uppercase leading-none tracking-[0.02em] text-white transition-colors duration-200 ease-out hover:bg-[#c8151b] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-vermilion"
+            className={`mt-[50px] inline-flex h-[47px] min-w-[324px] items-center justify-center rounded-full bg-vermilion px-8 font-editorial font-bold text-[13px] uppercase leading-none tracking-[0.02em] text-white hover:bg-[#c8151b] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-vermilion ${PRESS}`}
             href="#contact"
           >
             Request our certification dossier
@@ -1053,7 +1162,12 @@ export function AboutCertificates() {
               both ends so a card enters and leaves rather than being cut off
               at a hard edge. */}
           <div className="w-full overflow-hidden [mask-image:linear-gradient(to_right,transparent,black_8%,black_92%,transparent)]">
-            <div className="flex w-max motion-safe:animate-cert-marquee hover:[animation-play-state:paused]">
+            {/* `pointer-fine`, not a bare `hover:` — the variant exists for
+                the devices that claim hover but drive it with something
+                coarse, where a tap latches the state and parks the track
+                until the next touch somewhere else. Every other hover on
+                these two pages is already gated this way. */}
+            <div className="flex w-max motion-safe:animate-cert-marquee pointer-fine:hover:[animation-play-state:paused]">
               {CERT_TRACK.map((certificate, i) => (
                 <div
                   aria-hidden={i >= CERTIFICATES.length}

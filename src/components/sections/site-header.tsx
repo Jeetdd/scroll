@@ -5,6 +5,7 @@ import { AnimatePresence, motion } from "motion/react";
 import Image from "next/image";
 import Link from "next/link";
 import { type MouseEvent, useEffect, useState } from "react";
+import { PRESS } from "@/components/sections/about-us";
 import { EASE_DRAWER } from "@/lib/ease";
 
 /**
@@ -35,11 +36,17 @@ const HEADER_OFFSET = 88;
 const LINK =
   "font-editorial font-semibold text-[13px] uppercase leading-none tracking-[0.18em] text-ink transition-colors duration-200 ease-out hover:text-vermilion focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-vermilion";
 
-const CTA =
-  "inline-flex h-[38px] items-center justify-center rounded-full bg-vermilion px-5 font-editorial font-extrabold text-[12px] uppercase leading-none tracking-[0.1em] text-white transition-colors duration-200 ease-out hover:bg-[#c8151b] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-vermilion";
+const CTA = `inline-flex h-[38px] items-center justify-center rounded-full bg-vermilion px-5 font-editorial font-extrabold text-[12px] uppercase leading-none tracking-[0.1em] text-white hover:bg-[#c8151b] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-vermilion ${PRESS}`;
 
+/**
+ * A bare `transition` transitions every property, including ones nothing here
+ * animates — the two that actually move are the rotation and the translate, so
+ * those are what the list names. 200ms rather than 300: this is the control
+ * every mobile navigation goes through, and the toggle should land before the
+ * panel it opens rather than alongside it.
+ */
 const BAR =
-  "block h-[2px] w-6 rounded-full bg-ink transition duration-300 ease-out";
+  "block h-[2px] w-6 rounded-full bg-ink transition-[rotate,translate,opacity] duration-200 ease-out";
 
 export function SiteHeader() {
   const [scrolled, setScrolled] = useState(false);
@@ -141,7 +148,10 @@ export function SiteHeader() {
       />
       <div
         aria-hidden
-        className={`pointer-events-none absolute inset-0 border-ink/8 border-b bg-cream/72 backdrop-blur-[20px] backdrop-saturate-[180%] transition-opacity duration-500 ease-out ${
+        // `opaque-ui:` is the reduced-transparency half of reduced motion:
+        // the blur goes and the tint goes solid together, because a 72% cream
+        // wash with no blur under it is less legible than either extreme.
+        className={`pointer-events-none absolute inset-0 border-ink/8 border-b bg-cream/72 backdrop-blur-[20px] backdrop-saturate-[180%] opaque-ui:bg-cream opaque-ui:backdrop-blur-none opaque-ui:backdrop-saturate-100 transition-opacity duration-500 ease-out ${
           scrolled || open ? "opacity-100" : "opacity-0"
         }`}
       />
@@ -224,7 +234,7 @@ export function SiteHeader() {
         {open && (
           <motion.div
             animate={{ opacity: 1, y: 0 }}
-            className="absolute inset-x-0 top-full border-ink/8 border-b bg-cream/95 backdrop-blur-[20px] backdrop-saturate-[180%] lg:hidden"
+            className="absolute inset-x-0 top-full border-ink/8 border-b bg-cream/95 backdrop-blur-[20px] backdrop-saturate-[180%] opaque-ui:bg-cream opaque-ui:backdrop-blur-none opaque-ui:backdrop-saturate-100 lg:hidden"
             exit={{ opacity: 0, y: -12 }}
             id="primary-menu"
             initial={{ opacity: 0, y: -12 }}

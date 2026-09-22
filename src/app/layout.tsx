@@ -2,8 +2,8 @@ import type { Metadata, Viewport } from "next";
 import {
   Archivo,
   Corinthia,
-  Geist_Mono,
   Edu_QLD_Beginner,
+  Geist_Mono,
 } from "next/font/google";
 import localFont from "next/font/local";
 import { SmoothScroll } from "@/components/providers/smooth-scroll";

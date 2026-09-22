@@ -66,15 +66,16 @@ export function SiteFooter() {
 
         <hr className="border-t border-ink/40 2xl:border-ink/20" />
 
-        {/* No inset on this one. It is the last element on the document, and a
-            bottom inset pulls the root's bottom edge up — so the final line on
-            the page can sit below it even at full scroll and never fire. At 0
-            it reveals as soon as it touches the viewport, which for the last
-            line is the right moment anyway. */}
+        {/* This used to override the inset to `0px`: the shared margin was a
+            negative bottom inset, which pulls the root's bottom edge up, and
+            the last line on the document could sit below it even at full
+            scroll and so never fire at all. The shared margin is a positive
+            pre-trigger now, which grows the root downward instead — the case
+            this was working around cannot happen, and an override would only
+            make the final line the one element that reveals late. */}
         <Reveal
           className="flex flex-col sm:flex-row justify-between items-center py-6 text-[13px] font-editorial font-medium text-ink gap-4"
           delay={STAGGER.legal}
-          margin="0px"
         >
           <p>
             © 2026{" "}

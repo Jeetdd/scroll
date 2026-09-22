@@ -17,11 +17,26 @@ import { usePrefersReducedMotion } from "@/lib/use-prefers-reduced-motion";
  * its threshold never animates: it stays at `opacity: 0` permanently. The
  * certificates band hit exactly that and rendered invisible.
  *
- * The inset is bottom-only and in viewport units, so it means the same thing
- * to a 40px eyebrow and an 800px collage: fire when the element's top edge is
- * a tenth of the screen above the bottom. Enough that nothing animates on a
- * one-pixel graze, early enough that it has finished by the time it is
- * properly in front of the reader.
+ * The margin is bottom-only, in viewport units, and **slightly positive** — it
+ * grows the observer's box a twentieth of a screen *below* the fold.
+ *
+ * Both signs have been wrong here, in opposite directions, and the window
+ * between them is narrow:
+ *
+ *  - `-10%` shrank the box, pulling the root's bottom edge *up*. Nothing fired
+ *    until its top had already climbed a tenth of the screen in, so a block
+ *    sitting low inside a tall section — the USP grid under its headline, the
+ *    card row under its quote — held its full layout height at `opacity: 0`
+ *    while visibly on screen. A band of blank page.
+ *  - `+20%` overshot the other way. A fifth of a screen of lead is several
+ *    seconds at the pace someone actually reads at, so every entrance ran to
+ *    completion below the fold and the page arrived pre-settled. No blank
+ *    band, but no animation either — the motion was all happening where
+ *    nobody was looking.
+ *
+ * `+5%` is the seam. It is enough that an element is already fading as its
+ * first pixels appear, so nothing is ever laid out blank; it is small enough
+ * that the travel still plays in front of the reader rather than behind them.
  *
  * Exported because the staggered containers drive Motion directly rather than
  * through `Reveal`, and a second opinion about what "on screen" means is how
@@ -29,7 +44,7 @@ import { usePrefersReducedMotion } from "@/lib/use-prefers-reduced-motion";
  */
 export const IN_VIEW = {
   amount: "some",
-  margin: "0px 0px -10% 0px",
+  margin: "0px 0px 5% 0px",
   once: true,
 } as const;
 
@@ -60,16 +75,23 @@ export function Reveal({
   // `y: { duration: 0 }` rather than dropping the offset: the element snaps to
   // its final position at t=0, still at opacity 0, and cross-fades from there.
   // Reduced motion means gentler, not absent — the fade still says "this is new".
+  //
+  // 0.9s and 36px of travel. With only 5% of lead the entrance now plays on
+  // screen rather than below it, which is what the duration is for — at 0.6s
+  // against a 20% pre-trigger the same move was over before anyone saw it and
+  // the page read as though nothing animated at all. Long enough to register
+  // as motion, short enough that a reader scrolling at pace isn't waiting on
+  // copy to finish arriving.
   const reduced = usePrefersReducedMotion();
 
   return (
     <motion.div
       className={className}
-      initial={{ opacity: 0, y: 28 }}
+      initial={{ opacity: 0, y: 36 }}
       transition={
         reduced
           ? { duration: 0.3, delay, ease: EASE_OUT, y: { duration: 0 } }
-          : { duration: 0.85, delay, ease: EASE_OUT }
+          : { duration: 0.9, delay, ease: EASE_OUT }
       }
       viewport={{ once: IN_VIEW.once, margin, amount }}
       whileInView={{ opacity: 1, y: 0 }}

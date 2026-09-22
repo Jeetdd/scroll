@@ -1,6 +1,7 @@
 "use client";
 
 import type { ComponentType, FormEvent, ReactNode, SVGProps } from "react";
+import { PRESS } from "@/components/sections/about-us";
 import { Reveal } from "@/components/ui/reveal";
 
 const INBOX = "info@nationalfoods.co.in";
@@ -433,9 +434,12 @@ export function Contact() {
               </div>
             </div>
 
-            {/* Submit Button */}
+            {/* Submit Button. `PRESS` carries the squeeze — the transition
+                list here used to name `transform`, which Tailwind v4 never
+                writes for `scale-*` (it uses the standalone `scale` property),
+                so the press was landing as an instant snap. */}
             <button
-              className="mx-auto flex h-[54px] w-full items-center justify-center gap-2 rounded-full bg-vermilion px-8 font-editorial font-semibold text-[15px] text-white transition-[background-color,transform] duration-[160ms,100ms] ease-out hover:bg-[#c8151b] focus-visible:outline-2 focus-visible:outline-white focus-visible:outline-offset-2 active:scale-[0.98] sm:max-w-[320px]"
+              className={`mx-auto flex h-[54px] w-full items-center justify-center gap-2 rounded-full bg-vermilion px-8 font-editorial font-semibold text-[15px] text-white hover:bg-[#c8151b] focus-visible:outline-2 focus-visible:outline-white focus-visible:outline-offset-2 sm:max-w-[320px] ${PRESS}`}
               type="submit"
             >
               Begin The Partnership <ArrowRightIcon className="mt-0.5 size-5" />

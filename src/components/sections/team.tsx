@@ -7,6 +7,7 @@ import {
   EYEBROW,
   HERO_FILL_IN,
   HeroLines,
+  LIFT,
   SectionHead,
   TRIM,
 } from "@/components/sections/about-us";
@@ -76,9 +77,14 @@ export function TeamHero() {
                   in. It's the one piece of motion here that explains the
                   page — the picture filling the words is the headline's whole
                   idea, and a static fill hides that it's a photograph at all.
-                  Opacity only, so it's a single compositor property and it
-                  survives reduced motion untouched: a fill appearing is
-                  comprehension, not vestibular movement.
+                  Opacity only, so it's a single compositor property.
+
+                  `HERO_FILL_IN` is `motion-safe:`-gated, so under reduced
+                  motion the fade doesn't run and the photo is simply already
+                  in the letterforms — the design survives, the timing doesn't.
+                  That is the right thing to lose: the beat only means anything
+                  against the roll above it, which is gated too, so keeping the
+                  fade alone would leave it arriving late for no reason.
 
                   CSS now, not Motion: this copy must not roll (the transform
                   breaks its `bg-clip-text` outright — see `HERO_FILL_IN`), and
@@ -96,9 +102,9 @@ export function TeamHero() {
 
         <Reveal delay={0.1}>
           <p className={`${BODY} mx-auto mt-[50px] max-w-[675px]`}>
-            National Foods is carried by artisans, specialists, and stewards whose dedication turns
-            hard-won knowledge into consistent purity&nbsp;&mdash; every day, across every
-            generation.
+            National Foods is carried by artisans, specialists, and stewards
+            whose dedication turns hard-won knowledge into consistent
+            purity&nbsp;&mdash; every day, across every generation.
           </p>
         </Reveal>
       </div>
@@ -131,7 +137,7 @@ export function TeamHero() {
           <motion.div
             className="mx-auto w-full max-w-[955px] mix-blend-multiply lg:-mt-[337px]"
             initial={{ opacity: 0, transform: "scale(1.04)" }}
-            transition={{ delay: 0.1, duration: 1.8, ease: EASE_OUT }}
+            transition={{ delay: 0.1, duration: 1.3, ease: EASE_OUT }}
             viewport={IN_VIEW}
             whileInView={{ opacity: 1, transform: "scale(1)" }}
           >
@@ -181,14 +187,26 @@ const ROLES = [
   },
 ];
 
-const CARDS: Variants = {
-  hidden: {},
-  shown: { transition: { staggerChildren: 0.16 } },
-};
-
+/**
+ * Per card, not per grid — the same trigger move as /about's USP grid and
+ * timeline, for the same reason. Both grids here stack to a single column on a
+ * phone, which makes them well over a screen tall; one trigger on the
+ * container fired every card at once, so the ones further down animated and
+ * settled far below the fold and a reader scrolling to them found four stills
+ * that had never appeared to move.
+ *
+ * `custom` carries the beat, since a container-level `staggerChildren` is what
+ * is being given up. Alternating 0 / 90ms by index keeps a row cascading at
+ * every breakpoint — 1, 2 and 4 columns here — without counting columns. Down
+ * a single column that 90ms is a hair of offset between neighbours, not a wait.
+ */
 const CARD: Variants = {
-  hidden: { opacity: 0, y: 20 },
-  shown: { opacity: 1, y: 0, transition: { duration: 1.4, ease: EASE_OUT } },
+  hidden: { opacity: 0, y: 28 },
+  shown: (beat = 0) => ({
+    opacity: 1,
+    y: 0,
+    transition: { delay: beat, duration: 1, ease: EASE_OUT },
+  }),
 };
 
 /**
@@ -209,7 +227,7 @@ const BADGE: Variants = {
   shown: {
     opacity: 1,
     transform: "scale(1)",
-    transition: { delay: 0.18, duration: 0.8, ease: EASE_OUT },
+    transition: { delay: 0.16, duration: 0.7, ease: EASE_OUT },
   },
 };
 
@@ -224,16 +242,18 @@ export function TeamRoles() {
         <div className="grid gap-x-[45px] gap-y-8 lg:grid-cols-[660px_1fr]">
           <Reveal>
             <SectionHead eyebrow="About Team">
-              Not employees. <span className="lg:block text-vermilion">Family.</span>
+              Not employees.{" "}
+              <span className="lg:block text-vermilion">Family.</span>
             </SectionHead>
           </Reveal>
 
           {/* 23px down — the quote sits against the eyebrow, not on it. */}
           <Reveal delay={0.08}>
             <p className={`${BODY} max-w-[675px] lg:mt-[23px]`}>
-              &ldquo;We believe that our workforce is a family rather than employees. There is a lot
-              of trust and belief in the product that we produce, which helps us deliver optimal
-              output even during hard times.&rdquo;
+              &ldquo;We believe that our workforce is a family rather than
+              employees. There is a lot of trust and belief in the product that
+              we produce, which helps us deliver optimal output even during hard
+              times.&rdquo;
             </p>
           </Reveal>
         </div>
@@ -243,15 +263,20 @@ export function TeamRoles() {
             it. `gap-y` is generous for the same reason — when the row wraps,
             a badge has to clear the copy of the card above it. */}
         <MotionConfig reducedMotion="user">
-          <motion.ul
-            className="mt-[80px] grid gap-x-[30px] gap-y-[60px] sm:grid-cols-2 lg:mt-[106px] lg:grid-cols-4"
-            initial="hidden"
-            variants={CARDS}
-            viewport={IN_VIEW}
-            whileInView="shown"
-          >
+          <ul className="mt-[80px] grid gap-x-[30px] gap-y-[60px] sm:grid-cols-2 lg:mt-[106px] lg:grid-cols-4">
             {ROLES.map((role, i) => (
-              <motion.li className="relative" key={role.title} variants={CARD}>
+              // The badge inside still inherits its state from this `li`: a
+              // Motion element with `variants` propagates to Motion children
+              // that have `variants` and no animation props of their own.
+              <motion.li
+                className="relative"
+                custom={(i % 2) * 0.09}
+                initial="hidden"
+                key={role.title}
+                variants={CARD}
+                viewport={IN_VIEW}
+                whileInView="shown"
+              >
                 <div className="relative aspect-[323/309] w-full overflow-hidden rounded-[20px] bg-black/5">
                   <Image
                     alt={role.alt}
@@ -284,7 +309,7 @@ export function TeamRoles() {
                 </p>
               </motion.li>
             ))}
-          </motion.ul>
+          </ul>
         </MotionConfig>
       </div>
     </section>
@@ -316,14 +341,6 @@ const PLEDGES = [
   },
 ];
 
-/**
- * `translate`, not `transform`. Tailwind v4 writes lifts to the standalone
- * property, which leaves Motion's entrance transform on the same element alone
- * instead of the two fighting over one declaration.
- */
-const LIFT =
-  "transition-[translate,box-shadow] duration-[250ms] ease-out pointer-fine:hover:shadow-[0_18px_50px_rgba(0,0,0,0.08)] motion-safe:pointer-fine:hover:-translate-y-1";
-
 export function TeamValues() {
   return (
     <section className="bg-white px-6 py-20 sm:px-8 lg:py-[120px]">
@@ -336,18 +353,16 @@ export function TeamValues() {
         </Reveal>
 
         <MotionConfig reducedMotion="user">
-          <motion.div
-            className="mt-[60px] grid gap-[30px] lg:mt-[80px] lg:grid-cols-2"
-            initial="hidden"
-            variants={CARDS}
-            viewport={IN_VIEW}
-            whileInView="shown"
-          >
+          <div className="mt-[60px] grid gap-[30px] lg:mt-[80px] lg:grid-cols-2">
             {PLEDGES.map((pledge, i) => (
               <motion.article
                 className={`rounded-[20px] bg-cream p-8 sm:p-10 ${LIFT}`}
+                custom={(i % 2) * 0.09}
+                initial="hidden"
                 key={pledge.title}
                 variants={CARD}
+                viewport={IN_VIEW}
+                whileInView="shown"
               >
                 <div className="flex items-start justify-between gap-6">
                   {/* Height is what's fixed — the four glyphs are all 82 tall
@@ -377,7 +392,7 @@ export function TeamValues() {
                 </p>
               </motion.article>
             ))}
-          </motion.div>
+          </div>
         </MotionConfig>
       </div>
     </section>

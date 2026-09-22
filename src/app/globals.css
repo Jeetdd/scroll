@@ -12,6 +12,16 @@
  */
 @custom-variant pointer-fine (@media (hover: hover) and (pointer: fine));
 
+/**
+ * The other half of the reduced-motion setting. Every translucent surface on
+ * the site is a `backdrop-blur` over a fractional background; asked for reduced
+ * transparency, both have to go — dropping the blur but leaving the tint at 20%
+ * is less legible than either extreme. Written as a variant rather than a blunt
+ * `[class*="backdrop-blur"]` override because only the element itself knows
+ * which solid colour it should fall back to.
+ */
+@custom-variant opaque-ui (@media (prefers-reduced-transparency: reduce));
+
 /* Palette sampled directly from the frame sequence, so the page and the
    footage share one set of colours rather than approximating each other. */
 @theme {
