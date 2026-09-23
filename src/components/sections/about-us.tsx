@@ -100,9 +100,7 @@ export function SectionHead({
   return (
     <div>
       <p className={EYEBROW}>{eyebrow}</p>
-      <h2
-        className={`mt-[25px] ${HEADLINE} ${tone === "light" ? "text-white" : ""}`}
-      >
+      <h2 className={`mt-[25px] ${HEADLINE} ${tone === "light" ? "text-white" : ""}`}>
         {children}
       </h2>
     </div>
@@ -123,20 +121,11 @@ export function SectionHead({
  * need it for their photo-fill copy — see `HERO_FILL_IN` below for why that is
  * load-bearing rather than a preference.
  */
-export function HeroLines({
-  lines,
-  roll = true,
-}: {
-  lines: string[];
-  roll?: boolean;
-}) {
+export function HeroLines({ lines, roll = true }: { lines: string[]; roll?: boolean }) {
   return (
     <>
       {lines.map((line, i) => (
-        <span
-          className="-mb-[0.18em] block overflow-hidden pb-[0.18em]"
-          key={line}
-        >
+        <span className="-mb-[0.18em] block overflow-hidden pb-[0.18em]" key={line}>
           {/* `motion-safe` is the whole reduced-motion gate: with no animation
               applied the line simply renders where it lands. */}
           <span
@@ -253,9 +242,8 @@ export function AboutHero() {
 
         <Reveal delay={0.1}>
           <p className={`${BODY} mx-auto mt-[49px] max-w-[675px]`}>
-            India&rsquo;s first and largest processing plant&mdash;shaped by
-            three generations of the Joshi family and one uncompromising
-            standard of purity.
+            India&rsquo;s first and largest processing plant&mdash;shaped by three generations of
+            the Joshi family and one uncompromising standard of purity.
           </p>
         </Reveal>
       </div>
@@ -394,10 +382,7 @@ export function AboutStory() {
         <div className="grid gap-x-[45px] gap-y-10 lg:grid-cols-[660px_1fr]">
           <Reveal>
             <SectionHead eyebrow="Our Story">
-              A small mill.{" "}
-              <span className="lg:block text-vermilion">
-                A singular ambition.
-              </span>
+              A small mill. <span className="lg:block text-vermilion">A singular ambition.</span>
             </SectionHead>
           </Reveal>
 
@@ -683,12 +668,11 @@ export function AboutPhilosophy() {
           </SectionHead>
 
           <p className={`${BODY} mt-[80px] text-white`}>
-            Raw asafoetida resin travels from the Ferula fields of Afghanistan
-            and Iran to our processing complex in Baroda, Gujarat, India. Within
-            this single, unbroken supply chain, we maintain strict Pharma-Grade
-            Manufacturing Standards, including advanced automation, CIP cleaning
-            systems, AI-driven processes and laboratory-backed quality control
-            to ensure minimal human intervention.
+            Raw asafoetida resin travels from the Ferula fields of Afghanistan and Iran to our
+            processing complex in Baroda, Gujarat, India. Within this single, unbroken supply chain,
+            we maintain strict Pharma-Grade Manufacturing Standards, including advanced automation,
+            CIP cleaning systems, AI-driven processes and laboratory-backed quality control to
+            ensure minimal human intervention.
           </p>
         </Reveal>
 
@@ -727,10 +711,7 @@ export function AboutPhilosophy() {
             className={`${TRIM} relative font-editorial font-extrabold text-[clamp(2rem,5.86vw,3.75rem)] uppercase leading-[1.233] tracking-[0.085em] text-transparent`}
             ref={watermark}
           >
-            <span
-              className="block opacity-30"
-              style={{ WebkitTextStroke: "1px #ffffff" }}
-            >
+            <span className="block opacity-30" style={{ WebkitTextStroke: "1px #ffffff" }}>
               {WATERMARK}
             </span>
             {/* `TRIM` again here, and it is load-bearing rather than tidy.
@@ -865,13 +846,7 @@ export function AboutUsps() {
                 whileInView="shown"
               >
                 <div className="flex items-start justify-between gap-6">
-                  <Image
-                    alt=""
-                    className="h-[82px] w-auto"
-                    height={82}
-                    src={usp.icon}
-                    width={82}
-                  />
+                  <Image alt="" className="h-[82px] w-auto" height={82} src={usp.icon} width={82} />
                   <span
                     className={`${TRIM} font-editorial font-bold text-[40px] capitalize leading-[1.16] text-black/20`}
                   >
@@ -1034,19 +1009,17 @@ export function AboutDirector() {
       <div className="mx-auto grid max-w-[1380px] items-center gap-x-[95px] gap-y-12 lg:grid-cols-[675px_1fr]">
         <Reveal>
           <SectionHead eyebrow="Director's Message">
+            <span className="lg:block">&ldquo;We work together, </span>{" "}
             <span className="lg:block">
-              &ldquo;We work together,{" "}
-              <span className="text-vermilion">we</span>
-            </span>{" "}
-            <span className="lg:block">
-              <span className="text-vermilion">grow together.</span>&rdquo;
+              {" "}
+              <span className="text-vermilion"> We grow together.</span>&rdquo;
             </span>
           </SectionHead>
 
           <p className={`${BODY} mt-[60px] max-w-[675px]`}>
-            Our workforce is family. Trust, loyalty, and shared responsibility
-            have carried National Foods across three generations&mdash;and they
-            remain the foundation of everything we make.
+            Our workforce is family. Trust, loyalty, and shared responsibility have carried National
+            Foods across three generations&mdash;and they remain the foundation of everything we
+            make.
           </p>
 
           <p
@@ -1131,8 +1104,7 @@ export function AboutCertificates() {
           </SectionHead>
 
           <p className={`${BODY} mt-[60px] max-w-[521px]`}>
-            Standards built for trust at home and readiness across global
-            markets.
+            Standards built for trust at home and readiness across global markets.
           </p>
 
           {/* The comp draws this as a flat pill with no destination. The

@@ -102,9 +102,9 @@ export function TeamHero() {
 
         <Reveal delay={0.1}>
           <p className={`${BODY} mx-auto mt-[50px] max-w-[675px]`}>
-            National Foods is carried by artisans, specialists, and stewards
-            whose dedication turns hard-won knowledge into consistent
-            purity&nbsp;&mdash; every day, across every generation.
+            National Foods is carried by artisans, specialists, and stewards whose dedication turns
+            hard-won knowledge into consistent purity&nbsp;&mdash; every day, across every
+            generation.
           </p>
         </Reveal>
       </div>
@@ -242,18 +242,16 @@ export function TeamRoles() {
         <div className="grid gap-x-[45px] gap-y-8 lg:grid-cols-[660px_1fr]">
           <Reveal>
             <SectionHead eyebrow="About Team">
-              Not employees.{" "}
-              <span className="lg:block text-vermilion">Family.</span>
+              Not employees. <span className="lg:block text-vermilion">Family.</span>
             </SectionHead>
           </Reveal>
 
           {/* 23px down — the quote sits against the eyebrow, not on it. */}
           <Reveal delay={0.08}>
             <p className={`${BODY} max-w-[675px] lg:mt-[23px]`}>
-              &ldquo;We believe that our workforce is a family rather than
-              employees. There is a lot of trust and belief in the product that
-              we produce, which helps us deliver optimal output even during hard
-              times.&rdquo;
+              &ldquo;We believe that our workforce is a family rather than employees. There is a lot
+              of trust and belief in the product that we produce, which helps us deliver optimal
+              output even during hard times.&rdquo;
             </p>
           </Reveal>
         </div>
@@ -347,8 +345,7 @@ export function TeamValues() {
       <div className="mx-auto max-w-[1380px]">
         <Reveal>
           <SectionHead eyebrow="Grow Together">
-            We work together; <span className="text-vermilion">we</span>{" "}
-            <span className="lg:block text-vermilion">grow together.</span>
+            We work together. <span className="lg:block text-vermilion">We grow together.</span>
           </SectionHead>
         </Reveal>
 
