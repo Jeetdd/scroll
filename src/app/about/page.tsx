@@ -16,6 +16,15 @@ export const metadata: Metadata = {
   title: "About — National Foods",
   description:
     "India's first and largest asafoetida processing plant — shaped by three generations of the Joshi family and one uncompromising standard of purity.",
+  alternates: {
+    canonical: "/about",
+  },
+  openGraph: {
+    title: "About — National Foods",
+    description:
+      "India's first and largest asafoetida processing plant — shaped by three generations of the Joshi family and one uncompromising standard of purity.",
+    url: "/about",
+  },
 };
 
 export default function AboutPage() {

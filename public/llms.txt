@@ -1,0 +1,9 @@
+# Natinal foods
+
+> Compounded asafoetida. From a single drop of ferula resin to the pinch that finishes your tadka.
+
+## Pages
+
+- [Natinal foods](https://scroll-six-rho.vercel.app/): Compounded asafoetida. From a single drop of ferula resin to the pinch that finishes your tadka.
+- [About — National Foods](https://scroll-six-rho.vercel.app/about): India's first and largest asafoetida processing plant — shaped by three generations of the Joshi family and one uncompromising standard of purity.
+- [Team — National Foods](https://scroll-six-rho.vercel.app/team): The artisans, analysts, craftsmen and stewards behind India's first and largest asafoetida processing plant.

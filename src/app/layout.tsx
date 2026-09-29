@@ -72,9 +72,21 @@ const eduQldBeginner = Edu_QLD_Beginner({
 });
 
 export const metadata: Metadata = {
-  title: "Natinal foods",
+  metadataBase: new URL("https://scroll-six-rho.vercel.app"),
+  title: "National Foods — Compounded Asafoetida Specialists",
   description:
     "Compounded asafoetida. From a single drop of ferula resin to the pinch that finishes your tadka.",
+  alternates: {
+    canonical: "/",
+  },
+  openGraph: {
+    title: "National Foods — Compounded Asafoetida Specialists",
+    description:
+      "Compounded asafoetida. From a single drop of ferula resin to the pinch that finishes your tadka.",
+    url: "/",
+    siteName: "National Foods",
+    type: "website",
+  },
 };
 
 // Paints the mobile browser chrome (address bar) to match the page.
