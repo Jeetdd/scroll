@@ -9,6 +9,15 @@ export const metadata: Metadata = {
   title: "Team — National Foods",
   description:
     "The artisans, analysts, craftsmen and stewards behind India's first and largest asafoetida processing plant.",
+  alternates: {
+    canonical: "/team",
+  },
+  openGraph: {
+    title: "Team — National Foods",
+    description:
+      "The artisans, analysts, craftsmen and stewards behind India's first and largest asafoetida processing plant.",
+    url: "/team",
+  },
 };
 
 export default function TeamPage() {
